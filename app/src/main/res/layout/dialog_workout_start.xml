@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="musclesIsVisible"
+            type="Boolean" />
+
+        <variable
+            name="viewModel"
+            type="com.companion.android.trainingcompanion.viewmodels.WorkoutViewModel" />
+
+        <import type="android.view.View" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/dialog_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/dialog_rounded"
+        android:clipToPadding="false"
+        android:padding="12dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/titleTextView"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:text="@string/title_start_workout"
+            android:textAppearance="@style/MaterialAlertDialog.App.Title.Text"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/button_cancel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <LinearLayout
+            android:id="@+id/trainingPlaceLinearLayout"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/button_cancel"
+            app:layout_constraintEnd_toEndOf="@+id/titleTextView"
+            app:layout_constraintStart_toStartOf="@+id/titleTextView"
+            app:layout_constraintTop_toBottomOf="@+id/titleTextView"
+            app:layout_constraintVertical_bias="0.0">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/trainingPlaceView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:drawablePadding="10dp"
+                android:gravity="center"
+                android:text="@string/select_training_place"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/placeSpinner"
+                    android:layout_width="170dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/background_border"
+                    android:contentDescription="@string/content_description_spinner"
+                    android:popupBackground="@drawable/spinner_popup_bg" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:paddingEnd="12dp"
+                    app:srcCompat="@null" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/training_notification_layout"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/button_cancel"
+            app:layout_constraintEnd_toEndOf="@+id/titleTextView"
+            app:layout_constraintStart_toStartOf="@+id/titleTextView"
+            app:layout_constraintTop_toBottomOf="@+id/trainingPlaceLinearLayout"
+            app:layout_constraintVertical_bias="0.0">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/training_notification_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:drawablePadding="10dp"
+                android:gravity="center"
+                android:text="@string/select_notification_mode"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/notification_spinner"
+                    android:layout_width="170dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/background_border"
+                    android:contentDescription="@string/content_description_spinner"
+                    android:popupBackground="@drawable/spinner_popup_bg" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:paddingEnd="12dp"
+                    app:srcCompat="@null" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/slider_description_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/button_cancel"
+            app:layout_constraintEnd_toEndOf="@+id/trainingPlaceLinearLayout"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/trainingPlaceLinearLayout"
+            app:layout_constraintTop_toBottomOf="@+id/training_notification_layout"
+            app:layout_constraintVertical_bias="0.0">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/timeSliderDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:gravity="center_vertical"
+                android:paddingStart="8dp"
+                android:paddingTop="12dp"
+                android:paddingEnd="12dp"
+                android:text="@string/description_time_slider"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <Space
+                android:id="@+id/space"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:id="@+id/input_time_manually_ll"
+                android:layout_width="wrap_content"
+                android:layout_height="27dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/background_rounded_border"
+                android:orientation="horizontal"
+                android:paddingStart="2dp"
+                android:paddingEnd="5dp">
+
+                <ImageView
+                    android:id="@+id/keyboard_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_keyboard" />
+
+                <TextView
+                    android:id="@+id/time_slider_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/slider_def_value60"
+                    android:textColor="@color/shrine_pink_900"
+                    android:textSize="16sp"
+                    android:textStyle="italic" />
+
+                <EditText
+                    android:id="@+id/input_time_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true"
+                    android:inputType="number"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    android:gravity="center"
+                    android:maxLength="3"/>
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/timeSlider"
+            style="@style/SliderStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/content_description_slider"
+            android:stepSize="5.0"
+            android:value="60"
+            android:valueFrom="15.0"
+            android:valueTo="240.0"
+
+            app:layout_constraintBottom_toTopOf="@+id/button_cancel"
+            app:layout_constraintEnd_toEndOf="@+id/slider_description_layout"
+            app:layout_constraintStart_toStartOf="@+id/slider_description_layout"
+            app:layout_constraintTop_toBottomOf="@+id/slider_description_layout"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/body_part_selector"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/background_border"
+            android:drawablePadding="10dp"
+            android:gravity="start|center_vertical"
+            android:hint="@string/select_body_part"
+            android:paddingStart="8dp"
+            android:paddingEnd="12dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:drawableEndCompat="@drawable/ic_body_mini"
+            app:layout_constraintBottom_toTopOf="@+id/button_cancel"
+            app:layout_constraintEnd_toEndOf="@+id/slider_description_layout"
+            app:layout_constraintHorizontal_bias="0.333"
+            app:layout_constraintStart_toStartOf="@+id/slider_description_layout"
+            app:layout_constraintTop_toBottomOf="@+id/timeSlider"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/muscles_selector"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/background_border"
+            android:drawablePadding="10dp"
+            android:gravity="start|center_vertical"
+            android:hint="@string/select_muscles"
+            android:paddingStart="8dp"
+            android:paddingEnd="12dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:visibility="@{musclesIsVisible ? View.VISIBLE : View.GONE}"
+            app:drawableEndCompat="@drawable/ic_muscle_mini"
+            app:layout_constraintBottom_toTopOf="@+id/button_cancel"
+            app:layout_constraintEnd_toEndOf="@+id/body_part_selector"
+            app:layout_constraintStart_toStartOf="@+id/body_part_selector"
+            app:layout_constraintTop_toBottomOf="@id/body_part_selector"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_cancel"
+            style="@style/Widget.App.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:text="@string/button_dialog_cancel"
+            app:cornerRadius="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/button_accept" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_accept"
+            style="@style/Widget.App.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:text="@string/button_dialog_accept"
+            app:cornerRadius="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

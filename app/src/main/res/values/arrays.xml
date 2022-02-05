@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Массив для спиннера места тренировки -->
+    <string-array name="training_place">
+        <item>@string/array_item_at_home</item>
+        <item>@string/array_item_in_gym</item>
+        <item>@string/array_item_outdoors</item>
+    </string-array>
+
+    <!-- Массив для выбора частей тела -->
+    <string-array name="dialog_body_part">
+        <item>@string/array_item_arms</item>
+        <item>@string/array_item_legs</item>
+        <item>@string/array_item_core</item>
+        <item>@string/array_item_back</item>
+        <item>@string/array_item_chest</item>
+    </string-array>
+
+    <!-- Мышцы для соответствующих частей тела -->
+
+    <string-array name="arms_muscles"> <!-- Мышцы рук -->
+        <item>@string/array_item_arm_biceps</item>
+        <item>@string/array_item_arm_triceps</item>
+        <item>@string/array_item_forearm</item>
+        <item>@string/array_item_deltoid</item>
+    </string-array>
+
+    <string-array name="legs_muscles"> <!-- Мышцы ног -->
+        <item>@string/array_item_quadriceps</item>
+        <item>@string/array_item_hamstrings</item>
+        <item>@string/array_item_glutes</item>
+        <item>@string/array_item_calf</item>
+    </string-array>
+
+    <string-array name="core_muscles"> <!-- Мышцы кора -->
+        <item>@string/array_item_rectus_abdominal</item>
+        <item>@string/array_item_oblique_abdominal</item>
+        <item>@string/array_item_transversus_abdominis</item>
+    </string-array>
+
+    <string-array name="back_muscles"> <!-- Мышцы спины -->
+        <item>@string/array_item_trapezius</item>
+        <item>@string/array_item_latissimus_dorsi</item>
+        <item>@string/array_item_posterior_delt</item>
+        <item>@string/array_item_lower_back</item>
+    </string-array>
+
+    <string-array name="chest_muscles"> <!-- Мышцы рук -->
+        <item>@string/array_item_pectoralis_major</item>
+        <item>@string/array_item_clavicular</item>
+    </string-array>
+
+    <!-- Описания способа уведомления подхода -->
+    <string-array name="break_notification">
+        <item>@string/notification_sd_with_sound</item>
+        <item>@string/notification_sd_vibration</item>
+        <item>@string/notification_sd_screen_anim</item>
+    </string-array>
+</resources>

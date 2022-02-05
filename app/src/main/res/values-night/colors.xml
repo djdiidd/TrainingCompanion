@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="blue">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="bnv_checked">#91A8EE</color>
+    <color name="bnv_unchecked">#FFFFFFFF</color>
+    <color name="shrine_pink_100">#FEDBD0</color>
+    <color name="shrine_pink_900">#442C2E</color>
+    <color name="shrine_pink_light">#FEEAE6</color>
+    <color name="main_color">#88a2a5</color>
+    <color name="red">#EC1D26</color>
+    <color name="dialog_button_color">@color/shrine_pink_100</color>
+    <color name="slider_label_color">#A36838</color>
+    <color name="tick_color_active">@color/slider_label_color</color>
+    <color name="button_color">@color/slight</color>
+    <color name="toolbar_color">@color/black</color>
+    <!-- Конфигурация таймера -->
+    <color name="digits_color">@color/white</color>
+    <color name="progress_bar_edge">@color/shrine_pink_100</color>
+    <color name="progress_bar_static">@color/raisin</color>
+    <color name="progress_bar_edge_dots">@color/pink</color>
+    <color name="progress_bar_filled">@color/pink</color>
+    <color name="progress_bar_start_gradient">#8B103A</color>
+    <color name="progress_bar_center_gradient">@color/main_color</color>
+    <color name="progress_bar_end_gradient">#0B0D2D</color>
+    <color name="progress_bar_background_color">#161A1B</color>
+    <color name="progress_bar_bg_gradient_1_color">#536365</color>
+    <color name="progress_bar_bg_gradient_2_color">#424E50</color>
+    <color name="progress_bar_bg_gradient_3_color">@color/raisin</color>
+    <color name="shadow_text_color">#7F000000</color>
+    <color name="keyboard_color">@color/shrine_pink_100</color>
+    <color name="input_manually_button_border_color">@color/shrine_pink_100</color>
+    <color name="input_manually_button_bg_color">#91ADBD</color>
+</resources>

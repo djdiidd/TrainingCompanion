@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bottom_main"
+        android:title="@string/button_bnv_start"
+        android:icon="@drawable/play_button"/>
+    <item
+        android:id="@+id/bottom_list"
+        android:title="@string/button_bnv_list"
+        android:icon="@drawable/list_button"/>
+
+</menu>

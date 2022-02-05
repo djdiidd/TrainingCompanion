@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="MaterialAlertDialog.App" parent="MaterialAlertDialog.Material3">
+        <item name="shapeAppearance">@style/ShapeAppearance.App.MediumComponent</item>
+        <item name="shapeAppearanceOverlay">@null</item>
+    </style>
+
+    <style name="MaterialAlertDialog.App.Title.Text" parent="MaterialAlertDialog.Material3.Title.Text">
+        <item name="android:textColor">@color/shrine_pink_900</item>
+    </style>
+
+    <style name="Widget.App.Button" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/shrine_pink_900</item>
+    </style>
+
+    <style name="ShapeAppearance.App.MediumComponent" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+    <style name="Widget.Material3.BottomNavigationView.Custom" parent="Widget.Material3.BottomNavigationView">
+        <item name="itemActiveIndicatorStyle">@style/Widget.Material3.BottomNavigationView.Custom</item>
+    </style>
+    <style name="Widget.Material3.BottomNavigationView.ActiveIndicator.Custom" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/white</item>
+    </style>
+
+    <style name="SlideLeftToRightDialogAnimation">
+        <item name="android:windowEnterAnimation">@android:anim/slide_in_left</item>
+        <item name="android:windowExitAnimation">@android:anim/slide_out_right</item>
+    </style>
+
+    <style name="SlideToBottomDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/anim_from_top</item>
+        <item name="android:windowExitAnimation">@anim/anim_to_bottom</item>
+    </style>
+
+    <style name="BounceAnimation">
+        <item name="android:windowEnterAnimation">@anim/anim_bounce</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+
+    <style name="SliderStyle">
+        <item name="thumbColor">@color/white</item>
+        <item name="haloColor">@color/shrine_pink_100</item>
+        <item name="haloRadius">14dp</item>
+        <item name="thumbRadius">12dp</item>
+        <item name="trackColorActive">@color/shrine_pink_900</item>
+        <item name="trackColorInactive">@color/slight</item>
+        <item name="tickColorActive">@color/tick_color_active</item>
+        <item name="tickColorInactive">@color/slight</item>
+        <item name="labelStyle">@style/labelStyleCustom</item>
+        <item name="android:shadowColor">@null</item>
+        <item name="trackHeight">3dp</item>
+
+    </style>
+
+    <style name="labelStyleCustom" parent="Widget.Material3.Tooltip">
+        <item name="backgroundTint">@color/shrine_pink_900</item>
+        <item name="android:textColor">@color/slider_label_color</item>
+    </style>
+
+    <style name="DialogButtonStyle" parent="Widget.MaterialComponents.TimePicker.Button">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="CircularDeterminateProgressBar">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/timer_circle</item>
+    </style>
+
+</resources>

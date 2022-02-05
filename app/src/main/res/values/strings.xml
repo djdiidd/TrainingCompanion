@@ -1,0 +1,102 @@
+<resources>
+    <!-- Имя приложения -->
+    <string name="app_name">Training Companion</string>
+    <!-- Кнопки Bottom Navigation View -->
+    <string name="button_bnv_start">Start page</string>
+    <string name="button_bnv_list">Show list</string>
+    <!-- Динамическое описание пунктов в диалоговом окне начала тренировки -->
+    <string name="number_of_selected_el">Selected: %d muscles</string>
+    <string name="selected_muscles">Selected: %s</string>
+    <string name="train_on">Train on: %s</string>
+    <string name="selected_seconds">%dsec</string>
+    <string name="slider_def_value60">60sec</string>
+    <!-- Дефолтные кнопки в диалогах -->
+    <string name="button_dialog_accept">Accept</string>
+    <string name="button_dialog_cancel">Cancel</string>
+    <string name="button_dialog_continue">Continue</string>
+    <string name="button_dialog_reset_all">Reset all</string>
+    <string name="button_dialog_remove">Remove</string>
+    <!-- Пункты в диалоговом окне начала тренировки -->
+    <string name="select_body_part">Select part of the body</string>
+    <string name="select_muscles">Select muscles</string>
+    <string name="select_training_place">Training place</string>
+    <string name="select_notification_mode">Notification mode</string>
+    <string name="description_time_slider">Select time between sets</string>
+    <string name="title_start_workout">Start your workout</string>
+    <string name="title_select_muscles">Select muscles you will work out</string>
+    <string name="title_select_body_parts">Select parts of the body</string>
+    <!-- Описание ошибок -->
+    <string name="error_time_slider">Select time!</string>
+    <string name="error_body_parts">Select body parts!</string>
+    <string name="error_incorrect_time">Incorrect time!</string>
+    <!-- Массив места тренировки -->
+    <string name="array_item_at_home">At home</string>
+    <string name="array_item_in_gym">In the GYM</string>
+    <string name="array_item_outdoors">Outdoors</string>
+    <!-- Массив частей тела -->
+    <string name="array_item_arms">Arms</string>
+    <string name="array_item_legs">Legs</string>
+    <string name="array_item_core">Core</string>
+    <string name="array_item_back">Back</string>
+    <string name="array_item_chest">Chest</string>
+    <!-- Массив мышц -->
+    <string name="array_item_arm_biceps">Arm biceps</string>
+    <string name="array_item_arm_triceps">Arm triceps</string>
+    <string name="array_item_forearm">Forearm muscles</string>
+    <string name="array_item_deltoid">Deltoid muscles</string>
+    <string name="array_item_quadriceps">Quadriceps</string>
+    <string name="array_item_hamstrings">Hamstrings</string>
+    <string name="array_item_glutes">Glutes</string>
+    <string name="array_item_calf">Calf muscles</string>
+    <string name="array_item_rectus_abdominal">Rectus abdominal muscles</string>
+    <string name="array_item_oblique_abdominal">Oblique abdominal muscles</string>
+    <string name="array_item_transversus_abdominis">Transversus abdominis</string>
+    <string name="array_item_trapezius">Trapezius</string>
+    <string name="array_item_latissimus_dorsi">Latissimus dorsi</string>
+    <string name="array_item_posterior_delt">Posterior delt</string>
+    <string name="array_item_lower_back">Lower back</string>
+    <string name="array_item_pectoralis_major">Pectoralis major muscle</string>
+    <string name="array_item_clavicular">Clavicular head</string>
+    <!-- Значения для включателя звука уведомления о начале/заканчивании подходов -->
+    <string name="switch_with_sound">Timer with sound</string>
+    <string name="switch_without_sound">Timer with vibration only</string>
+    <!-- Описания контента -->
+    <string name="content_description_spinner">Select one of three variants of workout placement</string>
+    <string name="content_description_slider">Choose a rest time between sets</string>
+    <!-- Ресурсы для секундомера/таймера -->
+    <string name="general_time_start">0:00:00</string>
+    <!-- Ресурсы для DrawerLayout -->
+    <string name="header_change_workout_presets">Change workout</string>
+    <string name="title_change_workout_settings">Main settings</string>
+    <string name="change_body_parts">Body parts</string>
+    <string name="change_muscles">Muscles</string>
+    <string name="change_rest_time">Rest time</string>
+    <string name="change_training_place">Change training place</string>
+    <string name="title_additional_settings">Additional settings</string>
+    <string name="break_notifications">Break notifications</string>
+    <!-- Диалог изменения времени -->
+    <string name="title_change_rest_time">Rest time changing</string>
+    <string name="dialog_rest_time_sub5">-5</string>
+    <string name="dialog_rest_time_add5">+5</string>
+    <string name="selected_rest_time">Time - %d sec</string>
+    <!-- Диалог изменения места тренировки -->
+    <string name="place_changing">Place changing</string>
+    <string name="dialog_message_place_changing">If you change workout place, in your personal statistic will be shown this one.</string>
+    <string name="warning_nothing_selected">Nothing selected!</string>
+    <string name="toast_amount_of_selected_mscls">You selected: %s</string>
+    <!-- Диалог предупреждения о неиспользованности некоторых выбранных частей тела -->
+    <string name="warning_dialog_unused_bp_title">Remove unused body parts?</string>
+    <string name="warning_dialog_unused_bp_message">
+        It seems that you chose %s and you are not going to train it. Also you can change workout settings in right panel later.
+    </string>
+    <!-- Диалог настройки оповещений начала/конца подхода -->
+    <string name="title_change_notification_params">Change notification parameters</string>
+    <string name="notification_with_sound">After the workout set will be playing sound to draw your attention</string>
+    <string name="notification_vibration">After the workout set your device will be vibrating to draw your attention</string>
+    <string name="notification_screen_anim">After the workout set, only animations will be displayed on the device screen</string>
+
+    <string name="notification_sd_with_sound">With sound</string>
+    <string name="notification_sd_vibration">Just vibration</string>
+    <string name="notification_sd_screen_anim">Only animation</string>
+
+</resources>

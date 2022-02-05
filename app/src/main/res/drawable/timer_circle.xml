@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Задний фон -->
+    <item>
+        <shape
+            android:innerRadius="0dp"
+            android:shape="ring"
+            android:thickness="99dp"
+            android:useLevel="false">
+<!--            <solid android:color="@color/progress_bar_background_color" />-->
+            <gradient android:type="radial"
+                android:startColor="@color/progress_bar_bg_gradient_1_color"
+                android:centerColor="@color/progress_bar_bg_gradient_2_color"
+                android:endColor="@color/progress_bar_bg_gradient_3_color"
+                android:gradientRadius="350"/>
+<!--            <stroke android:width="3dp" android:color="@color/progress_bar_edge" />-->
+        </shape>
+    </item>
+
+    <item>
+        <shape
+            android:innerRadius="99dp"
+            android:shape="ring"
+            android:thickness="23dp"
+            android:useLevel="false">
+            <solid android:color="@color/progress_bar_static" />
+            <stroke
+                android:width="1dp"
+                android:color="@color/progress_bar_edge" />
+        </shape>
+    </item>
+
+    <item>
+        <shape
+            android:innerRadius="105dp"
+            android:shape="ring"
+            android:thickness="11dp"
+            android:useLevel="false">
+            <solid android:color="@color/progress_bar_filled" />
+        </shape>
+    </item>
+
+    <item>
+        <rotate
+            android:fromDegrees="270"
+            android:toDegrees="270">
+            <shape
+                android:innerRadius="102dp"
+                android:shape="ring"
+                android:thickness="17dp"
+                android:useLevel="true">
+
+                <gradient
+                    android:centerColor="@color/progress_bar_center_gradient"
+                    android:endColor="@color/progress_bar_end_gradient"
+                    android:startColor="@color/progress_bar_start_gradient"
+                    android:type="sweep" />
+            </shape>
+        </rotate>
+    </item>
+    <!-- Закругления на концах -->
+    <item android:bottom="222dp">
+        <shape
+            android:innerRadius="0dp"
+            android:shape="ring"
+            android:thickness="9dp"
+            android:useLevel="false">
+            <solid android:color="@color/progress_bar_edge_dots"/>
+        </shape>
+    </item>
+    <item>
+        <rotate>
+            <inset android:insetBottom="222dp">
+                <shape
+                    android:innerRadius="0dp"
+                    android:shape="ring"
+                    android:thickness="9dp"
+                    android:useLevel="false">
+                    <solid android:color="@color/progress_bar_edge_dots"/>
+                </shape>
+            </inset>
+        </rotate>
+    </item>
+
+</layer-list>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/anton</item>
+        <item>@font/arbutus</item>
+        <item>@font/archivo_black</item>
+        <item>@font/asset</item>
+        <item>@font/lato</item>
+        <item>@font/lato_black</item>
+        <item>@font/lato_black_italic</item>
+        <item>@font/lato_bold</item>
+        <item>@font/lato_bold_italic</item>
+        <item>@font/pacifico</item>
+        <item>@font/roboto</item>
+        <item>@font/roboto_bold_italic</item>
+    </array>
+</resources>

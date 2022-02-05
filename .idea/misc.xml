@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable-mdpi/ic_play.xml" value="1.0645833333333334" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/backgroud_circle.xml" value="0.26614583333333336" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/background_border.xml" value="0.172" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/background_circle.xml" value="0.26614583333333336" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/background_night_main.xml" value="0.206" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/background_rounded_border.xml" value="0.2555" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/bg_selected_break_mode.xml" value="0.26614583333333336" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/bnv_selector.xml" value="0.26614583333333336" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/border.xml" value="0.26614583333333336" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/circle.xml" value="0.2195" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/dialog_rounded.xml" value="0.26614583333333336" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/ic_body_mini.xml" value="0.26614583333333336" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/ic_keyboard.xml" value="0.2555" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/main_background_day.xml" value="0.2555" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/main_background_day_1p.xml" value="0.206" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/main_background_day_2p.xml" value="0.206" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/main_background_day_3p.xml" value="0.1655" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/main_background_day_list.xml" value="0.206" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/main_background_night.xml" value="0.2555" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/main_background_night_1p.xml" value="0.206" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/main_background_night_3.xml" value="0.206" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/main_background_night_list.xml" value="0.206" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/main_button.xml" value="0.2425" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/spinner_popup_bg.xml" value="0.26614583333333336" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/splash_background.xml" value="0.26614583333333336" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/splash_screen_gradient.xml" value="0.26614583333333336" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/t1.xml" value="0.206" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/t2.xml" value="0.206" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/test_interp.xml" value="0.2425" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/timer_circle.xml" value="0.1" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/font/roboto_bold_italic.xml" value="0.16944444444444445" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/activity_splash_screen.xml" value="0.25" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/dialog_break_notification.xml" value="0.264" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/dialog_rest_time.xml" value="0.4234592445328032" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/dialog_workout_start.xml" value="0.536" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/for_time_dialog.xml" value="0.264" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/fragment_dialog.xml" value="0.4774951076320939" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/fragment_main.xml" value="0.176" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/fragment_workout_start_dialog.xml" value="0.8" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/main_toolbar.xml" value="0.25" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/place_spinner.xml" value="0.25" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/place_spinner_item.xml" value="0.264" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/rest_time_dialog.xml" value="0.25" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/side_header.xml" value="0.25" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/spinner_item.xml" value="0.25" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/test_layout.xml" value="0.25" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/menu/bottom_menu.xml" value="0.25" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/menu/side_menu.xml" value="0.25" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable-hdpi/ic_options.xml" value="0.26614583333333336" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable-hdpi/ic_pause.xml" value="0.1203125" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable-hdpi/ic_play.xml" value="0.26614583333333336" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable-mdpi/ic_options.xml" value="0.26614583333333336" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable-mdpi/ic_pause.xml" value="0.1203125" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable-mdpi/ic_play.xml" value="0.26614583333333336" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.26614583333333336" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable/bnv_selector.xml" value="0.26614583333333336" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable/dialog_rounded.xml" value="0.26614583333333336" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable/ic_arrow_drop_down.xml" value="0.26614583333333336" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable/ic_close.xml" value="0.26614583333333336" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable/ic_launcher_background.xml" value="0.26614583333333336" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable/ic_on_button.xml" value="0.14322916666666666" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable/ic_options.xml" value="0.26614583333333336" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable/ic_pause.xml" value="0.26614583333333336" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable/ic_pause_filled.xml" value="0.26614583333333336" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable/ic_play.xml" value="0.26614583333333336" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable/ic_settings.xml" value="0.26614583333333336" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable/ic_timer.xml" value="0.26614583333333336" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable/spinner_border.xml" value="0.26614583333333336" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/drawable/toolbar_selector.xml" value="0.26614583333333336" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/layout/activity_splash_screen.xml" value="0.1" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/layout/fragment_dialog.xml" value="0.4" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/layout/fragment_list.xml" value="0.4" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/layout/fragment_main.xml" value="0.264" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/layout/side_header.xml" value="0.25" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/menu/bottom_menu.xml" value="0.25" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/menu/main_menu.xml" value="0.25" />
+        <entry key="..\:/TrainingCompanion/app/src/main/res/menu/side_menu.xml" value="0.264" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+<!--    <item android:title="@string/array_item_in_gym"/>-->
+    <group>
+        <item android:title="@string/title_change_workout_settings">
+            <menu>
+                <item
+                    android:id="@+id/item_place"
+                    android:icon="@drawable/ic_home"
+                    android:title="@string/select_training_place" />
+                <item
+                    android:id="@+id/item_body_parts"
+                    android:icon="@drawable/ic_body"
+                    android:title="@string/change_body_parts" />
+                <item
+                    android:id="@+id/item_muscles"
+                    android:icon="@drawable/ic_muscle"
+                    android:title="@string/change_muscles" />
+                <item
+                    android:id="@+id/item_rest_time"
+                    android:icon="@drawable/ic_clock"
+                    android:title="@string/change_rest_time" />
+            </menu>
+        </item>
+    </group>
+    <group>
+        <item android:title="@string/title_additional_settings">
+            <menu>
+                <item
+                    android:id="@+id/item_switch_mute"
+                    android:icon="@drawable/ic_notification"
+                    android:title="@string/break_notifications"/>
+            </menu>
+        </item>
+    </group>
+</menu>
