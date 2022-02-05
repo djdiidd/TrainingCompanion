@@ -159,7 +159,6 @@ class WorkoutStartDialog
 
             it.focusAndShowKeyboard()
 
-
             binding.timeSlider.disable()
 
             binding.inputTimeField.onDone {
@@ -192,7 +191,7 @@ class WorkoutStartDialog
             /** Кнопка подтверждения -- проверка и сохранение данных*/
             binding.buttonAccept.id -> {
                 //Если пользователь не подтвердил выбор времени вручную
-                if (binding.inputTimeField.isVisible) {
+                if (textInputExpanded()) {
                     hideTextInputAndSaveData(binding.inputTimeField.text.toString().toInt())
                 }
                 // Если обязательные поля заполнены:
@@ -220,6 +219,10 @@ class WorkoutStartDialog
             }
             /** Выбор тренеруемых частей тела -- вызов соответствующего окна и обработка данных */
             binding.bodyPartSelector.id -> {
+                // Если открыт выбор времени вручную, то закроем
+                if (textInputExpanded()) {
+                    hideTextInput()
+                }
                 // Устанавливаем слушатель для получения списка выбранных частей тела
                 // По ключу SELECT_BODY_PART_DIALOG_TAG
                 setFragmentResultListener(SELECT_BODY_PART_DIALOG) { _, bundle ->
@@ -264,6 +267,10 @@ class WorkoutStartDialog
             }
             /** Выбор мышц для выбранных частей тела -- вызов соответствующего окна и обработка */
             binding.musclesSelector.id -> {
+                // Если открыт выбор времени вручную, то закроем
+                if (textInputExpanded()) {
+                    hideTextInput()
+                }
                 // Устанавливаем слушатель для получения списка мышц по ключу SELECT_MUSCLE_DIALOG.
                 // Список мышц определяется в зависимости от выбранных частей тела
                 setFragmentResultListener(SELECT_MUSCLE_DIALOG) { _, bundle ->
@@ -322,7 +329,20 @@ class WorkoutStartDialog
      * Определеяем действия по выбору объекта из списка spinner
      */
     override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
-        viewModel.trainingPlace = pos
+        if (parent == binding.placeSpinner) {
+            when (pos) {
+                0 -> viewModel.trainingPlace = Place.TRAINING_AT_HOME
+                1 -> viewModel.trainingPlace = Place.TRAINING_IN_GYM
+                2 -> viewModel.trainingPlace = Place.TRAINING_OUTDOORS
+            }
+        }
+        else {
+            when (pos) {
+                0 -> viewModel.breakNotificationMode = BreakNotificationMode.SOUND
+                1 -> viewModel.breakNotificationMode = BreakNotificationMode.VIBRATION
+                2 -> viewModel.breakNotificationMode = BreakNotificationMode.ANIMATION
+            }
+        }
     }
 
     /** ИНТЕРФЕЙС (spinner)
@@ -437,6 +457,8 @@ class WorkoutStartDialog
             inputTimeManuallyLl.layoutParams.width = LinearLayout.LayoutParams.MATCH_PARENT
         }
     }
+
+    private fun textInputExpanded() = binding.inputTimeField.isVisible
 
     private fun hideTextInput() {
         with(binding) {
