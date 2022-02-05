@@ -7,6 +7,7 @@ import android.content.Intent
 import android.util.Log
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.companion.android.trainingcompanion.objects.Params
 
 /**
  * Таймер, работающий в качестве сервиса, который использует широкое вещание.
@@ -29,7 +30,14 @@ class CountDownTimer(private val context: Context, private val serviceIntent: In
 
     // Коэффициент анимации
     private var animCoefficient: Int = 0
-        get() = (40 - startTime * 0.13).toInt()
+        get() {
+            if (startTime in Params.restTimeDefaultRange) {
+                return (40 - startTime * 0.13).toInt()
+            }
+            else {
+                return (40 - startTime * 0.05).toInt()
+            }
+        }
         set(value) {
             if (value > 0) field = value
             else throw Error("Coefficient of animation cannot be <= 0")
