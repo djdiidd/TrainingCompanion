@@ -63,6 +63,8 @@ class MainFragment : Fragment() {
         super.onStart()
         Log.d("LF", "F onStart")
 
+        val bounceAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_bounce)
+
         viewModel.workoutSuccessfullyStarted.observe(requireActivity()) { started ->
             if (!started || viewModel.workoutInProgress) {
                 return@observe
@@ -76,6 +78,7 @@ class MainFragment : Fragment() {
         }
 
         binding.mainButton.setOnClickListener {
+            it.startAnimation(bounceAnim)
             it.isEnabled = false
             callback?.buttonClicked()
             Handler(requireContext().mainLooper).postDelayed({

@@ -202,7 +202,7 @@
                     android:imeOptions="actionDone"
                     android:singleLine="true"
                     android:inputType="number"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:visibility="gone"
                     android:gravity="center"
                     android:maxLength="3"/>
