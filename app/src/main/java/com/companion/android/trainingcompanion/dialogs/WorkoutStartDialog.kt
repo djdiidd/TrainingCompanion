@@ -159,7 +159,7 @@ class WorkoutStartDialog
 
             it.focusAndShowKeyboard()
 
-            binding.timeSlider.disable()
+            binding.timeSlider.toStartPosition()
 
             binding.inputTimeField.onDone {
                 val seconds = binding.inputTimeField.text.toString().toInt()
@@ -172,6 +172,21 @@ class WorkoutStartDialog
                         R.drawable.ic_error
                     )
             }
+        }
+
+        binding.placeSpinner.setOnTouchListener { view, _ ->
+            view.performClick()
+            hideTextInput()
+            view.hideKeyboard()
+            return@setOnTouchListener true
+        }
+
+
+        binding.notificationSpinner.setOnTouchListener { view, _ ->
+            view.performClick()
+            hideTextInput()
+            view.hideKeyboard()
+            return@setOnTouchListener true
         }
 
     }
@@ -191,7 +206,7 @@ class WorkoutStartDialog
             /** Кнопка подтверждения -- проверка и сохранение данных*/
             binding.buttonAccept.id -> {
                 //Если пользователь не подтвердил выбор времени вручную
-                if (textInputExpanded()) {
+                if (textInputIsExpanded()) {
                     hideTextInputAndSaveData(binding.inputTimeField.text.toString().toInt())
                 }
                 // Если обязательные поля заполнены:
@@ -220,7 +235,7 @@ class WorkoutStartDialog
             /** Выбор тренеруемых частей тела -- вызов соответствующего окна и обработка данных */
             binding.bodyPartSelector.id -> {
                 // Если открыт выбор времени вручную, то закроем
-                if (textInputExpanded()) {
+                if (textInputIsExpanded()) {
                     hideTextInput()
                 }
                 // Устанавливаем слушатель для получения списка выбранных частей тела
@@ -268,7 +283,7 @@ class WorkoutStartDialog
             /** Выбор мышц для выбранных частей тела -- вызов соответствующего окна и обработка */
             binding.musclesSelector.id -> {
                 // Если открыт выбор времени вручную, то закроем
-                if (textInputExpanded()) {
+                if (textInputIsExpanded()) {
                     hideTextInput()
                 }
                 // Устанавливаем слушатель для получения списка мышц по ключу SELECT_MUSCLE_DIALOG.
@@ -445,6 +460,12 @@ class WorkoutStartDialog
         }
     }
 
+    private fun View.hideKeyboard() {
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE)
+                as InputMethodManager
+        imm.hideSoftInputFromWindow(this.windowToken, 0)
+    }
+
     private fun expandTextInput() {
         with(binding) {
             timeSliderValue.visibility = View.GONE
@@ -458,7 +479,7 @@ class WorkoutStartDialog
         }
     }
 
-    private fun textInputExpanded() = binding.inputTimeField.isVisible
+    private fun textInputIsExpanded() = binding.inputTimeField.isVisible
 
     private fun hideTextInput() {
         with(binding) {
@@ -489,20 +510,18 @@ class WorkoutStartDialog
         }
     }
 
-    private fun Slider.disable() {
+    private fun Slider.toStartPosition() {
         this.value = this.valueFrom
-        this.isClickable
     }
 
     private fun EditText.onDone(callback: () -> Unit) {
         setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 callback.invoke()
-                val imm =
-                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(this.windowToken, 0)
+                hideKeyboard()
             }
             false
         }
     }
+
 }

@@ -59,7 +59,10 @@
             android:layout_marginBottom="40dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:elevation="1dp"
+            />
 
     </RelativeLayout>
 
