@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.companion.android.trainingcompanion.R
 import com.companion.android.trainingcompanion.objects.BreakNotificationMode
+import com.companion.android.trainingcompanion.objects.Params
 import com.companion.android.trainingcompanion.objects.Place
 import com.companion.android.trainingcompanion.objects.WorkoutProcess
 
@@ -48,7 +49,7 @@ class WorkoutViewModel : ViewModel() {
     var workoutInProgress: Boolean = false
 
 
-//-----------------------------------/* Геттеры */--------------------------------------------------
+//-----------------------------------/* Получение данных */-----------------------------------------
 
 
     fun getWhichBPsAreSelected(): Array<Boolean> = whichBodyPartSelected.copyOf()
@@ -80,7 +81,7 @@ class WorkoutViewModel : ViewModel() {
 
     /** Получение полного списка с частями тела (из ресурсов) */
     fun getAllBP(context: Context): Array<String> {
-        return context.resources.getStringArray(R.array.dialog_body_part)
+        return context.resources.getStringArray(R.array.body_parts)
     }
 
     /** Получение массива строк с выбранными частям тела */
@@ -190,9 +191,11 @@ class WorkoutViewModel : ViewModel() {
 
     /** Сохранение переданных мышц */
     fun saveSelectedMuscles(array: Array<Boolean>) {
+        Log.d("MyTag", "Array Saved")
         whichMuscleSelected = array
     }
 
+    // DANGEROUS -> USE updateData instead
     /** Установка выбранных частей тела */
     fun setWhichBPsAreSelected(bodyParts: Array<Boolean>) {
         whichBodyPartSelected = bodyParts
@@ -213,7 +216,13 @@ class WorkoutViewModel : ViewModel() {
      */
     private fun initBooleanMuscleArray(whichBPSelected: Array<Boolean>) {
         var finalSize = 0
-        val bodyPartsSizes = arrayOf(4, 4, 3, 4, 2)
+        val bodyPartsSizes = arrayOf(
+            Params.numberOfArmMuscles,  // количество мышц рук
+            Params.numberOfLegMuscles,  // количество мышц ног
+            Params.numberOfCoreMuscles, // количество мышц кора
+            Params.numberOfBackMuscles, // количество мышц спины
+            Params.numberOfChestMuscles// количество мышц груди
+        )
         whichBPSelected.forEachIndexed { i, v ->
             if (v) {
                 finalSize += bodyPartsSizes[i]

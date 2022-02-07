@@ -29,7 +29,7 @@ class BreakNotificationDialog(private val previousMode: Int)
         super.onCreate(savedInstanceState)
 
         modeToString = mapOf(
-            BreakNotificationMode.SOUND to R.string.notification_with_sound,
+            BreakNotificationMode.SOUND     to R.string.notification_with_sound,
             BreakNotificationMode.VIBRATION to R.string.notification_vibration,
             BreakNotificationMode.ANIMATION to R.string.notification_screen_anim,
         )

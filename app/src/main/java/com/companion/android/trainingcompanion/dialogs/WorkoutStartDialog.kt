@@ -177,7 +177,6 @@ class WorkoutStartDialog
         binding.placeSpinner.setOnTouchListener { view, _ ->
             view.performClick()
             hideTextInput()
-            view.hideKeyboard()
             return@setOnTouchListener true
         }
 
@@ -185,7 +184,6 @@ class WorkoutStartDialog
         binding.notificationSpinner.setOnTouchListener { view, _ ->
             view.performClick()
             hideTextInput()
-            view.hideKeyboard()
             return@setOnTouchListener true
         }
 
@@ -205,10 +203,6 @@ class WorkoutStartDialog
         when (v?.id) {
             /** Кнопка подтверждения -- проверка и сохранение данных*/
             binding.buttonAccept.id -> {
-                //Если пользователь не подтвердил выбор времени вручную
-                if (textInputIsExpanded()) {
-                    hideTextInputAndSaveData(binding.inputTimeField.text.toString().toInt())
-                }
                 // Если обязательные поля заполнены:
                 if (requiredFieldsCompleted()) {
                     if (viewModel.getNumberOfSelectedMuscles() != 0.toShort()) {
@@ -490,6 +484,7 @@ class WorkoutStartDialog
                 0, space.height, 1f
             )
             inputTimeManuallyLl.layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
+            binding.root.hideKeyboard()
         }
     }
 

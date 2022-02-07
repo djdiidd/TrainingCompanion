@@ -15,6 +15,8 @@
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/circle.xml" value="0.2195" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/dialog_rounded.xml" value="0.26614583333333336" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/ic_body_mini.xml" value="0.26614583333333336" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/ic_done.xml" value="0.2425" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/ic_done_disable.xml" value="0.2425" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/ic_keyboard.xml" value="0.2555" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/main_background_day.xml" value="0.2555" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/main_background_day_1p.xml" value="0.206" />
@@ -34,7 +36,7 @@
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/test_interp.xml" value="0.2425" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/timer_circle.xml" value="0.1" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/font/roboto_bold_italic.xml" value="0.16944444444444445" />
-        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/activity_splash_screen.xml" value="0.25" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/dialog_break_notification.xml" value="0.264" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/dialog_rest_time.xml" value="0.4234592445328032" />
@@ -48,7 +50,9 @@
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/place_spinner_item.xml" value="0.264" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/rest_time_dialog.xml" value="0.25" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/side_header.xml" value="0.25" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/side_menu_item_checked.xml" value="0.25" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/spinner_item.xml" value="0.25" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/test.xml" value="0.4" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/test_layout.xml" value="0.25" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/menu/bottom_menu.xml" value="0.25" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/menu/side_menu.xml" value="0.25" />

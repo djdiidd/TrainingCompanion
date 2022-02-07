@@ -9,7 +9,7 @@
     </string-array>
 
     <!-- Массив для выбора частей тела -->
-    <string-array name="dialog_body_part">
+    <string-array name="body_parts">
         <item>@string/array_item_arms</item>
         <item>@string/array_item_legs</item>
         <item>@string/array_item_core</item>

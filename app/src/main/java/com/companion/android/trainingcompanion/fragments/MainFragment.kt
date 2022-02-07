@@ -80,7 +80,7 @@ class MainFragment : Fragment() {
         binding.mainButton.setOnClickListener {
             it.startAnimation(bounceAnim)
             it.isEnabled = false
-            callback?.buttonClicked()
+            callback?.mainButtonClicked()
             Handler(requireContext().mainLooper).postDelayed({
                 it.isEnabled = true
             }, 1000)
@@ -119,7 +119,7 @@ class MainFragment : Fragment() {
     }
 
     interface FragmentCallback {
-        fun buttonClicked()
+        fun mainButtonClicked()
         fun fragmentDestroyed()
         fun fragmentUICreated(textView: TextView, progressBar: ProgressBar)
     }

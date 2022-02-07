@@ -98,5 +98,6 @@
     <string name="notification_sd_with_sound">With sound</string>
     <string name="notification_sd_vibration">Just vibration</string>
     <string name="notification_sd_screen_anim">Only animation</string>
+    <string name="side_menu_rest_time_hint">Or input time here</string>
 
 </resources>
