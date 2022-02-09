@@ -4,14 +4,24 @@ import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.companion.android.trainingcompanion.R
 
 /**
  * Сервис секундомер, использующий broadCast
  */
-class Stopwatch(private val context: Context, private val serviceIntent: Intent) {
+class Stopwatch(private val context: Context) {
+
+    // Инициализация интента для класса сервиса
+    private var serviceIntent: Intent = Intent(context.applicationContext, StopwatchService::class.java)
+
+    init {
+        addLifeCycleObserver()
+    }
 
     private var generalTime: Int = -1 // Общее время (в секундах)
     private var timeIsGoing = false   // Идет ли счет времени
@@ -55,7 +65,7 @@ class Stopwatch(private val context: Context, private val serviceIntent: Intent)
      * Объект, который будет сохранять полученное
      * значение и отображать его на экране
      */
-    val newTimeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+    private val newTimeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             generalTime = intent.getIntExtra(StopwatchService.TIME_EXTRA, 0)
             updateText()
@@ -93,6 +103,29 @@ class Stopwatch(private val context: Context, private val serviceIntent: Intent)
 
     private fun updateText() {
         clockView?.text = getTimeInFormatHMMSS(generalTime)
+    }
+
+    /**
+     * Определение поведения наблюдателя жизненного цикла
+     */
+    private fun addLifeCycleObserver() {
+        val defaultLifecycleObserver = object : DefaultLifecycleObserver {
+            // При возобновлении:
+            // Связывание объекта отправляющего обновленное
+            // время и получающего по интенту TIMER_UPDATED
+            override fun onCreate(owner: LifecycleOwner) {
+                super.onCreate(owner)
+                context.registerReceiver(newTimeReceiver,
+                    IntentFilter(StopwatchService.TIMER_UPDATED))
+            }
+            // При уничтожении, удаляем связь
+            override fun onDestroy(owner: LifecycleOwner) {
+                super.onDestroy(owner)
+                context.unregisterReceiver(newTimeReceiver)
+            }
+        }
+        // Добавляем наблюдателя
+        (context as LifecycleOwner).lifecycle.addObserver(defaultLifecycleObserver)
     }
 
 }

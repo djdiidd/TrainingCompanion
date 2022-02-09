@@ -16,11 +16,11 @@ import androidx.fragment.app.activityViewModels
 import com.companion.android.trainingcompanion.R
 import com.companion.android.trainingcompanion.databinding.FragmentMainBinding
 import com.companion.android.trainingcompanion.dialogs.WorkoutStartDialog
+import com.companion.android.trainingcompanion.objects.WorkoutProcess
 import com.companion.android.trainingcompanion.viewmodels.WorkoutViewModel
 
 
 private const val DIALOG_START = "dialog-start" // Метка диалога
-private const val ARGUMENT_TIMER = "argument-timer" // Ключ для получения таймера из хоста
 
 /**
  * Данный фрагмент сопровождает пользователя во время тренировки и является основным
@@ -51,8 +51,11 @@ class MainFragment : Fragment() {
         // Слушатель нажатий для кнопки начала тренировки
         binding.startButton.setOnClickListener {
 //            it.startAnimation(bounceAnim)
-            WorkoutStartDialog().apply {
-                show(this@MainFragment.parentFragmentManager, DIALOG_START)
+
+            if (parentFragmentManager.findFragmentByTag(DIALOG_START) == null) {
+                WorkoutStartDialog().show(this@MainFragment.parentFragmentManager, DIALOG_START)
+            } else {
+                Log.d("MyTag", "Dialog already exists")
             }
 //            it.clearAnimation()
         }
@@ -66,11 +69,10 @@ class MainFragment : Fragment() {
         val bounceAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_bounce)
 
         viewModel.workoutSuccessfullyStarted.observe(requireActivity()) { started ->
-            if (!started || viewModel.workoutInProgress) {
+            if (!started || viewModel.activeProcess != WorkoutProcess.NOT_STARTED) {
                 return@observe
             }
 
-            Log.d("MyTag", "workoutSuccessfullyStarted success")
             binding.startButton.visibility = View.GONE
             binding.setTimerProgress.visibility = View.VISIBLE
             binding.setTimer.visibility = View.VISIBLE

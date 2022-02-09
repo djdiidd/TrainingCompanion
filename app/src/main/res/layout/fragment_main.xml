@@ -50,7 +50,7 @@
             android:visibility="gone"
             app:fontFamily="@font/lato_black"
             tools:text="02:23"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <Button style="@style/Widget.Material3.MaterialTimePicker.Button"
             android:id="@+id/main_button"

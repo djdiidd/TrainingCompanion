@@ -97,8 +97,6 @@
                 android:layout_marginTop="200dp"
                 android:orientation="vertical">
 
-                <!--                <include layout="@layout/side_header" />-->
-
                 <!-- Описание пунктов -->
                 <TextView
                     android:layout_width="match_parent"
@@ -121,7 +119,7 @@
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:layout_marginRight="10dp"
-                        android:src="@drawable/ic_home" />
+                        android:src="@drawable/ic_place_on_24" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="match_parent"
@@ -155,7 +153,7 @@
                             android:layout_width="22dp"
                             android:layout_height="22dp"
                             android:layout_marginRight="10dp"
-                            android:src="@drawable/ic_home" />
+                            android:src="@drawable/ic_home_24" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="match_parent"

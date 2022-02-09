@@ -269,10 +269,12 @@ class WorkoutStartDialog
                     }
                 }
                 // Запуск диалогового окна с выбором частей тела
-                MultiChoiceDialog(
-                    viewModel.getAllBP(requireContext()),
-                    viewModel.getWhichBPsAreSelected().toBooleanArray()
-                ).show(parentFragmentManager, SELECT_BODY_PART_DIALOG)
+                if (parentFragmentManager.findFragmentByTag(SELECT_BODY_PART_DIALOG) == null) {
+                    MultiChoiceDialog(
+                        viewModel.getAllBP(requireContext()),
+                        viewModel.getWhichBPsAreSelected().toBooleanArray()
+                    ).show(parentFragmentManager, SELECT_BODY_PART_DIALOG)
+                }
             }
             /** Выбор мышц для выбранных частей тела -- вызов соответствующего окна и обработка */
             binding.musclesSelector.id -> {
@@ -301,10 +303,12 @@ class WorkoutStartDialog
                 if (viewModel.getWhichBPsAreSelected().isNullOrEmpty())
                     throw Exception("viewModel.boolBodyPartSelected.value is null or empty now")
                 // Запуск диалогового окна с выбором мышц
-                MultiChoiceDialog(
-                    viewModel.getAvailableMuscles(requireContext()),
-                    viewModel.getWhichMusclesAreSelected().toBooleanArray()
-                ).show(parentFragmentManager, SELECT_MUSCLE_DIALOG)
+                if (parentFragmentManager.findFragmentByTag(SELECT_MUSCLE_DIALOG) == null) {
+                    MultiChoiceDialog(
+                        viewModel.getAvailableMuscles(requireContext()),
+                        viewModel.getWhichMusclesAreSelected().toBooleanArray()
+                    ).show(parentFragmentManager, SELECT_MUSCLE_DIALOG)
+                }
             }
         }
     }

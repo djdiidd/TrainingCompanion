@@ -14,7 +14,7 @@ class ExerciseStopwatch(
 
     private val exerciseTime: ArrayList<Int> = arrayListOf()
 
-    val updateTimeWatcher = object : TextWatcher {
+    private val updateTimeWatcher = object : TextWatcher {
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             textView?.text = getTimeInFormatMMSS(time)
@@ -80,7 +80,7 @@ class ExerciseStopwatch(
         }
     }
 
-    fun attachUI(listening_tv: TextView, tv: TextView, pb: ProgressBar) {
+    fun attachUI(listening_tv: TextView, tv: TextView?, pb: ProgressBar?) {
         listeningView= listening_tv; textView = tv; progressBar = pb
         textView?.text = getTimeInFormatMMSS(time)
     }

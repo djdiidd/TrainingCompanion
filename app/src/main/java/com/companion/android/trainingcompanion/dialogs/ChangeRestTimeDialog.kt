@@ -11,7 +11,7 @@ import com.companion.android.trainingcompanion.databinding.DialogRestTimeBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.Slider
-
+      /** DEPRECATED */
 class ChangeRestTimeDialog(private val initRestTime: Int)
     : DialogFragment(), DialogInterface.OnClickListener {
 

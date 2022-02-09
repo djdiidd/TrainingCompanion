@@ -4,16 +4,22 @@ import android.animation.ObjectAnimator
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.util.Log
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.companion.android.trainingcompanion.objects.Params
 
 /**
  * Таймер, работающий в качестве сервиса, который использует широкое вещание.
  */
-class CountDownTimer(private val context: Context, private val serviceIntent: Intent) {
+class CountDownTimer(private val context: Context) {
 
+    init {
+        addLifeCycleObserver()
+    }
 
 //---------------------------------------[ Данные ]-------------------------------------------------
 
@@ -31,11 +37,10 @@ class CountDownTimer(private val context: Context, private val serviceIntent: In
     // Коэффициент анимации
     private var animCoefficient: Int = 0
         get() {
-            if (startTime in Params.restTimeDefaultRange) {
-                return (40 - startTime * 0.13).toInt()
-            }
-            else {
-                return (40 - startTime * 0.05).toInt()
+            return if (startTime in Params.restTimeDefaultRange) {
+                (40 - startTime * 0.13).toInt()
+            } else {
+                (40 - startTime * 0.05).toInt()
             }
         }
         set(value) {
@@ -44,16 +49,16 @@ class CountDownTimer(private val context: Context, private val serviceIntent: In
         }
 
 //                                                                             Первостепенные данные
-    private var time: Int = 60    // Оставшееся время;
+    private var time: Int = 60     // Оставшееся время;
 
-    var isGoing: Boolean = false  // Идет ли счет времени;
+    var isGoing: Boolean = false   // Идет ли счет времени;
 
-    var startTime: Int = 0        // Изначальное время;
+    var startTime: Int = 0         // Изначальное время;
 
-    private var isFinished = false        // Закончился ли таймер;
+    private var isFinished = false // Закончился ли таймер;
 
     // Получатель данных, обновляющий значение времени
-    val timeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+    private val timeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             Log.d("MyTag", "time is $time")
             time = intent.getIntExtra(CountDownService.TIME_EXTRA, 0)
@@ -61,6 +66,8 @@ class CountDownTimer(private val context: Context, private val serviceIntent: In
             if (time == 0) { finish() }
         }
     }
+
+    private val serviceIntent = Intent(context.applicationContext, CountDownService::class.java)
 
 
 //--------------------------------[ Открытый интерфейс ]--------------------------------------------
@@ -110,6 +117,7 @@ class CountDownTimer(private val context: Context, private val serviceIntent: In
     fun detachUI() {
         clockProgressBar = null
         clockTextView = null
+        animator.cancel()
     }
 
     /**
@@ -162,16 +170,15 @@ class CountDownTimer(private val context: Context, private val serviceIntent: In
         if (clockProgressBar == null || currentValue == 0) { return }
 
         val coefficient = animCoefficient
+        val currentProgress = currentValue * coefficient
 
         clockProgressBar!!.max = (maxValue * coefficient)
-
-        val currentProgress = currentValue * coefficient
 
         animator = ObjectAnimator.ofInt(
             clockProgressBar!!, "progress", currentProgress, 0
         ).apply {
-            duration = (currentProgress * 2000.0 / coefficient).toLong()
             interpolator = null
+            duration = (currentProgress * 2000.0 / coefficient).toLong()
             if (isGoing) { start() } else { clockProgressBar!!.progress = currentProgress }
         }
     }
@@ -181,11 +188,9 @@ class CountDownTimer(private val context: Context, private val serviceIntent: In
      * с переданным интентом в виде значения текущего времени
      */
     private fun start() {
-        if (time <= 0) {
-            return
-        } else {
-            isFinished = false
-        }
+        if (time <= 0) return
+        else isFinished = false
+
         if (startTime == 0)
             throw Exception("startTime is 0. \nPossible problem: " +
                     "Time was not selected automatically")
@@ -210,6 +215,29 @@ class CountDownTimer(private val context: Context, private val serviceIntent: In
      */
     private fun updateTextUI() {
         clockTextView?.text = getTimeInFormatMMSS(time)
+    }
+
+    /**
+     * Определение поведения наблюдателя жизненного цикла
+     */
+    private fun addLifeCycleObserver() {
+        val defaultLifecycleObserver = object : DefaultLifecycleObserver {
+            // При возобновлении:
+            // Связывание объекта отправляющего обновленное
+            // время и получающего по интенту TIMER_UPDATED
+            override fun onResume(owner: LifecycleOwner) {
+                super.onResume(owner)
+                context.registerReceiver(timeReceiver,
+                    IntentFilter(CountDownService.TIMER_UPDATED))
+            }
+            // При уничтожении, удаляем связь
+            override fun onDestroy(owner: LifecycleOwner) {
+                super.onDestroy(owner)
+                context.unregisterReceiver(timeReceiver)
+            }
+        }
+        // Добавляем наблюдателя
+        (context as LifecycleOwner).lifecycle.addObserver(defaultLifecycleObserver)
     }
 
 }//=================================================================================================

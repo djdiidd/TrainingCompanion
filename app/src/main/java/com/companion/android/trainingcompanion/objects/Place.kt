@@ -11,7 +11,7 @@ object Place {
     const val TRAINING_OUTDOORS: Int = 2
 
     private val images = intArrayOf(
-        R.drawable.ic_home,
+        R.drawable.ic_home_24,
         R.drawable.ic_gym,
         R.drawable.ic_outdoors
     )

@@ -16,7 +16,7 @@ import android.widget.ListView
 private const val AT_HOME    = 0
 private const val IN_THE_GYM = 1
 private const val OUTDOORS   = 2
-
+      /**  DEPRECATED  */
 class ChangePlaceDialog(private val selectedItem: Int)
     : DialogFragment(), DialogInterface.OnClickListener {
 

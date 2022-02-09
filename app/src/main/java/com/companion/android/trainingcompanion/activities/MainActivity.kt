@@ -2,8 +2,6 @@ package com.companion.android.trainingcompanion.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.os.Handler
@@ -12,19 +10,17 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.viewModels
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.companion.android.trainingcompanion.R
@@ -42,380 +38,276 @@ import com.companion.android.trainingcompanion.time_utils.*
 import com.companion.android.trainingcompanion.viewmodels.WorkoutViewModel
 
 
-// Константы для тегов фрагментов
+                                                                                  // [ Константы ]
+// Теги для фрагментов
 const val TAG_MAIN_FRAGMENT = "main-fragment"
 const val TAG_LIST_FRAGMENT = "list-fragment"
 
+// Ключи для восстановления данных секундомера всей тренировки
 private const val STOPWATCH_IS_GOING = "stopwatch-is-going"
 private const val STOPWATCH_REMAINING_TIME = "stopwatch-current-time"
+
+// Ключи для восстановления данных таймера
 private const val TIMER_IS_GOING = "timer-is-going"
 private const val TIMER_REMAINING_TIME = "timer-remaining-time"
 private const val TIMER_START_TIME = "timer-start-time"
 private const val EXERCISE_TIME = "exercise-time"
 
+// Ключи для восстановления иных данных
+private const val TAG_OF_LAST_RUN_FRAGMENT = "last-run-fragment"
+
+// Теги для бокового меню
 private const val TAG_BODY_PARTS = "tag-body-parts"
 private const val TAG_MUSCLES = "tag-muscles"
 
-class MainActivity : AppCompatActivity(), ChangeRestTimeDialog.Callback, ChangePlaceDialog.Callback,
-    WarningUnusedBPDialog.Callback, BreakNotificationDialog.Callback, CountDownTimer.Callback,
+
+
+class MainActivity : AppCompatActivity(),
+    WarningUnusedBPDialog.Callback, CountDownTimer.Callback,
     MainFragment.FragmentCallback, SimpleListAdapter.Callback {
+
+
+//---------------------------------------------------------------[ Данные ]-------------------------
 
     // Инициализация объекта класса привязки данных
     private lateinit var binding: ActivityMainBinding
 
-    // Инициализация объекта Intent для общего времени
-    private lateinit var stopwatchSIntent: Intent
-
-    // ViewModel для инкапсуляции некоторых данных времени
+    // Объект инкапсулирующий дынные секундомера
     private lateinit var stopwatch: Stopwatch
 
-    // Инициализация объекта Intent для общего времени
-    private lateinit var timerSIntent: Intent
-
-    // ViewModel для инкапсуляции некоторых данных времени
+    // Объект инкапсулирующий дынные таймера
     private lateinit var timer: CountDownTimer
 
+    // Секундомер, служащий для отображения времени выполнения упражнения
     private lateinit var exerciseStopwatch: ExerciseStopwatch
 
-    // Основная ViewModel, инкапсулирующая данные тренировки
+    // Открытое в текущий момент подменю NavigationView
+    private var openedSubmenu: View? = null
+
+    // Последний запущенный фрагмент
+    private var lastRunFragmentTag: String = TAG_MAIN_FRAGMENT
+
+    // Глобальная ViewModel, инкапсулирующая данные тренировки
     private val viewModel: WorkoutViewModel by viewModels()
+
+
+//----------------------------------------------[ Переопределение функций жизненного цикла ]--------
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d("LF", "A onCreate")
+
         binding = DataBindingUtil // определяем привязку данных
             .setContentView(this, R.layout.activity_main)
 
-        // Установка собственного toolbar 'а
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.title = null // и удаление заголовка
-        if (savedInstanceState == null)
-            hideToolbarAndDisableSideMenu() // Скрываем таймер до начала тренировки
+        setSupportActionBar(binding.toolbar) // Установка собственного toolbar
+        supportActionBar?.title = null       // и удаление заголовка
 
-        // Инициализация интента для класса сервиса
-        stopwatchSIntent = Intent(applicationContext, StopwatchService::class.java)
-        stopwatch = Stopwatch(this, stopwatchSIntent)
-        // Связывание объекта отправляющего обновленное время и получающего по интенту TIMER_UPDATED
-        registerReceiver(stopwatch.newTimeReceiver, IntentFilter(StopwatchService.TIMER_UPDATED))
-
-
-        //TODO: переложить ответственность на класс CountDownTimer.
-        //Инициализация интента для класса сервиса
-        timerSIntent = Intent(applicationContext, CountDownService::class.java)
-        timer = CountDownTimer(this, timerSIntent)
-        // Связывание объекта отправляющего обновленное время и получающего по интенту TIMER_UPDATED
-        registerReceiver(timer.timeReceiver, IntentFilter(CountDownService.TIMER_UPDATED))
-
+        // Определяем объекты, предназначенные для работы со временем;
+        stopwatch = Stopwatch(this)
+        timer = CountDownTimer(this)
         exerciseStopwatch = ExerciseStopwatch(binding.generalClock)
 
-        savedInstanceState?.apply { //TODO: сделать приоритет восстановлений
-            timer.isGoing = getBoolean(TIMER_IS_GOING)
-            timer.setTime(getInt(TIMER_REMAINING_TIME))
-            timer.startTime = getInt(TIMER_START_TIME)
-            stopwatch.setTime(getInt(STOPWATCH_REMAINING_TIME))
-            stopwatch.setGoing(getBoolean(STOPWATCH_IS_GOING))
-            binding.generalClock.text = stopwatch.getTimeInFormatHMMSS(stopwatch.getRemaining())
-            exerciseStopwatch.time = getInt(EXERCISE_TIME)
-            if (viewModel.activeProcess == WorkoutProcess.EXERCISE_STOPWATCH)
-                exerciseStopwatch.`continue`()
-        }
-
-        if (stopwatch.isGoing()) {
-            binding.pauseResumeButton.setImageResource(R.drawable.ic_pause)
+        if (savedInstanceState == null) {
+            hideToolbarAndDisableSideMenu()
         } else {
-            binding.pauseResumeButton.setImageResource(R.drawable.ic_play)
+            restoreTimeData(savedInstanceState)
         }
-
         // Запускаем стартовый фрагмент
-        startMainFragment()
+        launchFragment(lastRunFragmentTag)
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onStart() {
         super.onStart()
-        Log.d("LF", "A onStart")
+
+        // Устанавливаем анимацию переливания фона у фрагментов
         (binding.fragmentContainer.background as AnimationDrawable).also {
             it.setEnterFadeDuration(2000)
             it.setExitFadeDuration(4000)
             it.start()
         }
 
+        //-- -- -- -- -- -- -- -- -- -- -- -- -- -- -[ Обаботка бокового меню ]- -- -- -- -- -- -- -
+
+        // Определяем поведение при открытии и закрытии бокового меню
         binding.drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
-
-            override fun onDrawerOpened(drawerView: View) {
-                //TODO: initialize submenus
-            }
-
-            override fun onDrawerClosed(drawerView: View) {
-                //closeSideSubmenus//TODO
-                drawerView.hideKeyboard()
-            }
-
             override fun onDrawerStateChanged(newState: Int) {}
-
-        })
-
-        binding.sideMenuPlace.setOnClickListener {
-            when (binding.sideMenuDynamicPlace.isVisible) {
-                false -> {
-                    binding.sideMenuDynamicBodyParts.visibility = View.GONE
-                    binding.sideMenuDynamicMuscles.visibility = View.GONE
-                    if (binding.sideMenuDynamicRestTime.visibility == View.VISIBLE) {
-                        binding.sideMenuDynamicRestTime.visibility = View.GONE
-                        it.hideKeyboard()
-                    }
-                    binding.sideMenuDynamicBreakMode.visibility = View.GONE
-                    binding.sideMenuDynamicPlace.visibility = View.VISIBLE
-                }
-                else -> binding.sideMenuDynamicPlace.visibility = View.GONE
-
+            override fun onDrawerClosed(drawerView: View) {
+                closeOpenedSideSubmenu()
             }
 
-        }
-        binding.sideMenuBodyparts.setOnClickListener {
-            binding.sideMenuDynamicBodyParts.visibility =
-                if (binding.sideMenuDynamicBodyParts.isVisible) View.GONE
-                else {
-                    fillListOfBPInSideMenu(binding.sideMenuDynamicBodyParts)
-                    binding.sideMenuDynamicPlace.visibility = View.GONE
-                    binding.sideMenuDynamicMuscles.visibility = View.GONE
-                    binding.sideMenuDynamicBreakMode.visibility = View.GONE
-                    if (binding.sideMenuDynamicRestTime.visibility == View.VISIBLE) {
-                        binding.sideMenuDynamicRestTime.visibility = View.GONE
-                        it.hideKeyboard()
-                    }
-                    View.VISIBLE
+            /** Определение динамических действий бокового меню, при его открытии */
+            override fun onDrawerOpened(drawerView: View) { // При открытии бокового меню:
+
+                /* ИНИЦИАЛИЗИРУЕМ СЛУШАТЕЛИ ДЛЯ КАЖДОГО ПОДПУНКТА "МЕСТО ТРЕНИРОВКИ" */
+
+                // Установка места тренировки на "Дом"
+                binding.subMenuDynamicPlaceHome.setOnClickListener {
+                    viewModel.trainingPlace = Place.TRAINING_AT_HOME
+                    closeOpenedSideSubmenu()
                 }
-        }
-        binding.sideMenuMuscles.setOnClickListener {
-
-            fillListOfMusclesInSideMenu(binding.sideMenuDynamicMuscles)
-
-            binding.sideMenuDynamicMuscles.visibility =
-                if (binding.sideMenuDynamicMuscles.isVisible) View.GONE
-                else {
-                    binding.sideMenuDynamicPlace.visibility = View.GONE
-                    binding.sideMenuDynamicBodyParts.visibility = View.GONE
-                    binding.sideMenuDynamicBreakMode.visibility = View.GONE
-                    if (binding.sideMenuDynamicRestTime.visibility == View.VISIBLE) {
-                        binding.sideMenuDynamicRestTime.visibility = View.GONE
-                        it.hideKeyboard()
-                    }
-                    View.VISIBLE
+                // Установка места тренировки на "Тренажерный Зал"
+                binding.subMenuDynamicPlaceGym.setOnClickListener {
+                    viewModel.trainingPlace = Place.TRAINING_IN_GYM
+                    closeOpenedSideSubmenu()
                 }
-        }
+                // Установка места тренировки на "На улице"
+                binding.subMenuDynamicPlaceOutdoors.setOnClickListener {
+                    viewModel.trainingPlace = Place.TRAINING_OUTDOORS
+                    closeOpenedSideSubmenu()
+                }
 
-        binding.sideMenuTime.setOnClickListener {
-            binding.sideMenuDynamicRestTime.visibility =
-                if (binding.sideMenuDynamicRestTime.isVisible) View.GONE
-                else {
+                /* ОПРЕДЕЛИМ СЛУШАТЕЛИ ДЛЯ КАЖДОГО ПОДПУНКТА "РЕЖИМ УВЕДОМЛЕНИЯ" */
+
+                // Установка уведомления ввиде "Проигрывание звука"
+                binding.subMenuDynamicSound.setOnClickListener {
+                    viewModel.breakNotificationMode = BreakNotificationMode.SOUND
+                    closeOpenedSideSubmenu()
+                }
+                // Установка уведомления ввиде "Вибрация"
+                binding.subMenuDynamicVibration.setOnClickListener {
+                    viewModel.breakNotificationMode = BreakNotificationMode.VIBRATION
+                    closeOpenedSideSubmenu()
+                }
+                // Установка уведомления ввиде "Анимация на экране / сияние экрана"
+                binding.subMenuDynamicAnim.setOnClickListener {
+                    viewModel.breakNotificationMode = BreakNotificationMode.ANIMATION
+                    closeOpenedSideSubmenu()
+                }
+
+                /* ОПРЕДЕЛИМ СЛУШАТЕЛИ ДЛЯ КАЖДОГО ОБЪЕКТА "ВРЕМЯ ОТДЫХА" */
+
+                // Нажатие на поле ввода времени отдыха вручную
+                binding.sideMenuInputRestTime.setOnTouchListener { v, _ ->
+                    binding.sideMenuRestTimeAcceptButton.visibility = View.VISIBLE
+                    v.performClick()
+                }
+
+                // Нажатие кнопки "подтвердить" на клавиатуре после ввода времени отдыха
+                binding.sideMenuInputRestTime.onDone {
+                    val seconds = binding.sideMenuInputRestTime.text.toString().toInt()
+                    if (seconds in Params.restTimeAdvRange) {
+                        viewModel.restTime.value = seconds
+                        binding.sideMenuCurrentRestTime.text =
+                            getString(R.string.selected_seconds, seconds)
+                        binding.sideMenuInputRestTime.text = null
+                        binding.sideMenuRestTimeAcceptButton.visibility = View.GONE
+                        binding.sideMenuInputRestTime.clearFocus()
+                    }
+                }
+
+                // Нажатие кнопки увеличения времени отдыха вручную на 5
+                binding.add5s.setOnClickListener(getSideMenuChangeOnNumButtonListener(5) {
+                    viewModel.restTime.value!! >= Params.restTimeAdvRange.last
+                })
+
+                // Нажатие кнопки уменьшения времени отдыха вручную на 5
+                binding.sub5s.setOnClickListener(getSideMenuChangeOnNumButtonListener(-5) {
+                    viewModel.restTime.value!! <= Params.restTimeDefaultRange.first
+                })
+
+                // Ввод времени отдыха в соответствующем поле
+                binding.sideMenuInputRestTime.addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                    override fun afterTextChanged(p0: Editable?) {}
+                    override fun onTextChanged(chars: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                        if (!chars.isNullOrEmpty()
+                            && chars.toString().toInt() in Params.restTimeAdvRange) {
+                                binding.sideMenuRestTimeAcceptButton
+                                    .setImageResource(R.drawable.ic_done)
+                                binding.sideMenuRestTimeAcceptButton.isEnabled = true
+                        } else {
+                            binding.sideMenuRestTimeAcceptButton
+                                .setImageResource(R.drawable.ic_done_disabled)
+                            binding.sideMenuRestTimeAcceptButton.isEnabled = false
+                        }
+                    }
+                })
+
+                // Нажатие на кнопку подтверждения выбранного времени отдыха
+                binding.sideMenuRestTimeAcceptButton.setOnClickListener {
+                    val value = binding.sideMenuInputRestTime.text.toString().toInt()
+                    viewModel.restTime.value = value
                     binding.sideMenuCurrentRestTime.text =
-                        getString(R.string.selected_seconds, viewModel.restTime.value!!)
-                    binding.sideMenuRestTimeAcceptButton.setImageResource(R.drawable.ic_done_disabled)
-                    binding.sideMenuRestTimeAcceptButton.isEnabled = false
-                    binding.sideMenuRestTimeAcceptButton.visibility = View.GONE
-                    binding.sideMenuDynamicPlace.visibility = View.GONE
-                    binding.sideMenuDynamicBodyParts.visibility = View.GONE
-                    binding.sideMenuDynamicMuscles.visibility = View.GONE
-                    binding.sideMenuDynamicBreakMode.visibility = View.GONE
-                    View.VISIBLE
-                }
-
-        }
-        binding.sideMenuNotificationMode.setOnClickListener {
-            binding.sideMenuDynamicBreakMode.visibility =
-                if (binding.sideMenuDynamicBreakMode.isVisible) View.GONE
-                else {
-                    if (!binding.sideMenuDynamicBreakMode.isVisible) {
-                        binding.sideMenuDynamicBreakMode.visibility = View.VISIBLE
-                        binding.sideMenuDynamicPlace.visibility = View.GONE
-                        binding.sideMenuDynamicBodyParts.visibility = View.GONE
-                        binding.sideMenuDynamicMuscles.visibility = View.GONE
-                        if (binding.sideMenuDynamicRestTime.visibility == View.VISIBLE) {
-                            binding.sideMenuDynamicRestTime.visibility = View.GONE
-                            binding.sideMenuDynamicBreakMode.hideKeyboard()
-                        }
-                    }
-                    View.VISIBLE
-                }
-        }
-
-
-        //submenu
-
-        binding.subMenuDynamicPlaceHome.setOnClickListener {
-            viewModel.trainingPlace = Place.TRAINING_AT_HOME
-            binding.sideMenuDynamicPlace.visibility = View.GONE
-        }
-        binding.subMenuDynamicPlaceGym.setOnClickListener {
-            viewModel.trainingPlace = Place.TRAINING_IN_GYM
-            binding.sideMenuDynamicPlace.visibility = View.GONE
-        }
-        binding.subMenuDynamicPlaceOutdoors.setOnClickListener {
-            viewModel.trainingPlace = Place.TRAINING_OUTDOORS
-            binding.sideMenuDynamicPlace.visibility = View.GONE
-        }
-
-        binding.subMenuDynamicSound.setOnClickListener {
-            viewModel.breakNotificationMode = BreakNotificationMode.SOUND
-            binding.sideMenuDynamicBreakMode.visibility = View.GONE
-        }
-        binding.subMenuDynamicVibration.setOnClickListener {
-            viewModel.breakNotificationMode = BreakNotificationMode.VIBRATION
-            binding.sideMenuDynamicBreakMode.visibility = View.GONE
-        }
-        binding.subMenuDynamicAnim.setOnClickListener {
-            viewModel.breakNotificationMode = BreakNotificationMode.ANIMATION
-            binding.sideMenuDynamicBreakMode.visibility = View.GONE
-        }
-
-        binding.sideMenuInputRestTime.setOnTouchListener { v, _ ->
-            binding.sideMenuRestTimeAcceptButton.visibility = View.VISIBLE
-            binding.sideMenuInputRestTime.onDone {
-                val seconds = binding.sideMenuInputRestTime.text.toString().toInt()
-                if (seconds in Params.restTimeAdvRange) {
-                    viewModel.restTime.value = seconds
-                    binding.sideMenuCurrentRestTime.text = getString(R.string.selected_seconds, seconds)
+                        getString(R.string.selected_seconds, value)
                     binding.sideMenuInputRestTime.text = null
-                    binding.sideMenuRestTimeAcceptButton.visibility = View.GONE
+                    it.visibility = View.GONE
+                    it.hideKeyboard()
                 }
             }
-            v.performClick()
-        }
+        }) // Конец определения динамических объектов (подпунктов) бокового меню при его открытии.
 
-        binding.add5s.setOnClickListener {
-            if (viewModel.restTime.value!! >= Params.restTimeAdvRange.last)
-                return@setOnClickListener
-            viewModel.restTime.value = viewModel.restTime.value?.plus(5).also {
-                binding.sideMenuCurrentRestTime.text = getString(R.string.selected_seconds, it)
+        /** Определение действий бокового меню еще до включения бокового меню */
+
+        // Отслеживание нажатия на закрытие бокового меню
+        binding.sideNavigationView
+            .getHeaderView(0)
+            .findViewById<ImageView>(R.id.close_nv_button)
+            .setOnClickListener {
+                binding.drawerLayout.closeDrawer(GravityCompat.END)
             }
 
-        }
-
-        binding.sub5s.setOnClickListener {
-            if (viewModel.restTime.value!! <= Params.restTimeDefaultRange.first)
-                return@setOnClickListener
-            viewModel.restTime.value = viewModel.restTime.value?.minus(5).also {
-                binding.sideMenuCurrentRestTime.text = getString(R.string.selected_seconds, it)
+        // Слушатель запуска подпунктов места тренировки
+        binding.sideMenuPlace.setOnClickListener(
+            getSideMenuListener(binding.sideMenuDynamicPlace) {}
+        )
+        // Слушатель запуска подпунктов частей тела
+        binding.sideMenuBodyparts.setOnClickListener(
+            getSideMenuListener(binding.sideMenuDynamicBodyParts) {
+                fillListOfBPInSideMenu(binding.sideMenuDynamicBodyParts)
             }
-        }
-
-        binding.sideMenuInputRestTime.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(chars: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (!chars.isNullOrEmpty() && chars.toString().toInt() in Params.restTimeAdvRange) {
-                    binding.sideMenuRestTimeAcceptButton.setImageResource(R.drawable.ic_done)
-                    binding.sideMenuRestTimeAcceptButton.isEnabled = true
-                } else {
-                    binding.sideMenuRestTimeAcceptButton.setImageResource(R.drawable.ic_done_disabled)
-                    binding.sideMenuRestTimeAcceptButton.isEnabled = false
-                }
+        )
+        // Слушатель запуска подпунктов с мышцами
+        binding.sideMenuMuscles.setOnClickListener(
+            getSideMenuListener(binding.sideMenuDynamicMuscles) {
+                fillListOfMusclesInSideMenu(binding.sideMenuDynamicMuscles)
             }
-
-            override fun afterTextChanged(p0: Editable?) {}
-
-        })
-
-        binding.sideMenuRestTimeAcceptButton.setOnClickListener {
-            val value = binding.sideMenuInputRestTime.text.toString().toInt()
-            viewModel.restTime.value = value
-            binding.sideMenuCurrentRestTime.text = getString(R.string.selected_seconds, value)
-            binding.sideMenuInputRestTime.text = null
-            it.visibility = View.GONE
-            it.hideKeyboard()
-        }
-
-
-
-        //DEPRECATED
-        /** Слушатель нажатия для элементов бокового меню (с изменениями параметров) */
-        binding.sideNavigationView.setNavigationItemSelectedListener {
-
-            when (it.itemId) {
-                // Изменение списка выбранных частей тела
-                R.id.item_body_parts -> {
-                    // По ключу SELECT_BODY_PART_DIALOG_TAG
-                    supportFragmentManager.setFragmentResultListener(
-                        SELECT_BODY_PART_DIALOG, this
-                    ) { _, bundle ->
-                        // В переменную numbersOfSelectedBodyParts записываем arrayList
-                        // полученный из объекта Bundle по ключу BODY_PART_LIST_KEY
-                        val whichBPIsSelected = bundle.getBooleanArray(LIST_BUNDLE_TAG)
-                        // Если полученный список не изменился, то перезаписывать данные не будем
-                        if (!viewModel.getWhichBPsAreSelected().toBooleanArray()
-                                .contentEquals(whichBPIsSelected)
-                        ) {
-                            viewModel.updateData(this, whichBPIsSelected!!.toTypedArray())
-                            // Запуск диалогового окна с выбором мышц
-                            MultiChoiceDialog(
-                                viewModel.getAvailableMuscles(this),
-                                viewModel.getWhichMusclesAreSelected().toBooleanArray()
-                            ).show(supportFragmentManager, SELECT_MUSCLE_DIALOG)
-                        }
-                    }
-                    // Запуск диалогового окна с выбором частей тела
-                    MultiChoiceDialog(
-                        viewModel.getAllBP(this),
-                        viewModel.getWhichBPsAreSelected().toBooleanArray()
-                    ).show(supportFragmentManager, SELECT_BODY_PART_DIALOG)
-                }
-                // Изменение списка выбранных мышц
-                R.id.item_muscles -> {
-                    supportFragmentManager
-                        .setFragmentResultListener(SELECT_MUSCLE_DIALOG, this) { _, bundle ->
-                            val numbersOfSelectedItems = bundle.getBooleanArray(LIST_BUNDLE_TAG)
-                            viewModel.saveSelectedMuscles(numbersOfSelectedItems!!.toTypedArray())
-                        }
-                    // Запуск диалогового окна с выбором мышц
-                    MultiChoiceDialog(
-                        viewModel.getAvailableMuscles(this),
-                        viewModel.getWhichMusclesAreSelected().toBooleanArray()
-                    ).show(supportFragmentManager, SELECT_MUSCLE_DIALOG)
-                }
-                // Изменение времени отдыха между подходами
-                R.id.item_rest_time -> {
-                    ChangeRestTimeDialog(
-                        viewModel.restTime.value!!
-                    ).show(supportFragmentManager, "")
-                }
-                R.id.item_place -> {
-                    ChangePlaceDialog(viewModel.trainingPlace)
-                        .show(supportFragmentManager, "")
-                }
-                R.id.item_switch_mute -> {
-                    BreakNotificationDialog(viewModel.breakNotificationMode)
-                        .show(supportFragmentManager, "")
-                }
+        )
+        // Слушатель запуска подпунктов с временем отдыха
+        binding.sideMenuTime.setOnClickListener(
+            getSideMenuListener(binding.sideMenuDynamicRestTime) {
+                // Выставим исходное значение времени
+                binding.sideMenuCurrentRestTime.text =
+                    getString(R.string.selected_seconds, viewModel.restTime.value!!)
+                // Определим исходное изображение и заблокируем кнопку
+                binding.sideMenuRestTimeAcceptButton.setImageResource(R.drawable.ic_done_disabled)
+                binding.sideMenuRestTimeAcceptButton.isEnabled = false
             }
-            true
-        }
+        )
+        // Слушатель запуска подпунктов с режимом уведомления о начале подхода
+        binding.sideMenuNotificationMode.setOnClickListener(
+            getSideMenuListener(binding.sideMenuDynamicBreakMode) {}
+        )
+
 
         // Анимации для нажатий
         val animPressed = AnimationUtils.loadAnimation(this, android.R.anim.fade_out)
         val animUnpressed = AnimationUtils.loadAnimation(this, android.R.anim.fade_in)
 
+        //-- -- -- -- -- -- -- -- -- -- -- -- -- -- -[ Обаботка нижнего меню ]- -- -- -- -- -- -- --
 
-        /** Слушатель для Bottom Navigation View */
+        // Слушатель выбора элемента Bottom Navigation View
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 // Если выбираем кнопку для стартовой страницы,
                 // то запускаем соответствующий объект
                 R.id.bottom_main -> {  // Передаем bundle со списком
-                    val mainFragment = MainFragment()
-                    launchFragment(mainFragment, TAG_MAIN_FRAGMENT) // запускаем фрагмент
+                    launchFragment(TAG_MAIN_FRAGMENT) // запускаем фрагмент
                     true
                 }
                 // Если выбираем кнопку со списком,
                 // то запускаем соответствующий объект
                 R.id.bottom_list -> {
-                    val listFragment = ListFragment()
-                    launchFragment(listFragment, TAG_LIST_FRAGMENT) // запускаем фрагмент
+                    launchFragment(TAG_LIST_FRAGMENT) // запускаем фрагмент
                     true
                 }
                 else -> false
             }
         }
+
+        // Слушатель перевыбора элемента Bottom Navigation View
         binding.bottomNavigationView.setOnItemReselectedListener { item ->
             when (item.itemId) {
                 R.id.bottom_main -> {
@@ -426,7 +318,10 @@ class MainActivity : AppCompatActivity(), ChangeRestTimeDialog.Callback, ChangeP
                 }
             }
         }
-        /** Слушатель _нажатия_ для кнопки паузы/продолжения общего времени на Toolbar*/
+
+        //-- -- -- -- -- -- -- -- -- -- -- -- -- -- -[ Обаботка toolbar ]- -- -- -- -- -- -- -- -- -
+
+        // Слушатель нажатия на кнопку паузы общего времени на Toolbar
         binding.pauseResumeButton.setOnClickListener {
             it.isClickable = false
             stopwatch.startOrStop()
@@ -436,7 +331,7 @@ class MainActivity : AppCompatActivity(), ChangeRestTimeDialog.Callback, ChangeP
 
 
         }
-        /** Слушатель _касания_ для кнопки паузы/продолжения общего времени на Toolbar */
+        // Слушатель касания на кнопку паузы общего времени на Toolbar (для анимирования)
         binding.pauseResumeButton.setOnTouchListener { view, motionEvent ->
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> view.startAnimation(animPressed)
@@ -444,11 +339,11 @@ class MainActivity : AppCompatActivity(), ChangeRestTimeDialog.Callback, ChangeP
             }
             false
         }
-        /** Слушатель _нажатия_ для кнопки опций/настроек на Toolbar */
+        // Слушатель нажатия для кнопки опций/настроек на Toolbar
         binding.optionsButton.setOnClickListener {
             binding.drawerLayout.openDrawer(GravityCompat.END)
         }
-        /** Слушатель _касания_ для кнопки опций/настроек на Toolbar */
+        // Слушатель касания для кнопки опций/настроек на Toolbar
         binding.optionsButton.setOnTouchListener { view, motionEvent ->
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> view.startAnimation(animPressed)
@@ -457,127 +352,117 @@ class MainActivity : AppCompatActivity(), ChangeRestTimeDialog.Callback, ChangeP
             false
         }
 
-        /** Отслеживание начала тренировки */
-        viewModel.workoutSuccessfullyStarted.observe(this) { workoutStarted ->
-            if (!workoutStarted || viewModel.workoutInProgress) {
-                return@observe
-            }
+        //-- -- -- -- -- -- -- -- -- -- -- -- -[ Обаботка отслеживаемых LiveData ]- -- -- -- -- -- -
 
+        // Отслеживание начала тренировки
+        viewModel.workoutSuccessfullyStarted.observe(this) { workoutStarted ->
+            if (!workoutStarted || viewModel.activeProcess != WorkoutProcess.NOT_STARTED) {
+                return@observe // Если тренировка уже идет, выходим
+            }
+            // Обновляем View, используемые для отображения данных таймера
             timer.attachUI(
                 findViewById(R.id.set_timer),
                 findViewById(R.id.set_timer_progress)
             )
-
+            // Сохраняем текущим процессом таймер
             viewModel.activeProcess = WorkoutProcess.TIMER
             Log.d("MyTag", "Started from main")
             showToolbarAndActivateSideMenu()
             stopwatch.startOrStop()
             timer.startOrStop()
-            // Устанавливаем соответствующую иконку
-            updateWorkoutPlaceIcon()
-            viewModel.workoutInProgress = true
         }
 
+        // Отлеживание изменения времени отдыха
         viewModel.restTime.observe(this) {
-            if (viewModel.activeProcess != WorkoutProcess.TIMER) //TODO: протестировать условие
-                timer.setTime(viewModel.restTime.value!! + 1) // На 1 больше, чтобы отсчет начинался с нужного числа
-            Log.d("MyTag", "restTime")
-        }
-
-        /** Отслеживание нажатия на закрытие бокового меню */
-        binding.sideNavigationView
-            .getHeaderView(0)
-            .findViewById<ImageView>(R.id.close_nv_button)
-            .setOnClickListener {
-                binding.drawerLayout.closeDrawer(GravityCompat.END)
-            }
-    }
-
-    private fun EditText.onDone(callback: () -> Unit) {
-        setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                callback.invoke()
-                hideKeyboard()
-            }
-            false
+            if (viewModel.activeProcess != WorkoutProcess.TIMER)
+                timer.setTime(viewModel.restTime.value!! + 1)
+            Log.d("MyTag", "restTime observed")
         }
     }
 
-    private fun View.hideKeyboard() {
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE)
-                as InputMethodManager
-        imm.hideSoftInputFromWindow(this.windowToken, 0)
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.apply {
+            putBoolean(STOPWATCH_IS_GOING, stopwatch.isGoing())
+            putInt(STOPWATCH_REMAINING_TIME, stopwatch.getRemaining())
+            putInt(TIMER_REMAINING_TIME, timer.getTime())
+            putBoolean(TIMER_IS_GOING, timer.isGoing)
+            putInt(TIMER_START_TIME, timer.startTime)
+            if (viewModel.activeProcess == WorkoutProcess.EXERCISE_STOPWATCH)
+                putInt(EXERCISE_TIME, exerciseStopwatch.time)
+            putString(TAG_OF_LAST_RUN_FRAGMENT, lastRunFragmentTag)
+        }
+        super.onSaveInstanceState(outState)
+    }
+
+
+//-----------------------------------------------[ Приватные функции-члены класса ]-----------------
+
+
+//                                                                             [ Для бокового меню ]
+
+    /**
+     * Получение слушателя нажатий для кнопок
+     * увеличения/уменьшения времени отдыха;
+     */
+    private fun getSideMenuChangeOnNumButtonListener(
+        num: Int,
+        exitCondition: () -> Boolean
+    ): View.OnClickListener {
+        return View.OnClickListener {
+            if (exitCondition.invoke()) {
+                return@OnClickListener
+            }
+            viewModel.restTime.value = viewModel.restTime.value?.plus(num).also {
+                binding.sideMenuCurrentRestTime.text = getString(R.string.selected_seconds, it)
+            }
+            binding.sideMenuRestTimeAcceptButton.visibility = View.GONE
+            binding.sideMenuInputRestTime.text = null
+            binding.root.hideKeyboard()
+        }
     }
 
     /**
-     * Функция для запуска переданного фрагмента по тегу:
-     * тег для стартового фрагмента, и тег для фрагмента со списком
+     * Скрытие или открытие подменю для определенного пункта бокового меню;
      */
-    private fun launchFragment(fragment: Fragment, tag: String) {
-        // Находим фрагмент по заданному тегу
-        val currentFragment = supportFragmentManager
-            .findFragmentByTag(tag)
-        // Если фрагмент с данным тегом не установлен, то создаем
-        if (currentFragment == null) {
-            supportFragmentManager
-                .beginTransaction() // Начинаем транзакцию
-                .replace(R.id.fragment_container, fragment, tag) // Заменяем фрагмент
-                .commit() // Закрепляем процесс
+    private fun showOrCloseSideSubmenu(container: ViewGroup): Boolean {
+        return if (container.isVisible) {
+            container.visibility = View.GONE;    false
+        } else {
+            container.visibility = View.VISIBLE; true
         }
     }
 
     /**
-     * Функция для запуска стартового фрагмента
+     * Закрытие открытого подменю в боковом меню;
      */
-    private fun startMainFragment() {
-        val fragment = MainFragment() // Запускаем фрагмент
-        launchFragment(fragment, TAG_MAIN_FRAGMENT)
+    private fun closeOpenedSideSubmenu(except: ViewGroup? = null) {
+        if (except != openedSubmenu)
+            openedSubmenu?.visibility = View.GONE
+        if (openedSubmenu == binding.sideMenuDynamicRestTime) {
+            binding.sideMenuDynamicRestTime.hideKeyboard()
+            binding.sideMenuRestTimeAcceptButton.visibility = View.GONE
+        }
     }
 
-    private fun TextView.addError(stringRes: Int, drawableRes: Int) {
-        val drawable = AppCompatResources.getDrawable(this@MainActivity, drawableRes)
-        drawable?.setBounds(0, 0, textSize.toInt() + 15, textSize.toInt() + 15)
-        setError(getString(stringRes), drawable)
-    }
-
-    private fun hideToolbarAndDisableSideMenu() {
-        supportActionBar?.hide()
-        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-    }
-
-    private fun showToolbarAndActivateSideMenu() {
-        supportActionBar?.show()
-        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-    }
-
-    private fun updateWorkoutPlaceIcon() {
-
-        binding.sideMenuPlaceIcon.setImageResource(
-            when (viewModel.trainingPlace) {
-                Place.TRAINING_AT_HOME -> R.drawable.ic_home
-                Place.TRAINING_IN_GYM -> R.drawable.ic_gym
-                else -> R.drawable.ic_outdoors
+    /**
+     * Получение слушателя для каждого из пунктов бокового меню;
+     */
+    private fun getSideMenuListener(
+        container: ViewGroup,
+        action: () -> Unit
+    ) : View.OnClickListener {
+        return View.OnClickListener {
+            closeOpenedSideSubmenu(container)
+            action.invoke()
+            if (showOrCloseSideSubmenu(container)) {
+                openedSubmenu = container
             }
-        )
+        }
     }
 
-    private fun fillListOfBPInSideMenu(recyclerView: RecyclerView) {
-        val arrayList = arrayListOf<SimpleListItem>()
-        val stringArray = viewModel.getAllBP(this)
-        val boolArray = viewModel.getWhichBPsAreSelected()
-        for (i in 0 until Params.numberOfBodyParts) {
-            arrayList.add(
-                SimpleListItem(
-                    stringArray[i], boolArray[i]
-                )
-            )
-        }
-        recyclerView.adapter = SimpleListAdapter(this, TAG_BODY_PARTS).also {
-            it.submitList(arrayList)
-        }
-        recyclerView.layoutManager = LinearLayoutManager(this)
-    }
-
+    /**
+     * Заполнение списка с мышцами в боковом меню;
+     */
     private fun fillListOfMusclesInSideMenu(recyclerView: RecyclerView) {
         val sizeOfMuscles = viewModel.getAvailableMuscles(this).size
         val availableMuscles = viewModel.getAvailableMuscles(this)
@@ -592,47 +477,124 @@ class MainActivity : AppCompatActivity(), ChangeRestTimeDialog.Callback, ChangeP
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        Log.d("LF", "A onStop")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(stopwatch.newTimeReceiver)
-        unregisterReceiver(timer.timeReceiver)
-        Log.d("LF", "A onDestroy")
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        Log.d("LF", "A onSaveInstanceState")
-        outState.apply {
-            putBoolean(STOPWATCH_IS_GOING, stopwatch.isGoing())
-            putInt(STOPWATCH_REMAINING_TIME, stopwatch.getRemaining())
-            putInt(TIMER_REMAINING_TIME, timer.getTime())
-            putBoolean(TIMER_IS_GOING, timer.isGoing)
-            putInt(TIMER_START_TIME, timer.startTime)
-            if (viewModel.activeProcess == WorkoutProcess.EXERCISE_STOPWATCH)
-                putInt(EXERCISE_TIME, exerciseStopwatch.time)
+    /**
+     * Заполнение списка с частями тела в боковом меню;
+     */
+    private fun fillListOfBPInSideMenu(recyclerView: RecyclerView) {
+        val arrayList = arrayListOf<SimpleListItem>()
+        val stringArray = viewModel.getAllBP(this)
+        val boolArray = viewModel.getWhichBPsAreSelected()
+        for (i in 0 until Params.numberOfBodyParts) {
+            arrayList.add(
+                SimpleListItem(
+                    stringArray[i], boolArray[i]
+                )
+            )
         }
-        super.onSaveInstanceState(outState)
+        recyclerView.adapter =
+            SimpleListAdapter(this, TAG_BODY_PARTS).also {
+                it.submitList(arrayList)
+            }
+        recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
-    /* Интерфейс */
-    /** Сохранение обновленного значения времени */
-    override fun newRestTimeSelected(time: Int) {
-        viewModel.restTime.value = time
+    /**
+     * Скрытие клавиатуры и удаление фокуса с заполняемого поля;
+     */
+    private fun View.hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE)
+                as InputMethodManager
+        imm.hideSoftInputFromWindow(this.windowToken, 0)
+        binding.sideMenuInputRestTime.clearFocus()
     }
 
-    /* Интерфейс */
-    /** Сохранение обновленного места тренировки */
-    override fun newWorkoutPlaceSelected(place: Int) {
-        viewModel.trainingPlace = place
-        updateWorkoutPlaceIcon()
+    /**
+     * Обработка подтверждения ввода из клавиатурного набора текста;
+     */
+    private fun EditText.onDone(callback: () -> Unit) {
+        setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                callback.invoke()
+                hideKeyboard()
+            }
+            false
+        }
     }
 
-    /* Интерфейс */
-    /** Установка false на неиспользуемыех значениях частей тела */
+//                                                                     [ Для восстановления данных ]
+
+    /**
+     * Получение данных из переданного bundle;
+     */
+    private fun restoreTimeData(bundle: Bundle) = with(bundle) {
+        timer.isGoing = getBoolean(TIMER_IS_GOING)
+        timer.setTime(getInt(TIMER_REMAINING_TIME))
+        timer.startTime = getInt(TIMER_START_TIME)
+        stopwatch.setTime(getInt(STOPWATCH_REMAINING_TIME))
+        stopwatch.setGoing(getBoolean(STOPWATCH_IS_GOING))
+        binding.generalClock.text = stopwatch.getTimeInFormatHMMSS(stopwatch.getRemaining())
+        exerciseStopwatch.time = getInt(EXERCISE_TIME)
+        if (viewModel.activeProcess == WorkoutProcess.EXERCISE_STOPWATCH)
+            exerciseStopwatch.`continue`()
+        if (stopwatch.isGoing()) {
+            binding.pauseResumeButton.setImageResource(R.drawable.ic_pause)
+        } else {
+            binding.pauseResumeButton.setImageResource(R.drawable.ic_play)
+        }
+        lastRunFragmentTag = getString(TAG_OF_LAST_RUN_FRAGMENT, lastRunFragmentTag)
+    }
+
+//                                                                    [ Для скрытия/отображения UI ]
+
+    /**
+     * Функция для запуска фрагмента по переданному тегу;
+     */
+    private fun launchFragment(tag: String) {
+        val fragment =
+            if (tag == TAG_MAIN_FRAGMENT) {
+                lastRunFragmentTag = TAG_MAIN_FRAGMENT
+                MainFragment()
+            }
+            else {
+                lastRunFragmentTag = TAG_LIST_FRAGMENT
+                ListFragment()
+            }
+        // Находим фрагмент по заданному тегу
+        val currentFragment = supportFragmentManager
+            .findFragmentByTag(tag)
+        // Если фрагмент с данным тегом не установлен, то создаем
+        if (currentFragment == null) {
+            supportFragmentManager
+                .beginTransaction() // Начинаем транзакцию
+                .replace(R.id.fragment_container, fragment, tag) // Заменяем фрагмент
+                .commit() // Закрепляем процесс
+        }
+    }
+
+    /**
+     * Скрытие toolbar и блокировка бокового меню;
+     */
+    private fun hideToolbarAndDisableSideMenu() {
+        supportActionBar?.hide()
+        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+    }
+
+    /**
+     * Показ toolbar и активация бокового меню;
+     */
+    private fun showToolbarAndActivateSideMenu() {
+        supportActionBar?.show()
+        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+    }
+
+
+//----------------------------------------------[ Переопределение функций обратного вызова ]--------
+
+
+    /**
+     * Callback интерфейса [WarningUnusedBPDialog.Callback];
+     * Установка false на неиспользуемыех значениях частей тела.
+     */
     override fun unusedBodyPartsRemoved(whichAreUnusedBP: Array<Boolean>) {
         val current = viewModel.getWhichBPsAreSelected()
         for (i in 0 until 5) {
@@ -643,10 +605,10 @@ class MainActivity : AppCompatActivity(), ChangeRestTimeDialog.Callback, ChangeP
         viewModel.updateData(this, current)
     }
 
-    override fun newBreakNotificationModeSelected(mode: Int) {
-        viewModel.breakNotificationMode = mode
-    }
-
+    /**
+     * Callback интерфейса [CountDownTimer.Callback];
+     * Обработка завершения таймера: переход на секундомер.
+     */
     override fun timerFinished() {
         exerciseStopwatch.start()
         viewModel.activeProcess = WorkoutProcess.EXERCISE_STOPWATCH
@@ -657,21 +619,23 @@ class MainActivity : AppCompatActivity(), ChangeRestTimeDialog.Callback, ChangeP
         )
     }
 
+    /**
+     * Callback интерфейса [MainFragment.FragmentCallback];
+     * Обработка нажатия основной кнопки
+     */
     override fun mainButtonClicked() {
         when (viewModel.activeProcess) {
             WorkoutProcess.TIMER -> {
                 timer.startOrStop()
             }
             WorkoutProcess.EXERCISE_STOPWATCH -> {
-                //TODO: Запустить диалоговое окно, в котором будет выбор того, что ты потренил\
+                //TODO: Запустить диалоговое окно, в котором будет выбор того, что ты потренил
                 // Если Пользователь выбрал закончить тренировку, то перебросить его на результаты и изменить viewModel.activeProcess
                 exerciseStopwatch.stop()
                 viewModel.activeProcess = WorkoutProcess.TIMER
 
                 timer.setDefaults(viewModel.restTime.value!!)
 
-
-                registerReceiver(timer.timeReceiver, IntentFilter(CountDownService.TIMER_UPDATED))
                 timer.attachUI( // STOPSHIP: TESTING
                     findViewById(R.id.set_timer),
                     findViewById(R.id.set_timer_progress)
@@ -684,18 +648,29 @@ class MainActivity : AppCompatActivity(), ChangeRestTimeDialog.Callback, ChangeP
         }
     }
 
+    /**
+     * Callback интерфейса [MainFragment.FragmentCallback];
+     * Обработка уничтожения фрагмента;
+     */
     override fun fragmentDestroyed() {
         timer.detachUI()
     }
 
+    /**
+     * Callback интерфейса [MainFragment.FragmentCallback];
+     * Обработка создания View фрагмента (onViewCreated);
+     */
     override fun fragmentUICreated(textView: TextView, progressBar: ProgressBar) {
-        Log.d("LF", "A fragmentUICreated")
         if (viewModel.activeProcess == WorkoutProcess.TIMER) {
             timer.attachUI(textView, progressBar)
         } else if (viewModel.activeProcess == WorkoutProcess.EXERCISE_STOPWATCH)
             exerciseStopwatch.attachUI(binding.generalClock, textView, progressBar)
     }
 
+    /**
+     * Callback интерфейса [SimpleListAdapter.Callback];
+     * Обработка выбранного элемента списка бокового меню (части тела или мышцы);
+     */
     override fun sideMenuListItemSelected(position: Int, tag: String) {
         if (tag == TAG_MUSCLES) {
             viewModel.saveSelectedMuscles(

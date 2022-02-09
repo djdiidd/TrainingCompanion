@@ -44,10 +44,6 @@ class WorkoutViewModel : ViewModel() {
             }
         }
 
-    //DEPRECATED
-    //TODO: Использовать процессы
-    var workoutInProgress: Boolean = false
-
 
 //-----------------------------------/* Получение данных */-----------------------------------------
 

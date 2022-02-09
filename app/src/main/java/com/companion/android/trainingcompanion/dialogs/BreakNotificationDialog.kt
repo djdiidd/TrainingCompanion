@@ -13,7 +13,7 @@ import com.companion.android.trainingcompanion.R
 import com.companion.android.trainingcompanion.databinding.DialogBreakNotificationBinding
 import com.companion.android.trainingcompanion.objects.BreakNotificationMode
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-
+      /** DEPRECATED */
 class BreakNotificationDialog(private val previousMode: Int)
     : DialogFragment(), DialogInterface.OnClickListener {
 
