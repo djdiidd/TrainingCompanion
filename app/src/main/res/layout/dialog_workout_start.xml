@@ -8,10 +8,6 @@
             name="musclesIsVisible"
             type="Boolean" />
 
-        <variable
-            name="viewModel"
-            type="com.companion.android.trainingcompanion.viewmodels.WorkoutViewModel" />
-
         <import type="android.view.View" />
 
     </data>

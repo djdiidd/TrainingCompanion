@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId "com.companion.android.trainingcompanion"
         minSdk 19
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
 
@@ -44,6 +44,6 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
-    implementation 'androidx.fragment:fragment-ktx:1.4.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0-alpha01'
+    implementation 'androidx.fragment:fragment-ktx:1.5.0-alpha01'
 }

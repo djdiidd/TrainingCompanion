@@ -87,405 +87,413 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"
-            app:headerLayout="@layout/side_header">
+            app:headerLayout="@layout/side_header"
+            android:backgroundTint="@color/main_color">
 
             <!-- Тело бокового меню -->
-            <LinearLayout
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="12dp"
-                android:layout_marginTop="200dp"
-                android:orientation="vertical">
-
-                <!-- Описание пунктов -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="12dp"
-                    android:text="@string/title_change_workout_settings" />
-
-                <!-- Выбор места тренировки -->
+                android:layout_marginTop="190dp">
                 <LinearLayout
-                    android:id="@+id/side_menu_place"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginBottom="4dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/side_menu_place_icon"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:layout_marginRight="10dp"
-                        android:src="@drawable/ic_place_on_24" />
-
-                    <com.google.android.material.textview.MaterialTextView
+                    <!-- Описание пунктов -->
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/select_training_place"
-                        android:textSize="16sp" />
+                        android:layout_margin="12dp"
+                        android:text="@string/title_change_workout_settings" />
 
-                </LinearLayout>
-
-                <!-- Динамичная вкладка для выбора нового места -->
-                <LinearLayout
-                    android:id="@+id/side_menu_dynamic_place"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginBottom="4dp"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <!-- Подпункт динамичного меню -->
+                    <!-- Выбор места тренировки -->
                     <LinearLayout
-                        android:id="@+id/sub_menu_dynamic_place_home"
+                        android:id="@+id/side_menu_place"
                         android:layout_width="match_parent"
-                        android:layout_height="34dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="12dp"
                         android:layout_marginBottom="4dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
+                            android:id="@+id/side_menu_place_icon"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
                             android:layout_marginRight="10dp"
-                            android:src="@drawable/ic_home_24" />
+                            android:src="@drawable/ic_place_on_24" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/array_item_at_home"
-                            android:textSize="14sp" />
+                            android:text="@string/select_training_place"
+                            android:textSize="16sp" />
 
                     </LinearLayout>
 
-                    <!-- Подпункт динамичного меню -->
+                    <!-- Динамичная вкладка для выбора нового места -->
                     <LinearLayout
-                        android:id="@+id/sub_menu_dynamic_place_gym"
+                        android:id="@+id/side_menu_dynamic_place"
                         android:layout_width="match_parent"
-                        android:layout_height="34dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="50dp"
+                        android:layout_marginBottom="4dp"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <!-- Подпункт динамичного меню -->
+                        <LinearLayout
+                            android:id="@+id/sub_menu_dynamic_place_home"
+                            android:layout_width="match_parent"
+                            android:layout_height="34dp"
+                            android:layout_marginBottom="4dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/ic_home_24" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/array_item_at_home"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <!-- Подпункт динамичного меню -->
+                        <LinearLayout
+                            android:id="@+id/sub_menu_dynamic_place_gym"
+                            android:layout_width="match_parent"
+                            android:layout_height="34dp"
+                            android:layout_marginBottom="4dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/ic_gym" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/array_item_in_gym"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <!-- Подпункт динамичного меню -->
+                        <LinearLayout
+                            android:id="@+id/sub_menu_dynamic_place_outdoors"
+                            android:layout_width="match_parent"
+                            android:layout_height="34dp"
+                            android:layout_marginBottom="4dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/ic_outdoors" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/array_item_outdoors"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Выбор частей тела -->
+                    <LinearLayout
+                        android:id="@+id/side_menu_bodyparts"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="12dp"
                         android:layout_marginBottom="4dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
                             android:layout_marginRight="10dp"
-                            android:src="@drawable/ic_gym" />
+                            android:src="@drawable/ic_body" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/array_item_in_gym"
-                            android:textSize="14sp" />
+                            android:text="@string/change_body_parts"
+                            android:textSize="16sp" />
                     </LinearLayout>
 
-                    <!-- Подпункт динамичного меню -->
-                    <LinearLayout
-                        android:id="@+id/sub_menu_dynamic_place_outdoors"
-                        android:layout_width="match_parent"
-                        android:layout_height="34dp"
-                        android:layout_marginBottom="4dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/ic_outdoors" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/array_item_outdoors"
-                            android:textSize="14sp" />
-
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- Выбор частей тела -->
-                <LinearLayout
-                    android:id="@+id/side_menu_bodyparts"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginBottom="4dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:layout_marginRight="10dp"
-                        android:src="@drawable/ic_body" />
-
-                    <com.google.android.material.textview.MaterialTextView
+                    <!-- Динамичная вкладка для редактирования тренеруемых мышц -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/side_menu_dynamic_body_parts"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/change_body_parts"
-                        android:textSize="16sp" />
-                </LinearLayout>
-
-                <!-- Динамичная вкладка для редактирования тренеруемых мышц -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/side_menu_dynamic_body_parts"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="40dp"
-                    android:visibility="gone" />
-
-                <!-- Выбор мышц -->
-                <LinearLayout
-                    android:id="@+id/side_menu_muscles"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginBottom="4dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:layout_marginRight="10dp"
-                        android:src="@drawable/ic_muscle" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/change_muscles"
-                        android:textSize="16sp" />
-                </LinearLayout>
-
-                <!-- Динамичная вкладка для редактирования тренеруемых мышц -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/side_menu_dynamic_muscles"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="40dp"
-                    android:visibility="gone" />
-
-                <!-- Выбор времени -->
-                <LinearLayout
-                    android:id="@+id/side_menu_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginBottom="4dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:layout_marginRight="10dp"
-                        android:src="@drawable/ic_clock" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/change_rest_time"
-                        android:textSize="16sp" />
-                </LinearLayout>
-
-                <!-- Динамичная вкладка для редактирования времени отдыха -->
-                <LinearLayout
-                    android:id="@+id/side_menu_dynamic_rest_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginRight="30dp"
-                    android:layout_marginBottom="4dp"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/sub5s"
-                            style="@style/DialogButtonStyle"
-                            android:layout_width="54dp"
-                            android:layout_height="30dp"
-                            android:layout_marginStart="12dp"
-                            android:text="@string/dialog_rest_time_sub5"
-                            android:textColor="@color/dialog_button_color"
-                            app:strokeColor="@color/main_color" />
-
-                        <Space
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:id="@+id/side_menu_current_rest_time"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
-                        <Space
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/add5s"
-                            style="@style/DialogButtonStyle"
-                            android:layout_width="54dp"
-                            android:layout_height="30dp"
-                            android:layout_marginEnd="12dp"
-                            android:text="@string/dialog_rest_time_add5"
-                            android:textColor="@color/dialog_button_color"
-                            app:strokeColor="@color/main_color" />
-                    </LinearLayout>
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/side_menu_input_rest_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:gravity="center"
-                        android:hint="@string/side_menu_rest_time_hint"
-                        android:inputType="number"
-                        android:maxLength="3"
-                        android:textSize="15sp" />
-
-                    <ImageView
-                        android:id="@+id/side_menu_rest_time_accept_button"
-                        android:layout_width="34dp"
-                        android:layout_height="34dp"
-                        android:layout_gravity="center"
-                        android:enabled="false"
-                        android:src="@drawable/ic_done_disabled"
+                        android:layout_marginLeft="40dp"
                         android:visibility="gone" />
-                </LinearLayout>
 
-                <com.google.android.material.divider.MaterialDivider
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="12dp"
-                    android:layout_marginBottom="4dp" />
+                    <!-- Выбор мышц -->
+                    <LinearLayout
+                        android:id="@+id/side_menu_muscles"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginBottom="4dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginTop="6dp"
-                    android:text="@string/title_additional_settings" />
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/ic_muscle" />
 
-                <!-- Выбор уведомления пользователя -->
-                <LinearLayout
-                    android:id="@+id/side_menu_notification_mode"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginLeft="12dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/change_muscles"
+                            android:textSize="16sp" />
+                    </LinearLayout>
 
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:layout_marginRight="10dp"
-                        android:src="@drawable/ic_notification" />
-
-                    <com.google.android.material.textview.MaterialTextView
+                    <!-- Динамичная вкладка для редактирования тренеруемых мышц -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/side_menu_dynamic_muscles"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/break_notifications"
-                        android:textSize="16sp" />
+                        android:layout_marginLeft="40dp"
+                        android:visibility="gone" />
+
+                    <!-- Выбор времени -->
+                    <LinearLayout
+                        android:id="@+id/side_menu_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginBottom="4dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/ic_clock" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/change_rest_time"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <!-- Динамичная вкладка для редактирования времени отдыха -->
+                    <LinearLayout
+                        android:id="@+id/side_menu_dynamic_rest_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginBottom="4dp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/sub5s"
+                                style="@style/DialogButtonStyle"
+                                android:layout_width="54dp"
+                                android:layout_height="30dp"
+                                android:layout_marginStart="12dp"
+                                android:text="@string/dialog_rest_time_sub5"
+                                android:textColor="@color/digits_color"
+                                app:strokeColor="@color/slight" />
+
+                            <Space
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/side_menu_current_rest_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+
+                            <Space
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/add5s"
+                                style="@style/DialogButtonStyle"
+                                android:layout_width="54dp"
+                                android:layout_height="30dp"
+                                android:layout_marginEnd="12dp"
+                                android:text="@string/dialog_rest_time_add5"
+                                android:textColor="@color/digits_color"
+                                app:strokeColor="@color/slight" />
+                        </LinearLayout>
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/side_menu_input_rest_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
+                            android:gravity="center"
+                            android:hint="@string/side_menu_rest_time_hint"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:textSize="15sp" />
+
+                        <ImageView
+                            android:id="@+id/side_menu_rest_time_accept_button"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_gravity="center"
+                            android:enabled="false"
+                            android:src="@drawable/ic_done_disabled"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginRight="12dp"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginTop="6dp"
+                        android:text="@string/title_additional_settings" />
+
+                    <!-- Выбор уведомления пользователя -->
+                    <LinearLayout
+                        android:id="@+id/side_menu_notification_mode"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginLeft="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/ic_notification" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/break_notifications"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <!-- Динамичная вкладка для выбора режима уведомления -->
+                    <LinearLayout
+                        android:id="@+id/side_menu_dynamic_break_mode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="50dp"
+                        android:layout_marginBottom="4dp"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <!-- Подпункт динамичного меню -->
+                        <LinearLayout
+                            android:id="@+id/sub_menu_dynamic_sound"
+                            android:layout_width="match_parent"
+                            android:layout_height="34dp"
+                            android:layout_marginBottom="4dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/ic_with_sound" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/notification_sd_with_sound"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <!-- Подпункт динамичного меню -->
+                        <LinearLayout
+                            android:id="@+id/sub_menu_dynamic_vibration"
+                            android:layout_width="match_parent"
+                            android:layout_height="34dp"
+                            android:layout_marginBottom="4dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/ic_vibration" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/notification_sd_vibration"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <!-- Подпункт динамичного меню -->
+                        <LinearLayout
+                            android:id="@+id/sub_menu_dynamic_anim"
+                            android:layout_width="match_parent"
+                            android:layout_height="34dp"
+                            android:layout_marginBottom="4dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/ic_screen_glow" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/notification_sd_screen_anim"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
                 </LinearLayout>
-                <!-- Динамичная вкладка для выбора нового места -->
-                <LinearLayout
-                    android:id="@+id/side_menu_dynamic_break_mode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginBottom="4dp"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical"
-                    android:visibility="gone">
 
-                    <!-- Подпункт динамичного меню -->
-                    <LinearLayout
-                        android:id="@+id/sub_menu_dynamic_sound"
-                        android:layout_width="match_parent"
-                        android:layout_height="34dp"
-                        android:layout_marginBottom="4dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/ic_with_sound" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/notification_sd_with_sound"
-                            android:textSize="14sp" />
-
-                    </LinearLayout>
-
-                    <!-- Подпункт динамичного меню -->
-                    <LinearLayout
-                        android:id="@+id/sub_menu_dynamic_vibration"
-                        android:layout_width="match_parent"
-                        android:layout_height="34dp"
-                        android:layout_marginBottom="4dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/ic_vibration" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/notification_sd_vibration"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-
-                    <!-- Подпункт динамичного меню -->
-                    <LinearLayout
-                        android:id="@+id/sub_menu_dynamic_anim"
-                        android:layout_width="match_parent"
-                        android:layout_height="34dp"
-                        android:layout_marginBottom="4dp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/ic_screen_glow" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/notification_sd_screen_anim"
-                            android:textSize="14sp" />
-
-                    </LinearLayout>
-                </LinearLayout>
-
-            </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
 
         </com.google.android.material.navigation.NavigationView>
 

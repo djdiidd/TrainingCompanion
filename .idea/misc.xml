@@ -19,6 +19,7 @@
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/ic_done.xml" value="0.2425" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/ic_done_disable.xml" value="0.2425" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/ic_keyboard.xml" value="0.2555" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/ic_place_on_24.xml" value="0.2555" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/main_background_day.xml" value="0.2555" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/main_background_day_1p.xml" value="0.206" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/main_background_day_2p.xml" value="0.206" />
@@ -42,7 +43,7 @@
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/activity_splash_screen.xml" value="0.25" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/dialog_break_notification.xml" value="0.264" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/dialog_rest_time.xml" value="0.4234592445328032" />
-        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/dialog_workout_start.xml" value="0.536" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/dialog_workout_start.xml" value="0.43119266055045874" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/for_time_dialog.xml" value="0.264" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/fragment_dialog.xml" value="0.4774951076320939" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/fragment_main.xml" value="0.41702867072111205" />

@@ -11,10 +11,15 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.animation.Transformation
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -26,7 +31,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.companion.android.trainingcompanion.R
 import com.companion.android.trainingcompanion.adapters.SimpleListAdapter
 import com.companion.android.trainingcompanion.databinding.ActivityMainBinding
-import com.companion.android.trainingcompanion.dialogs.*
+import com.companion.android.trainingcompanion.dialogs.WarningUnusedBPDialog
 import com.companion.android.trainingcompanion.fragments.ListFragment
 import com.companion.android.trainingcompanion.fragments.MainFragment
 import com.companion.android.trainingcompanion.models.SimpleListItem
@@ -34,11 +39,13 @@ import com.companion.android.trainingcompanion.objects.BreakNotificationMode
 import com.companion.android.trainingcompanion.objects.Params
 import com.companion.android.trainingcompanion.objects.Place
 import com.companion.android.trainingcompanion.objects.WorkoutProcess
-import com.companion.android.trainingcompanion.time_utils.*
+import com.companion.android.trainingcompanion.time_utils.CountDownTimer
+import com.companion.android.trainingcompanion.time_utils.ExerciseStopwatch
+import com.companion.android.trainingcompanion.time_utils.Stopwatch
 import com.companion.android.trainingcompanion.viewmodels.WorkoutViewModel
 
 
-                                                                                  // [ Константы ]
+// [ Константы ]
 // Теги для фрагментов
 const val TAG_MAIN_FRAGMENT = "main-fragment"
 const val TAG_LIST_FRAGMENT = "list-fragment"
@@ -59,7 +66,6 @@ private const val TAG_OF_LAST_RUN_FRAGMENT = "last-run-fragment"
 // Теги для бокового меню
 private const val TAG_BODY_PARTS = "tag-body-parts"
 private const val TAG_MUSCLES = "tag-muscles"
-
 
 
 class MainActivity : AppCompatActivity(),
@@ -108,7 +114,7 @@ class MainActivity : AppCompatActivity(),
         timer = CountDownTimer(this)
         exerciseStopwatch = ExerciseStopwatch(binding.generalClock)
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null || viewModel.activeProcess == WorkoutProcess.NOT_STARTED) {
             hideToolbarAndDisableSideMenu()
         } else {
             restoreTimeData(savedInstanceState)
@@ -135,7 +141,7 @@ class MainActivity : AppCompatActivity(),
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
             override fun onDrawerStateChanged(newState: Int) {}
             override fun onDrawerClosed(drawerView: View) {
-                closeOpenedSideSubmenu()
+                closeOpenedSideSubmenu(null, true)
             }
 
             /** Определение динамических действий бокового меню, при его открытии */
@@ -214,10 +220,11 @@ class MainActivity : AppCompatActivity(),
                     override fun afterTextChanged(p0: Editable?) {}
                     override fun onTextChanged(chars: CharSequence?, p1: Int, p2: Int, p3: Int) {
                         if (!chars.isNullOrEmpty()
-                            && chars.toString().toInt() in Params.restTimeAdvRange) {
-                                binding.sideMenuRestTimeAcceptButton
-                                    .setImageResource(R.drawable.ic_done)
-                                binding.sideMenuRestTimeAcceptButton.isEnabled = true
+                            && chars.toString().toInt() in Params.restTimeAdvRange
+                        ) {
+                            binding.sideMenuRestTimeAcceptButton
+                                .setImageResource(R.drawable.ic_done)
+                            binding.sideMenuRestTimeAcceptButton.isEnabled = true
                         } else {
                             binding.sideMenuRestTimeAcceptButton
                                 .setImageResource(R.drawable.ic_done_disabled)
@@ -426,18 +433,26 @@ class MainActivity : AppCompatActivity(),
      */
     private fun showOrCloseSideSubmenu(container: ViewGroup): Boolean {
         return if (container.isVisible) {
-            container.visibility = View.GONE;    false
+            container.collapse()
+            false
         } else {
-            container.visibility = View.VISIBLE; true
+            openedSubmenu = container
+            container.expand()
+            true
         }
     }
 
     /**
      * Закрытие открытого подменю в боковом меню;
      */
-    private fun closeOpenedSideSubmenu(except: ViewGroup? = null) {
-        if (except != openedSubmenu)
-            openedSubmenu?.visibility = View.GONE
+    private fun closeOpenedSideSubmenu(except: ViewGroup? = null, woAnim: Boolean = false) {
+        if (except != openedSubmenu) {
+            if (!woAnim)
+                openedSubmenu?.apply {
+                    collapse()
+                }
+            else openedSubmenu?.visibility = View.GONE
+        }
         if (openedSubmenu == binding.sideMenuDynamicRestTime) {
             binding.sideMenuDynamicRestTime.hideKeyboard()
             binding.sideMenuRestTimeAcceptButton.visibility = View.GONE
@@ -450,13 +465,11 @@ class MainActivity : AppCompatActivity(),
     private fun getSideMenuListener(
         container: ViewGroup,
         action: () -> Unit
-    ) : View.OnClickListener {
+    ): View.OnClickListener {
         return View.OnClickListener {
             closeOpenedSideSubmenu(container)
             action.invoke()
-            if (showOrCloseSideSubmenu(container)) {
-                openedSubmenu = container
-            }
+            showOrCloseSideSubmenu(container)
         }
     }
 
@@ -521,6 +534,64 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    /**
+     * Раскрытие контейнера по вертикали;
+     */
+    private fun View.expand() {
+        val matchParentMeasureSpec =
+            View.MeasureSpec.makeMeasureSpec((parent as View).width, View.MeasureSpec.EXACTLY)
+        val wrapContentMeasureSpec =
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        measure(matchParentMeasureSpec, wrapContentMeasureSpec)
+        val targetHeight = measuredHeight
+
+        layoutParams.height = 1
+        visibility = View.VISIBLE
+        val anim: Animation = object : Animation() {
+            override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
+                Log.d("MyTag", "interpolatedTime = $interpolatedTime")
+                layoutParams.height =
+                    if (interpolatedTime == 1f)
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                    else (targetHeight * interpolatedTime).toInt()
+                requestLayout()
+            }
+
+            override fun willChangeBounds(): Boolean {
+                return true
+            }
+        }
+
+        // Скорость - 1dp/ms
+        anim.duration = (targetHeight / context.resources.displayMetrics.density).toLong()
+        startAnimation(anim)
+
+    }
+
+    /**
+     * Закрытие контейнера по вертикали;
+     */
+    private fun View.collapse(duration: Long? = null) {
+        val initialHeight = measuredHeight
+        val anim: Animation = object : Animation() {
+            override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
+                if (interpolatedTime == 1f) {
+                    visibility = View.GONE
+                } else {
+                    layoutParams.height =
+                        initialHeight - (initialHeight * interpolatedTime).toInt()
+                    requestLayout()
+                }
+            }
+
+            override fun willChangeBounds(): Boolean = true
+        }
+        if (duration == null)
+            anim.duration = (initialHeight / context.resources.displayMetrics.density).toLong()
+        else anim.duration = duration
+        startAnimation(anim)
+    }
+
 //                                                                     [ Для восстановления данных ]
 
     /**
@@ -554,8 +625,7 @@ class MainActivity : AppCompatActivity(),
             if (tag == TAG_MAIN_FRAGMENT) {
                 lastRunFragmentTag = TAG_MAIN_FRAGMENT
                 MainFragment()
-            }
-            else {
+            } else {
                 lastRunFragmentTag = TAG_LIST_FRAGMENT
                 ListFragment()
             }
@@ -653,7 +723,8 @@ class MainActivity : AppCompatActivity(),
      * Обработка уничтожения фрагмента;
      */
     override fun fragmentDestroyed() {
-        timer.detachUI()
+        if (viewModel.activeProcess == WorkoutProcess.TIMER)
+            timer.detachUI()
     }
 
     /**

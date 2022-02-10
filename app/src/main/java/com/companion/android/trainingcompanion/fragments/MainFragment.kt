@@ -41,6 +41,13 @@ class MainFragment : Fragment() {
         binding = DataBindingUtil // определяем привязку данных
             .inflate(layoutInflater, R.layout.fragment_main, container, false)
 
+        if (viewModel.workoutSuccessfullyStarted.value == true) {
+            binding.startButton.visibility = View.GONE
+            binding.setTimerProgress.visibility = View.VISIBLE
+            binding.setTimer.visibility = View.VISIBLE
+            binding.mainButton.visibility = View.VISIBLE
+        }
+
         return binding.root
     }
 
@@ -54,8 +61,6 @@ class MainFragment : Fragment() {
 
             if (parentFragmentManager.findFragmentByTag(DIALOG_START) == null) {
                 WorkoutStartDialog().show(this@MainFragment.parentFragmentManager, DIALOG_START)
-            } else {
-                Log.d("MyTag", "Dialog already exists")
             }
 //            it.clearAnimation()
         }
@@ -69,11 +74,10 @@ class MainFragment : Fragment() {
         val bounceAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_bounce)
 
         viewModel.workoutSuccessfullyStarted.observe(requireActivity()) { started ->
+            binding.startButton.visibility = View.GONE
             if (!started || viewModel.activeProcess != WorkoutProcess.NOT_STARTED) {
                 return@observe
             }
-
-            binding.startButton.visibility = View.GONE
             binding.setTimerProgress.visibility = View.VISIBLE
             binding.setTimer.visibility = View.VISIBLE
             binding.mainButton.visibility = View.VISIBLE
@@ -86,13 +90,6 @@ class MainFragment : Fragment() {
             Handler(requireContext().mainLooper).postDelayed({
                 it.isEnabled = true
             }, 1000)
-        }
-
-        if (viewModel.workoutSuccessfullyStarted.value == true) {
-            binding.startButton.visibility = View.GONE
-            binding.setTimerProgress.visibility = View.VISIBLE
-            binding.setTimer.visibility = View.VISIBLE
-            binding.mainButton.visibility = View.VISIBLE
         }
     }
 

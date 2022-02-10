@@ -54,12 +54,14 @@ class WorkoutStartDialog
     private lateinit var muscleLongTouchListener: View.OnLongClickListener
     private lateinit var timeLabelFormatter: LabelFormatter
 
-
     /**
      * Этап создания диалогового окна
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Устанавливаем, что диалог нельзя закрыть нажатием в область вне окна
+        this.isCancelable = false
 
         // ОПРЕДЕЛЕНИЕ ПОВЕДЕНИЯ СЛУШАТЕЛЯ ДЛЯ СЛАЙДЕРА С ВРЕМЕНЕМ ОТДЫХА
         sliderTouchListener = object : Slider.OnSliderTouchListener {
@@ -101,6 +103,7 @@ class WorkoutStartDialog
         }
     }
 
+
     /**
      * Этап создания View во фрагменте
      */
@@ -111,7 +114,6 @@ class WorkoutStartDialog
     ): View {
         binding = DataBindingUtil  // определяем привязку данных
             .inflate(layoutInflater, R.layout.dialog_workout_start, container, false)
-        binding.viewModel = viewModel // Определение viewModel 'и
 
         // Скругление углов (отображение прозрачного фона за диалоговым окном)
         if (dialog != null && dialog?.window != null) {
@@ -119,9 +121,6 @@ class WorkoutStartDialog
             dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
         }
         binding.timeSliderDescription.text = getString(R.string.description_time_slider)
-
-        // Переменная из файла разметки для работы с видимостью
-        binding.musclesIsVisible = binding.bodyPartSelector.text.isNotEmpty()
 
         // Устанавливаем спиннер с выбором места тренировок
         setUpSpinners()
@@ -136,9 +135,11 @@ class WorkoutStartDialog
             timeSlider.setLabelFormatter(timeLabelFormatter)
         }
         // Если конфигурация менялась, то восстанавливаем данные
-        if (savedInstanceState != null) {
-            recoverData()
-        }
+        if (savedInstanceState != null) { recoverData() }
+
+        // Переменная из файла разметки для работы с видимостью
+        binding.musclesIsVisible = !binding.bodyPartSelector.text.isNullOrBlank()
+
         return binding.root
     }
 
@@ -148,9 +149,18 @@ class WorkoutStartDialog
     override fun onStart() {
         super.onStart()
 
-        setDialogSize()
+        setDialogSize() // Устанавливаем необходимый размер диалогового окна
 
-        // Анимация
+        // Проверяем на нажатие кнопки назад, после которой закроем окно
+        dialog?.setOnKeyListener { _, keyCode, _ ->
+            if (keyCode == KeyEvent.KEYCODE_BACK) {
+                viewModel.clearAllData()
+                dialog?.dismiss()
+            }
+            false
+        }
+
+        // Анимация запуска диалогового окна
         setWindowAnimation(R.style.BounceAnimation)
 
         binding.inputTimeManuallyLl.setOnClickListener {
@@ -194,7 +204,6 @@ class WorkoutStartDialog
         outState.putBoolean("1", true)
     }
 
-    /* Интерфейс */
     /**
      * Определение действий по нажатию на View, находящихся на
      * диалоговом окне с выбором предтренировочных характеристик.
@@ -205,13 +214,14 @@ class WorkoutStartDialog
             binding.buttonAccept.id -> {
                 // Если обязательные поля заполнены:
                 if (requiredFieldsCompleted()) {
+                    viewModel.workoutSuccessfullyStarted.value = true
                     if (viewModel.getNumberOfSelectedMuscles() != 0.toShort()) {
                         val unused = viewModel.getWhichBPAreUnused()
                         if (unused.contains(true)) {
                             WarningUnusedBPDialog(unused).show(parentFragmentManager, "")
                         }
                     }
-                    viewModel.workoutSuccessfullyStarted.value = true
+
                     // Сохранить все значения в бд
 //------------------НЕОБХОДИМО ПРОВЕРИТЬ НА НАЧАЛО ТРЕНИРОВКИ (после кнопки accept) ИНАЧЕ ПОЯВИТСЯ ВЫБОР МЫШЦ
                     dismiss()
@@ -375,8 +385,8 @@ class WorkoutStartDialog
     /**
      * Метод вызовет error у не заполненных объектов TextView
      */
-    private fun requireAllFieldsCompleted() = with(binding) {
-        if (viewModel?.getSelectedBP(requireContext())!!.isEmpty()) {
+    private fun requireAllFieldsCompleted() {
+        if (viewModel.getSelectedBP(requireContext()).isEmpty()) {
             binding.bodyPartSelector.addError(R.string.error_body_parts, R.drawable.ic_error)
         }
     }
@@ -392,10 +402,10 @@ class WorkoutStartDialog
     /**
      * После изменения конфигурации данный метод позволит восстановить информацию на всех View
      */
-    private fun recoverData() {
+    private fun recoverData() = with(binding) {
         // Если список с частями тела не пуст, то восстановим
         if (viewModel.isSomeBPSelected()) {
-            binding.bodyPartSelector.text =
+            bodyPartSelector.text =
                 getString(
                     R.string.train_on,
                     viewModel.getSelectedBP(requireContext())
@@ -403,15 +413,15 @@ class WorkoutStartDialog
                 )
             // Если список с мышцами не пуст, то восстановим
             if (viewModel.isSomeMuscleSelected()) {
-                binding.musclesSelector.text =
+                musclesSelector.text =
                     getString(
                         R.string.number_of_selected_el,
                         viewModel.getNumberOfSelectedMuscles()
                     )
-                binding.musclesIsVisible = true
+                musclesIsVisible = true
             }
         }
-        binding.timeSliderValue.text =
+        timeSliderValue.text =
             getString(R.string.selected_seconds, viewModel.restTime.value!!)
 
     }
@@ -423,9 +433,7 @@ class WorkoutStartDialog
     }
 
     private fun View.focusAndShowKeyboard() {
-        /**
-         * This is to be called when the window already has focus.
-         */
+        /** This is to be called when the window already has focus. */
         fun View.showTheKeyboardNow() {
             if (isFocused) {
                 post {
@@ -469,7 +477,7 @@ class WorkoutStartDialog
             timeSliderValue.visibility = View.GONE
             keyboardImage.visibility = View.GONE
             inputTimeField.visibility = View.VISIBLE
-            inputTimeField.setText(viewModel?.restTime?.value!!.toString())
+            inputTimeField.setText(viewModel.restTime.value!!.toString())
             space.layoutParams = LinearLayout.LayoutParams(
                 0, space.height, 0f
             )
@@ -494,7 +502,7 @@ class WorkoutStartDialog
 
     private fun hideTextInputAndSaveData(seconds: Int) {
         with(binding) {
-            viewModel?.restTime?.value = seconds.also {
+            viewModel.restTime.value = seconds.also {
                 timeSliderValue.text = getString(R.string.selected_seconds, it)
             }
             hideTextInput()
