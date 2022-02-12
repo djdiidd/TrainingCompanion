@@ -25,6 +25,7 @@
     <string name="title_start_workout">Start your workout</string>
     <string name="title_select_muscles">Select muscles you will work out</string>
     <string name="title_select_body_parts">Select parts of the body</string>
+    <string name="full_body">Full body</string>
     <!-- Описание ошибок -->
     <string name="error_time_slider">Select time!</string>
     <string name="error_body_parts">Select body parts!</string>

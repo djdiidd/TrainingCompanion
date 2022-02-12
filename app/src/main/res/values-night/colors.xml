@@ -36,4 +36,5 @@
     <color name="keyboard_color">@color/shrine_pink_100</color>
     <color name="input_manually_button_border_color">@color/shrine_pink_100</color>
     <color name="input_manually_button_bg_color">#91ADBD</color>
+    <color name="side_menu_text_color">@color/white</color>
 </resources>

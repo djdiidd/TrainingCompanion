@@ -50,4 +50,5 @@
     <color name="keyboard_color">@color/shrine_pink_900</color>
     <color name="input_manually_button_border_color">@color/shrine_pink_900</color>
     <color name="input_manually_button_bg_color">#B3D2E6</color>
+    <color name="side_menu_text_color">@android:color/black</color>
 </resources>

@@ -25,7 +25,7 @@ private const val DIALOG_START = "dialog-start" // Метка диалога
 /**
  * Данный фрагмент сопровождает пользователя во время тренировки и является основным
  */
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), WorkoutStartDialog.Callback {
 
     private lateinit var binding: FragmentMainBinding               // Объект класса привязки данных
     private val viewModel: WorkoutViewModel by activityViewModels() // Общая ViewModel
@@ -41,7 +41,8 @@ class MainFragment : Fragment() {
         binding = DataBindingUtil // определяем привязку данных
             .inflate(layoutInflater, R.layout.fragment_main, container, false)
 
-        if (viewModel.workoutSuccessfullyStarted.value == true) {
+        // Если тренировка уже началась, то убираем лишнее с экрана;
+        if (viewModel.activeProcess.value != WorkoutProcess.NOT_STARTED) {
             binding.startButton.visibility = View.GONE
             binding.setTimerProgress.visibility = View.VISIBLE
             binding.setTimer.visibility = View.VISIBLE
@@ -61,6 +62,7 @@ class MainFragment : Fragment() {
 
             if (parentFragmentManager.findFragmentByTag(DIALOG_START) == null) {
                 WorkoutStartDialog().show(this@MainFragment.parentFragmentManager, DIALOG_START)
+                binding.startButton.visibility = View.GONE
             }
 //            it.clearAnimation()
         }
@@ -72,16 +74,6 @@ class MainFragment : Fragment() {
         Log.d("LF", "F onStart")
 
         val bounceAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_bounce)
-
-        viewModel.workoutSuccessfullyStarted.observe(requireActivity()) { started ->
-            binding.startButton.visibility = View.GONE
-            if (!started || viewModel.activeProcess != WorkoutProcess.NOT_STARTED) {
-                return@observe
-            }
-            binding.setTimerProgress.visibility = View.VISIBLE
-            binding.setTimer.visibility = View.VISIBLE
-            binding.mainButton.visibility = View.VISIBLE
-        }
 
         binding.mainButton.setOnClickListener {
             it.startAnimation(bounceAnim)
@@ -121,6 +113,19 @@ class MainFragment : Fragment() {
         fun mainButtonClicked()
         fun fragmentDestroyed()
         fun fragmentUICreated(textView: TextView, progressBar: ProgressBar)
+        fun workoutStarted()
+    }
+
+    override fun workoutStarted(success: Boolean) {
+        if (success) {
+            callback?.workoutStarted()
+            binding.startButton.visibility = View.GONE
+            binding.setTimerProgress.visibility = View.VISIBLE
+            binding.setTimer.visibility = View.VISIBLE
+            binding.mainButton.visibility = View.VISIBLE
+        } else {
+            binding.startButton.visibility = View.VISIBLE
+        }
     }
 
 }

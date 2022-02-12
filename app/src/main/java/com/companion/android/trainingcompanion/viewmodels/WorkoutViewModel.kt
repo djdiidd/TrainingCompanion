@@ -17,11 +17,7 @@ class WorkoutViewModel : ViewModel() {
 
 //-----------------------------------/* Данные */---------------------------------------------------
 
-    // -> LIVEDATA
-    var activeProcess: Int = WorkoutProcess.NOT_STARTED
-
-    // Observable данные:
-    val workoutSuccessfullyStarted = MutableLiveData<Boolean>() // Тренировка успешно началась
+    val activeProcess = MutableLiveData(WorkoutProcess.NOT_STARTED)
     val restTime = MutableLiveData(60) // Время перерыва
 
     // Хранение массива выбранных объектов из доступного списка (boolean)
@@ -113,9 +109,6 @@ class WorkoutViewModel : ViewModel() {
                         .getStringArray(appropriateMuscle[i]!!)
                 )
         }
-        Log.d("MyTag", "resArray == $resArray")
-        Log.d("MyTag", "whichMuscleSelected == ${whichMuscleSelected.contentToString()}")
-        // было утверждение
         assert(whichMuscleSelected.size == resArray.size)
         for (i in resArray.indices)
             if (!whichMuscleSelected[i])

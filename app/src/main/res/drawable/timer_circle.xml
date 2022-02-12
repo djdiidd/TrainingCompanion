@@ -8,13 +8,14 @@
             android:shape="ring"
             android:thickness="99dp"
             android:useLevel="false">
-<!--            <solid android:color="@color/progress_bar_background_color" />-->
-            <gradient android:type="radial"
+            <!--            <solid android:color="@color/progress_bar_background_color" />-->
+            <gradient
+                android:type="radial"
                 android:startColor="@color/progress_bar_bg_gradient_1_color"
                 android:centerColor="@color/progress_bar_bg_gradient_2_color"
                 android:endColor="@color/progress_bar_bg_gradient_3_color"
-                android:gradientRadius="350"/>
-<!--            <stroke android:width="3dp" android:color="@color/progress_bar_edge" />-->
+                android:gradientRadius="350" />
+            <!--            <stroke android:width="3dp" android:color="@color/progress_bar_edge" />-->
         </shape>
     </item>
 
@@ -66,7 +67,7 @@
             android:shape="ring"
             android:thickness="9dp"
             android:useLevel="false">
-            <solid android:color="@color/progress_bar_edge_dots"/>
+            <solid android:color="@color/progress_bar_edge_dots" />
         </shape>
     </item>
     <item>
@@ -77,7 +78,7 @@
                     android:shape="ring"
                     android:thickness="9dp"
                     android:useLevel="false">
-                    <solid android:color="@color/progress_bar_edge_dots"/>
+                    <solid android:color="@color/progress_bar_edge_dots" />
                 </shape>
             </inset>
         </rotate>

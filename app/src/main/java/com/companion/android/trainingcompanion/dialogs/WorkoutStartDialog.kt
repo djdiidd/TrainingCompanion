@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -15,8 +16,10 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import com.companion.android.trainingcompanion.R
+import com.companion.android.trainingcompanion.activities.TAG_MAIN_FRAGMENT
 import com.companion.android.trainingcompanion.adapters.PlaceSpinnerAdapter
 import com.companion.android.trainingcompanion.databinding.DialogWorkoutStartBinding
+import com.companion.android.trainingcompanion.fragments.MainFragment
 import com.companion.android.trainingcompanion.objects.BreakNotificationMode
 import com.companion.android.trainingcompanion.objects.Params
 import com.companion.android.trainingcompanion.objects.Place
@@ -149,6 +152,8 @@ class WorkoutStartDialog
     override fun onStart() {
         super.onStart()
 
+        callback = parentFragmentManager.findFragmentByTag(TAG_MAIN_FRAGMENT) as Callback
+
         setDialogSize() // Устанавливаем необходимый размер диалогового окна
 
         // Проверяем на нажатие кнопки назад, после которой закроем окно
@@ -214,7 +219,7 @@ class WorkoutStartDialog
             binding.buttonAccept.id -> {
                 // Если обязательные поля заполнены:
                 if (requiredFieldsCompleted()) {
-                    viewModel.workoutSuccessfullyStarted.value = true
+                    callback?.workoutStarted(true)
                     if (viewModel.getNumberOfSelectedMuscles() != 0.toShort()) {
                         val unused = viewModel.getWhichBPAreUnused()
                         if (unused.contains(true)) {
@@ -222,8 +227,7 @@ class WorkoutStartDialog
                         }
                     }
 
-                    // Сохранить все значения в бд
-//------------------НЕОБХОДИМО ПРОВЕРИТЬ НА НАЧАЛО ТРЕНИРОВКИ (после кнопки accept) ИНАЧЕ ПОЯВИТСЯ ВЫБОР МЫШЦ
+                    // TODO:Сохранить все значения в бд
                     dismiss()
                 }
                 // Если не все обязательные поля заполнены
@@ -234,6 +238,7 @@ class WorkoutStartDialog
             /** Кнопка отмены -- закрытие окна и удаление данных*/
             binding.buttonCancel.id -> {
                 viewModel.clearAllData()
+                callback?.workoutStarted(false)
                 dismiss()
             }
             /** Выбор тренеруемых частей тела -- вызов соответствующего окна и обработка данных */
@@ -258,12 +263,21 @@ class WorkoutStartDialog
                         || binding.bodyPartSelector.text.isEmpty()
                     ) {
                         viewModel.updateData(requireContext(), whichBPIsSelected!!.toTypedArray())
-                        binding.bodyPartSelector.text =
-                            getString(
-                                R.string.train_on,
-                                viewModel.getSelectedBP(requireContext())
-                                    .contentToString().dropLast(1).drop(1)
-                            )
+                        viewModel.getSelectedBP(requireContext())
+                            .contentToString().dropLast(1).drop(1).also {
+                                Log.d("MyTag", "length is ${it.length}")
+                                if (it.split(" ").size != 5) {
+                                    binding.bodyPartSelector.text =
+                                        getString(
+                                            R.string.train_on, it
+                                        )
+                                } else {
+                                    binding.bodyPartSelector.text =
+                                        getString(
+                                            R.string.train_on, getString(R.string.full_body)
+                                        )
+                                }
+                            }
                         var count: Short = 0
                         viewModel.getWhichMusclesAreSelected().forEach { if (it) count++ }
 
@@ -323,6 +337,7 @@ class WorkoutStartDialog
         }
     }
 
+    //TODO: ЕСЛИ ЭКРАН МАЛЕНЬКИЙ -- СДЕЛАТЬ НА ВЕСЬ ЭКРАН; если наоборот -- маленьким
     private fun setDialogSize() {
         val metrics = resources.displayMetrics
         val width = metrics.widthPixels
@@ -530,5 +545,13 @@ class WorkoutStartDialog
             false
         }
     }
+    var callback: Callback? = null
 
+    override fun onDetach() {
+        super.onDetach()
+        callback = null
+    }
+    interface Callback {
+        fun workoutStarted(success: Boolean)
+    }
 }

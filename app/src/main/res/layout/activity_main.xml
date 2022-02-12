@@ -87,8 +87,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"
-            app:headerLayout="@layout/side_header"
-            android:backgroundTint="@color/main_color">
+            android:backgroundTint="@color/main_color"
+            app:headerLayout="@layout/side_header">
 
             <!-- Тело бокового меню -->
             <androidx.core.widget.NestedScrollView
@@ -96,6 +96,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="12dp"
                 android:layout_marginTop="190dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -106,7 +107,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="12dp"
-                        android:text="@string/title_change_workout_settings" />
+                        android:text="@string/title_change_workout_settings"
+                        android:textColor="@color/side_menu_text_color" />
 
                     <!-- Выбор места тренировки -->
                     <LinearLayout
@@ -114,7 +116,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginLeft="12dp"
-                        android:layout_marginBottom="4dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -129,89 +130,130 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/select_training_place"
+                            android:textColor="@color/side_menu_text_color"
                             android:textSize="16sp" />
 
                     </LinearLayout>
 
                     <!-- Динамичная вкладка для выбора нового места -->
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/side_menu_dynamic_place"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="50dp"
+                        android:layout_marginStart="50dp"
                         android:layout_marginBottom="4dp"
-                        android:gravity="center_vertical"
-                        android:orientation="vertical"
                         android:visibility="gone">
 
                         <!-- Подпункт динамичного меню -->
-                        <LinearLayout
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/sub_menu_dynamic_place_home"
                             android:layout_width="match_parent"
                             android:layout_height="34dp"
                             android:layout_marginBottom="4dp"
                             android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
 
                             <ImageView
+                                android:id="@+id/imageView1"
                                 android:layout_width="22dp"
                                 android:layout_height="22dp"
-                                android:layout_marginRight="10dp"
-                                android:src="@drawable/ic_home_24" />
+                                android:src="@drawable/ic_home_24"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.0"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_marginLeft="30dp"
+                                android:layout_toEndOf="@+id/imageView1"
                                 android:text="@string/array_item_at_home"
-                                android:textSize="14sp" />
+                                android:textColor="@color/side_menu_text_color"
+                                android:textSize="14sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="1.0"
+                                app:layout_constraintStart_toEndOf="@+id/imageView1"
+                                app:layout_constraintTop_toTopOf="parent" />
 
-                        </LinearLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <!-- Подпункт динамичного меню -->
-                        <LinearLayout
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/sub_menu_dynamic_place_gym"
                             android:layout_width="match_parent"
                             android:layout_height="34dp"
                             android:layout_marginBottom="4dp"
                             android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/sub_menu_dynamic_place_home">
 
                             <ImageView
+                                android:id="@+id/imageView2"
                                 android:layout_width="22dp"
                                 android:layout_height="22dp"
-                                android:layout_marginRight="10dp"
-                                android:src="@drawable/ic_gym" />
+                                android:src="@drawable/ic_gym"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_marginLeft="30dp"
+                                android:layout_toEndOf="@+id/imageView2"
                                 android:text="@string/array_item_in_gym"
-                                android:textSize="14sp" />
-                        </LinearLayout>
+                                android:textColor="@color/side_menu_text_color"
+                                android:textSize="14sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <!-- Подпункт динамичного меню -->
-                        <LinearLayout
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/sub_menu_dynamic_place_outdoors"
                             android:layout_width="match_parent"
                             android:layout_height="34dp"
+                            android:layout_below="@+id/sub_menu_dynamic_place_gym"
                             android:layout_marginBottom="4dp"
                             android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/sub_menu_dynamic_place_gym">
 
                             <ImageView
+                                android:id="@+id/imageView3"
                                 android:layout_width="22dp"
                                 android:layout_height="22dp"
-                                android:layout_marginRight="10dp"
-                                android:src="@drawable/ic_outdoors" />
+                                android:src="@drawable/ic_outdoors"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.0"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/materialTextView2"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_marginLeft="30dp"
+                                android:layout_toEndOf="@+id/imageView3"
                                 android:text="@string/array_item_outdoors"
-                                android:textSize="14sp" />
+                                android:textColor="@color/side_menu_text_color"
+                                android:textSize="14sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintLeft_toLeftOf="@+id/imageView3"
+                                app:layout_constraintTop_toTopOf="parent" />
 
-                        </LinearLayout>
-                    </LinearLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <!-- Выбор частей тела -->
                     <LinearLayout
@@ -219,7 +261,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginLeft="12dp"
-                        android:layout_marginBottom="4dp"
+                        android:layout_marginTop="4dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -233,6 +275,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/change_body_parts"
+                            android:textColor="@color/side_menu_text_color"
                             android:textSize="16sp" />
                     </LinearLayout>
 
@@ -250,7 +293,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginLeft="12dp"
-                        android:layout_marginBottom="4dp"
+                        android:layout_marginTop="4dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -264,6 +307,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/change_muscles"
+                            android:textColor="@color/side_menu_text_color"
                             android:textSize="16sp" />
                     </LinearLayout>
 
@@ -281,6 +325,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginLeft="12dp"
+                        android:layout_marginTop="4dp"
                         android:layout_marginBottom="4dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
@@ -295,73 +340,73 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/change_rest_time"
+                            android:textColor="@color/side_menu_text_color"
                             android:textSize="16sp" />
                     </LinearLayout>
 
                     <!-- Динамичная вкладка для редактирования времени отдыха -->
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/side_menu_dynamic_rest_time"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
                         android:layout_marginRight="30dp"
                         android:layout_marginBottom="4dp"
-                        android:orientation="vertical"
                         android:visibility="gone">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/sub5s"
+                            style="@style/DialogButtonStyle"
+                            android:layout_width="54dp"
+                            android:layout_height="30dp"
+                            android:text="@string/dialog_rest_time_sub5"
+                            android:textColor="@color/digits_color"
+                            app:layout_constraintBottom_toTopOf="@+id/side_menu_input_rest_time"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.0"
+                            app:strokeColor="@color/slight" />
+
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/side_menu_current_rest_time"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:orientation="horizontal">
+                            android:layout_marginTop="8dp"
+                            android:textColor="@color/side_menu_text_color"
+                            app:layout_constraintEnd_toStartOf="@+id/add5s"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@+id/sub5s"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/sub5s"
-                                style="@style/DialogButtonStyle"
-                                android:layout_width="54dp"
-                                android:layout_height="30dp"
-                                android:layout_marginStart="12dp"
-                                android:text="@string/dialog_rest_time_sub5"
-                                android:textColor="@color/digits_color"
-                                app:strokeColor="@color/slight" />
-
-                            <Space
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1" />
-
-                            <com.google.android.material.textview.MaterialTextView
-                                android:id="@+id/side_menu_current_rest_time"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-
-                            <Space
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/add5s"
-                                style="@style/DialogButtonStyle"
-                                android:layout_width="54dp"
-                                android:layout_height="30dp"
-                                android:layout_marginEnd="12dp"
-                                android:text="@string/dialog_rest_time_add5"
-                                android:textColor="@color/digits_color"
-                                app:strokeColor="@color/slight" />
-                        </LinearLayout>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/add5s"
+                            style="@style/DialogButtonStyle"
+                            android:layout_width="54dp"
+                            android:layout_height="30dp"
+                            android:text="@string/dialog_rest_time_add5"
+                            android:textColor="@color/digits_color"
+                            app:layout_constraintBottom_toTopOf="@+id/side_menu_input_rest_time"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="1.0"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.0"
+                            app:strokeColor="@color/slight" />
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/side_menu_input_rest_time"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="16dp"
-                            android:layout_marginRight="16dp"
+                            android:layout_marginTop="12dp"
                             android:gravity="center"
                             android:hint="@string/side_menu_rest_time_hint"
                             android:inputType="number"
                             android:maxLength="3"
-                            android:textSize="15sp" />
+                            android:textSize="15sp"
+                            app:layout_constraintEnd_toEndOf="@+id/add5s"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="@+id/sub5s"
+                            app:layout_constraintTop_toBottomOf="@+id/side_menu_current_rest_time" />
 
                         <ImageView
                             android:id="@+id/side_menu_rest_time_accept_button"
@@ -370,8 +415,13 @@
                             android:layout_gravity="center"
                             android:enabled="false"
                             android:src="@drawable/ic_done_disabled"
-                            android:visibility="gone" />
-                    </LinearLayout>
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.498"
+                            app:layout_constraintStart_toStartOf="@+id/side_menu_input_rest_time"
+                            app:layout_constraintTop_toBottomOf="@+id/side_menu_input_rest_time"
+                            app:layout_constraintVertical_bias="0.0" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <com.google.android.material.divider.MaterialDivider
                         android:layout_width="wrap_content"
@@ -385,15 +435,16 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="12dp"
                         android:layout_marginTop="6dp"
-                        android:text="@string/title_additional_settings" />
+                        android:text="@string/title_additional_settings"
+                        android:textColor="@color/side_menu_text_color" />
 
                     <!-- Выбор уведомления пользователя -->
                     <LinearLayout
                         android:id="@+id/side_menu_notification_mode"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:layout_marginTop="12dp"
                         android:layout_marginLeft="12dp"
+                        android:layout_marginTop="12dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -407,89 +458,121 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/break_notifications"
+                            android:textColor="@color/side_menu_text_color"
                             android:textSize="16sp" />
                     </LinearLayout>
 
                     <!-- Динамичная вкладка для выбора режима уведомления -->
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/side_menu_dynamic_break_mode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="50dp"
-                        android:layout_marginBottom="4dp"
-                        android:gravity="center_vertical"
-                        android:orientation="vertical"
+                        android:layout_marginStart="50dp"
                         android:visibility="gone">
 
                         <!-- Подпункт динамичного меню -->
-                        <LinearLayout
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/sub_menu_dynamic_sound"
                             android:layout_width="match_parent"
                             android:layout_height="34dp"
                             android:layout_marginBottom="4dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
 
                             <ImageView
+                                android:id="@+id/imageView01"
                                 android:layout_width="22dp"
                                 android:layout_height="22dp"
-                                android:layout_marginRight="10dp"
-                                android:src="@drawable/ic_with_sound" />
+                                android:src="@drawable/ic_with_sound"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/materialTextView3"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_marginStart="30dp"
+                                android:layout_toEndOf="@+id/imageView01"
                                 android:text="@string/notification_sd_with_sound"
-                                android:textSize="14sp" />
+                                android:textColor="@color/side_menu_text_color"
+                                android:textSize="14sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
 
-                        </LinearLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <!-- Подпункт динамичного меню -->
-                        <LinearLayout
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/sub_menu_dynamic_vibration"
                             android:layout_width="match_parent"
                             android:layout_height="34dp"
+                            android:layout_below="@+id/sub_menu_dynamic_sound"
                             android:layout_marginBottom="4dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/sub_menu_dynamic_sound">
 
                             <ImageView
+                                android:id="@+id/imageView02"
                                 android:layout_width="22dp"
                                 android:layout_height="22dp"
-                                android:layout_marginRight="10dp"
-                                android:src="@drawable/ic_vibration" />
+                                android:src="@drawable/ic_vibration"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/materialTextView4"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_marginStart="30dp"
+                                android:layout_toEndOf="@+id/imageView02"
                                 android:text="@string/notification_sd_vibration"
-                                android:textSize="14sp" />
-                        </LinearLayout>
+                                android:textColor="@color/side_menu_text_color"
+                                android:textSize="14sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="@id/imageView02"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <!-- Подпункт динамичного меню -->
-                        <LinearLayout
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/sub_menu_dynamic_anim"
                             android:layout_width="match_parent"
                             android:layout_height="34dp"
                             android:layout_marginBottom="4dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/sub_menu_dynamic_vibration">
 
                             <ImageView
+                                android:id="@+id/imageView03"
                                 android:layout_width="22dp"
                                 android:layout_height="22dp"
-                                android:layout_marginRight="10dp"
-                                android:src="@drawable/ic_screen_glow" />
+                                android:src="@drawable/ic_screen_glow"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_marginStart="30dp"
+                                android:layout_toEndOf="@+id/imageView03"
                                 android:text="@string/notification_sd_screen_anim"
-                                android:textSize="14sp" />
+                                android:textColor="@color/side_menu_text_color"
+                                android:textSize="14sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/imageView03"
+                                app:layout_constraintTop_toTopOf="parent" />
 
-                        </LinearLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </LinearLayout>
 
