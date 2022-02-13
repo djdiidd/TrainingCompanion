@@ -20,7 +20,7 @@
     <string name="select_body_part">Select part of the body</string>
     <string name="select_muscles">Select muscles</string>
     <string name="select_training_place">Training place</string>
-    <string name="select_notification_mode">Notification mode</string>
+    <string name="select_notifying_mode">Notifying mode</string>
     <string name="description_time_slider">Select time between sets</string>
     <string name="title_start_workout">Start your workout</string>
     <string name="title_select_muscles">Select muscles you will work out</string>
@@ -74,7 +74,7 @@
     <string name="change_rest_time">Rest time</string>
     <string name="change_training_place">Change training place</string>
     <string name="title_additional_settings">Additional settings</string>
-    <string name="break_notifications">Break notifications</string>
+    <string name="workout_set_notifying">Workout set notifying</string>
     <!-- Диалог изменения времени -->
     <string name="title_change_rest_time">Rest time changing</string>
     <string name="dialog_rest_time_sub5">-5</string>
@@ -91,14 +91,24 @@
         It seems that you chose %s and you are not going to train it. Also you can change workout settings in right panel later.
     </string>
     <!-- Диалог настройки оповещений начала/конца подхода -->
-    <string name="title_change_notification_params">Change notification parameters</string>
-    <string name="notification_with_sound">After the workout set will be playing sound to draw your attention</string>
-    <string name="notification_vibration">After the workout set your device will be vibrating to draw your attention</string>
-    <string name="notification_screen_anim">After the workout set, only animations will be displayed on the device screen</string>
+    <string name="title_change_notifying_params">Change notifying parameters</string>
+    <string name="notifying_with_sound">After the workout set will be playing sound to draw your attention</string>
+    <string name="notifying_vibration">After the workout set your device will be vibrating to draw your attention</string>
+    <string name="notifying_screen_anim">After the workout set, only animations will be displayed on the device screen</string>
 
-    <string name="notification_sd_with_sound">With sound</string>
-    <string name="notification_sd_vibration">Just vibration</string>
-    <string name="notification_sd_screen_anim">Only animation</string>
+    <string name="notifying_sd_with_sound">With sound</string>
+    <string name="notifying_sd_vibration">Just vibration</string>
+    <string name="notifying_sd_screen_anim">Only animation</string>
+
     <string name="side_menu_rest_time_hint">Or input time here</string>
+    <string name="side_menu_reselected_place_toast">%s was selected</string>
+    <string name="side_menu_reselected_place_item_home">Home</string>
+    <string name="side_menu_reselected_place_item_gym">GYM</string>
+    <string name="side_menu_reselected_place_item_outdoors">Outdoors</string>
+
+    <string name="side_menu_reselected_workout_set_notifying_toast">Workout stages will be accompanied by %s</string>
+    <string name="side_menu_reselected_ws_item_sound">the sound notifying</string>
+    <string name="side_menu_reselected_ws_item_vibration">vibrations</string>
+    <string name="side_menu_reselected_ws_item_animation">animations</string>
 
 </resources>

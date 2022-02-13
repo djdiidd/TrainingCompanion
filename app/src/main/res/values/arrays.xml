@@ -53,8 +53,8 @@
 
     <!-- Описания способа уведомления подхода -->
     <string-array name="break_notification">
-        <item>@string/notification_sd_with_sound</item>
-        <item>@string/notification_sd_vibration</item>
-        <item>@string/notification_sd_screen_anim</item>
+        <item>@string/notifying_sd_with_sound</item>
+        <item>@string/notifying_sd_vibration</item>
+        <item>@string/notifying_sd_screen_anim</item>
     </string-array>
 </resources>

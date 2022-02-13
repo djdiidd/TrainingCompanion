@@ -1,9 +1,12 @@
 package com.companion.android.trainingcompanion.dialogs
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
@@ -19,7 +22,6 @@ import com.companion.android.trainingcompanion.R
 import com.companion.android.trainingcompanion.activities.TAG_MAIN_FRAGMENT
 import com.companion.android.trainingcompanion.adapters.PlaceSpinnerAdapter
 import com.companion.android.trainingcompanion.databinding.DialogWorkoutStartBinding
-import com.companion.android.trainingcompanion.fragments.MainFragment
 import com.companion.android.trainingcompanion.objects.BreakNotificationMode
 import com.companion.android.trainingcompanion.objects.Params
 import com.companion.android.trainingcompanion.objects.Place
@@ -265,7 +267,6 @@ class WorkoutStartDialog
                         viewModel.updateData(requireContext(), whichBPIsSelected!!.toTypedArray())
                         viewModel.getSelectedBP(requireContext())
                             .contentToString().dropLast(1).drop(1).also {
-                                Log.d("MyTag", "length is ${it.length}")
                                 if (it.split(" ").size != 5) {
                                     binding.bodyPartSelector.text =
                                         getString(
@@ -337,12 +338,22 @@ class WorkoutStartDialog
         }
     }
 
-    //TODO: ЕСЛИ ЭКРАН МАЛЕНЬКИЙ -- СДЕЛАТЬ НА ВЕСЬ ЭКРАН; если наоборот -- маленьким
     private fun setDialogSize() {
         val metrics = resources.displayMetrics
         val width = metrics.widthPixels
         val height = metrics.heightPixels
-        dialog?.window?.setLayout(6 * width / 7, 4 * height / 5)
+        if (!isTablet()) {
+            if (height > 680)
+                dialog?.window?.setLayout(6 * width / 7, 4 * height / 5)
+            else
+                dialog?.window?.setLayout(
+                    WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.MATCH_PARENT,
+                )
+        } else {
+            dialog?.window?.setLayout(width / 2, 2 * height / 3)
+        }
+
     }
 
     private fun setWindowAnimation(res: Int) {
@@ -545,6 +556,12 @@ class WorkoutStartDialog
             false
         }
     }
+
+    fun isTablet(): Boolean {
+        return resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >=
+                Configuration.SCREENLAYOUT_SIZE_LARGE
+    }
+
     var callback: Callback? = null
 
     override fun onDetach() {

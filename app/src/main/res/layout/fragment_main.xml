@@ -5,7 +5,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <ImageButton
             android:id="@+id/startButton"
@@ -50,7 +51,8 @@
             android:visibility="gone"
             app:fontFamily="@font/lato_black"
             tools:text="02:23"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            android:keepScreenOn="true"/>
 
         <Button style="@style/Widget.Material3.MaterialTimePicker.Button"
             android:id="@+id/main_button"

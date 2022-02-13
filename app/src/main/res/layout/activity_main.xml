@@ -457,7 +457,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/break_notifications"
+                            android:text="@string/workout_set_notifying"
                             android:textColor="@color/side_menu_text_color"
                             android:textSize="16sp" />
                     </LinearLayout>
@@ -495,7 +495,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="30dp"
                                 android:layout_toEndOf="@+id/imageView01"
-                                android:text="@string/notification_sd_with_sound"
+                                android:text="@string/notifying_sd_with_sound"
                                 android:textColor="@color/side_menu_text_color"
                                 android:textSize="14sp"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -530,7 +530,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="30dp"
                                 android:layout_toEndOf="@+id/imageView02"
-                                android:text="@string/notification_sd_vibration"
+                                android:text="@string/notifying_sd_vibration"
                                 android:textColor="@color/side_menu_text_color"
                                 android:textSize="14sp"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -562,7 +562,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="30dp"
                                 android:layout_toEndOf="@+id/imageView03"
-                                android:text="@string/notification_sd_screen_anim"
+                                android:text="@string/notifying_sd_screen_anim"
                                 android:textColor="@color/side_menu_text_color"
                                 android:textSize="14sp"
                                 app:layout_constraintBottom_toBottomOf="parent"

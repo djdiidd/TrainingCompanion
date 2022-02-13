@@ -17,10 +17,7 @@ import android.view.animation.AnimationUtils
 import android.view.animation.Transformation
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -150,38 +147,50 @@ class MainActivity : AppCompatActivity(),
                 /* ИНИЦИАЛИЗИРУЕМ СЛУШАТЕЛИ ДЛЯ КАЖДОГО ПОДПУНКТА "МЕСТО ТРЕНИРОВКИ" */
 
                 // Установка места тренировки на "Дом"
-                binding.subMenuDynamicPlaceHome.setOnClickListener {
-                    viewModel.trainingPlace = Place.TRAINING_AT_HOME
-                    closeOpenedSideSubmenu()
-                }
+                binding.subMenuDynamicPlaceHome.setOnClickListener(
+                    getSideMenuItemOnClickListener(
+                        R.string.side_menu_reselected_place_toast,
+                        R.string.side_menu_reselected_place_item_home
+                    ) { viewModel.trainingPlace = Place.TRAINING_AT_HOME })
+
+
                 // Установка места тренировки на "Тренажерный Зал"
-                binding.subMenuDynamicPlaceGym.setOnClickListener {
-                    viewModel.trainingPlace = Place.TRAINING_IN_GYM
-                    closeOpenedSideSubmenu()
-                }
+                binding.subMenuDynamicPlaceGym.setOnClickListener(getSideMenuItemOnClickListener(
+                    R.string.side_menu_reselected_place_toast,
+                    R.string.side_menu_reselected_place_item_gym
+                ) { viewModel.trainingPlace = Place.TRAINING_IN_GYM })
+
+
+
                 // Установка места тренировки на "На улице"
-                binding.subMenuDynamicPlaceOutdoors.setOnClickListener {
-                    viewModel.trainingPlace = Place.TRAINING_OUTDOORS
-                    closeOpenedSideSubmenu()
-                }
+                binding.subMenuDynamicPlaceOutdoors.setOnClickListener(getSideMenuItemOnClickListener(
+                    R.string.side_menu_reselected_place_toast,
+                    R.string.side_menu_reselected_place_item_outdoors
+                ) { viewModel.trainingPlace = Place.TRAINING_OUTDOORS })
 
                 /* ОПРЕДЕЛИМ СЛУШАТЕЛИ ДЛЯ КАЖДОГО ПОДПУНКТА "РЕЖИМ УВЕДОМЛЕНИЯ" */
 
                 // Установка уведомления ввиде "Проигрывание звука"
-                binding.subMenuDynamicSound.setOnClickListener {
-                    viewModel.breakNotificationMode = BreakNotificationMode.SOUND
-                    closeOpenedSideSubmenu()
-                }
+                binding.subMenuDynamicSound.setOnClickListener(getSideMenuItemOnClickListener(
+                    R.string.side_menu_reselected_workout_set_notifying_toast,
+                    R.string.side_menu_reselected_ws_item_sound
+                ) { viewModel.breakNotificationMode = BreakNotificationMode.SOUND })
+
+
+
                 // Установка уведомления ввиде "Вибрация"
-                binding.subMenuDynamicVibration.setOnClickListener {
-                    viewModel.breakNotificationMode = BreakNotificationMode.VIBRATION
-                    closeOpenedSideSubmenu()
-                }
+                binding.subMenuDynamicVibration.setOnClickListener(getSideMenuItemOnClickListener(
+                    R.string.side_menu_reselected_workout_set_notifying_toast,
+                    R.string.side_menu_reselected_ws_item_vibration
+                ) { viewModel.breakNotificationMode = BreakNotificationMode.VIBRATION })
+
+
+
                 // Установка уведомления ввиде "Анимация на экране / сияние экрана"
-                binding.subMenuDynamicAnim.setOnClickListener {
-                    viewModel.breakNotificationMode = BreakNotificationMode.ANIMATION
-                    closeOpenedSideSubmenu()
-                }
+                binding.subMenuDynamicAnim.setOnClickListener(getSideMenuItemOnClickListener(
+                    R.string.side_menu_reselected_workout_set_notifying_toast,
+                    R.string.side_menu_reselected_ws_item_animation
+                ) { viewModel.breakNotificationMode = BreakNotificationMode.ANIMATION })
 
                 /* ОПРЕДЕЛИМ СЛУШАТЕЛИ ДЛЯ КАЖДОГО ОБЪЕКТА "ВРЕМЯ ОТДЫХА" */
 
@@ -412,6 +421,24 @@ class MainActivity : AppCompatActivity(),
             binding.sideMenuInputRestTime.text = null
             binding.root.hideKeyboard()
         }
+    }
+
+    /**
+     * Получение слушателя нажатий для места
+     * отдыха и уведомления этапов тренировки;
+     */
+    private fun getSideMenuItemOnClickListener(
+        toastString: Int,
+        toastSubstring: Int,
+        action: () -> Unit,
+    ) = View.OnClickListener {
+        action.invoke()
+        Toast.makeText(
+            this@MainActivity,
+            getString(toastString, getString(toastSubstring)),
+            Toast.LENGTH_LONG
+        ).show()
+        closeOpenedSideSubmenu()
     }
 
     /**

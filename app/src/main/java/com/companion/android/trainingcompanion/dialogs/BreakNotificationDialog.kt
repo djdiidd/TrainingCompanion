@@ -29,9 +29,9 @@ class BreakNotificationDialog(private val previousMode: Int)
         super.onCreate(savedInstanceState)
 
         modeToString = mapOf(
-            BreakNotificationMode.SOUND     to R.string.notification_with_sound,
-            BreakNotificationMode.VIBRATION to R.string.notification_vibration,
-            BreakNotificationMode.ANIMATION to R.string.notification_screen_anim,
+            BreakNotificationMode.SOUND     to R.string.notifying_with_sound,
+            BreakNotificationMode.VIBRATION to R.string.notifying_vibration,
+            BreakNotificationMode.ANIMATION to R.string.notifying_screen_anim,
         )
     }
 
@@ -47,7 +47,7 @@ class BreakNotificationDialog(private val previousMode: Int)
         )
 
         val adb: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.title_change_notification_params)
+            .setTitle(R.string.title_change_notifying_params)
             .setPositiveButton(R.string.button_dialog_accept, this)
             .setNegativeButton(R.string.button_dialog_cancel, this)
             .setView(binding.root)
