@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="blue">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
     <color name="bnv_checked">#91A8EE</color>
     <color name="bnv_unchecked">#FFFFFFFF</color>
     <color name="shrine_pink_100">#FEDBD0</color>
@@ -14,35 +7,29 @@
     <color name="shrine_pink_light">#FEEAE6</color>
     <color name="main_color">#ABCBCF</color>
     <!-- New colors -->
-    <color name="primary">#00acc1</color>
-    <color name="light">#5ddef4</color>
-    <color name="dark">#007c91</color>
-    <color name="secondary">#78909c</color>
+    <!-- DEPRECATED -->
     <color name="slight">#a7c0cd</color>
     <color name="sdark">#4b636e</color>
     <color name="light_sea_green">#20B2AA</color>
     <color name="dark_grey">#6E7F80</color>
     <color name="test">#4A4458</color>
     <color name="red">#EC1D26</color>
-    <color name="dialog_button_color">@color/white</color>
     <color name="special_text_color">#181717</color>
     <color name="slider_label_color">@color/shrine_pink_100</color>
     <color name="tick_color_active">@color/shrine_pink_100</color>
-    <color name="button_color">@color/black</color>
     <color name="raisin">#0d1137</color>
     <color name="pink">#E52165</color>
     <!-- Конфигурация таймера -->
     <color name="digits_color">@color/shrine_pink_900</color>
     <color name="progress_bar_edge">#f0f0f0</color>
     <color name="progress_bar_static">#e2e2e2</color>
-    <color name="progress_bar_edge_dots">@color/white</color>
-    <color name="progress_bar_filled">@color/white</color>
+    <color name="progress_bar_edge_dots">@android:color/white</color>
+    <color name="progress_bar_filled">@android:color/white</color>
     <color name="progress_bar_start_gradient">@color/main_color</color>
     <color name="progress_bar_center_gradient">@color/shrine_pink_900</color>
     <color name="progress_bar_end_gradient">@color/shrine_pink_100</color>
     <color name="toolbar_color">@color/special_white</color>
     <color name="special_white">#E8EBF2</color>
-    <color name="shadow_text_color">@color/black</color>
     <color name="progress_bar_background_color">@color/special_white</color>
     <color name="progress_bar_bg_gradient_1_color">@color/special_white</color>
     <color name="progress_bar_bg_gradient_2_color">@color/special_white</color>
@@ -51,4 +38,34 @@
     <color name="input_manually_button_border_color">@color/shrine_pink_900</color>
     <color name="input_manually_button_bg_color">#B3D2E6</color>
     <color name="side_menu_text_color">@android:color/black</color>
+
+    <color name="md_theme_primary">#4E57A9</color>
+    <color name="md_theme_onPrimary">#FFFFFF</color>
+    <color name="md_theme_primaryContainer">#DEE0FF</color>
+    <color name="md_theme_onPrimaryContainer">#010865</color>
+    <color name="md_theme_secondary">#BD004C</color>
+    <color name="md_theme_onSecondary">#FFFFFF</color>
+    <color name="md_theme_secondaryContainer">#FFD9DF</color>
+    <color name="md_theme_onSecondaryContainer">#400014</color>
+    <color name="md_theme_tertiary">#715D00</color>
+    <color name="md_theme_onTertiary">#FFFFFF</color>
+    <color name="md_theme_tertiaryContainer">#FFE165</color>
+    <color name="md_theme_onTertiaryContainer">#231B00</color>
+    <color name="md_theme_error">#BA1B1B</color>
+    <color name="md_theme_errorContainer">#FFDAD4</color>
+    <color name="md_theme_onError">#FFFFFF</color>
+    <color name="md_theme_onErrorContainer">#410001</color>
+    <color name="md_theme_background">#FEFBFF</color>
+    <color name="md_theme_onBackground">#1B1B1F</color>
+    <color name="md_theme_surface">#FEFBFF</color>
+    <color name="md_theme_onSurface">#1B1B1F</color>
+    <color name="md_theme_surfaceVariant">#E3E1EC</color>
+    <color name="md_theme_onSurfaceVariant">#46464E</color>
+    <color name="md_theme_outline">#767680</color>
+    <color name="md_theme_inverseOnSurface">#F3F0F5</color>
+    <color name="md_theme_inverseSurface">#303034</color>
+    <color name="md_theme_inversePrimary">#BBC2FF</color>
+    <color name="md_theme_shadow">#000000</color>
+    <color name="md_theme_primaryInverse">#BBC2FF</color>
+
 </resources>

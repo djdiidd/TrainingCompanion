@@ -18,14 +18,14 @@ class WorkoutViewModel : ViewModel() {
 //-----------------------------------/* Данные */---------------------------------------------------
 
     val activeProcess = MutableLiveData(WorkoutProcess.NOT_STARTED)
-    val restTime = MutableLiveData(60) // Время перерыва
+    val restTime = MutableLiveData<Int>() // Время перерыва
 
     // Хранение массива выбранных объектов из доступного списка (boolean)
     private var whichBodyPartSelected = Array(5) { false }
     private var whichMuscleSelected: Array<Boolean> = arrayOf()
 
     // Хранение пользовательских настроек
-    var breakNotificationMode: Int = BreakNotificationMode.SOUND
+    var breakNotificationMode: Int? = null
         set(value) {
             if (value in BreakNotificationMode.SOUND..BreakNotificationMode.ANIMATION) {
                 field = value
@@ -33,7 +33,7 @@ class WorkoutViewModel : ViewModel() {
         }
 
     // Хранение места тренировки
-    var trainingPlace = Place.TRAINING_AT_HOME
+    var trainingPlace: Int? = null
         set(value) {
             if (value in Place.TRAINING_AT_HOME..Place.TRAINING_OUTDOORS) {
                 field = value

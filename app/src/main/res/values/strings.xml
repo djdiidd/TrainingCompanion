@@ -22,7 +22,8 @@
     <string name="select_training_place">Training place</string>
     <string name="select_notifying_mode">Notifying mode</string>
     <string name="description_time_slider">Select time between sets</string>
-    <string name="title_start_workout">Start your workout</string>
+    <string name="title_start_workout">Start your workout</string> <!-- deprecated -->
+    <string name="title_select_workout_parameters">Select parameters</string>
     <string name="title_select_muscles">Select muscles you will work out</string>
     <string name="title_select_body_parts">Select parts of the body</string>
     <string name="full_body">Full body</string>
@@ -88,7 +89,7 @@
     <!-- Диалог предупреждения о неиспользованности некоторых выбранных частей тела -->
     <string name="warning_dialog_unused_bp_title">Remove unused body parts?</string>
     <string name="warning_dialog_unused_bp_message">
-        It seems that you chose %s and you are not going to train it. Also you can change workout settings in right panel later.
+        It seems that you chose %s and you are not going to train it. \nAlso you can change workout settings in right panel later.
     </string>
     <!-- Диалог настройки оповещений начала/конца подхода -->
     <string name="title_change_notifying_params">Change notifying parameters</string>

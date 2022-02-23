@@ -11,9 +11,9 @@ object BreakNotificationMode {
     const val ANIMATION: Int = 113
 
     private val images = intArrayOf(
-        R.drawable.ic_with_sound,
-        R.drawable.ic_vibration,
-        R.drawable.ic_screen_glow
+        R.drawable.ic_sound_outlined,
+        R.drawable.ic_vibration_outlined,
+        R.drawable.ic_animation_outlined
     )
 
     private var list: Array<SimpleSpinnerItem> = arrayOf()

@@ -124,12 +124,12 @@ class MainActivity : AppCompatActivity(),
     override fun onStart() {
         super.onStart()
 
-        // Устанавливаем анимацию переливания фона у фрагментов
-        (binding.fragmentContainer.background as AnimationDrawable).also {
-            it.setEnterFadeDuration(2000)
-            it.setExitFadeDuration(4000)
-            it.start()
-        }
+//        // Устанавливаем анимацию переливания фона у фрагментов
+//        (binding.fragmentContainer.background as AnimationDrawable).also {
+//            it.setEnterFadeDuration(2000)
+//            it.setExitFadeDuration(4000)
+//            it.start()
+//        }
 
         //-- -- -- -- -- -- -- -- -- -- -- -- -- -- -[ Обаботка бокового меню ]- -- -- -- -- -- -- -
 

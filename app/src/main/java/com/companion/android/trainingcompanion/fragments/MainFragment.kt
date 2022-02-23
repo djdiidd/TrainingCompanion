@@ -12,10 +12,11 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import com.companion.android.trainingcompanion.R
 import com.companion.android.trainingcompanion.databinding.FragmentMainBinding
-import com.companion.android.trainingcompanion.dialogs.WorkoutStartDialog
+import com.companion.android.trainingcompanion.dialogs.WorkoutStartFSDialog
 import com.companion.android.trainingcompanion.objects.WorkoutProcess
 import com.companion.android.trainingcompanion.viewmodels.WorkoutViewModel
 
@@ -25,12 +26,14 @@ private const val DIALOG_START = "dialog-start" // Метка диалога
 /**
  * Данный фрагмент сопровождает пользователя во время тренировки и является основным
  */
-class MainFragment : Fragment(), WorkoutStartDialog.Callback {
+class MainFragment : Fragment(), WorkoutStartFSDialog.Callback {
 
     private lateinit var binding: FragmentMainBinding               // Объект класса привязки данных
     private val viewModel: WorkoutViewModel by activityViewModels() // Общая ViewModel
 
     private var callback: FragmentCallback? = null
+
+    private var isLargeLayout = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +43,8 @@ class MainFragment : Fragment(), WorkoutStartDialog.Callback {
         Log.d("LF", "F onCreateView")
         binding = DataBindingUtil // определяем привязку данных
             .inflate(layoutInflater, R.layout.fragment_main, container, false)
+
+        isLargeLayout = resources.getBoolean(R.bool.large_layout)
 
         // Если тренировка уже началась, то убираем лишнее с экрана;
         if (viewModel.activeProcess.value != WorkoutProcess.NOT_STARTED) {
@@ -61,12 +66,29 @@ class MainFragment : Fragment(), WorkoutStartDialog.Callback {
 //            it.startAnimation(bounceAnim)
 
             if (parentFragmentManager.findFragmentByTag(DIALOG_START) == null) {
-                WorkoutStartDialog().show(this@MainFragment.parentFragmentManager, DIALOG_START)
+                showStartDialog()
                 binding.startButton.visibility = View.GONE
             }
 //            it.clearAnimation()
         }
         callback?.fragmentUICreated(binding.setTimer, binding.setTimerProgress)
+    }
+
+    private fun showStartDialog() {
+        if (isLargeLayout) {
+            WorkoutStartFSDialog().show(this@MainFragment.parentFragmentManager, DIALOG_START)
+        } else {
+            // The device is smaller, so show the fragment fullscreen
+            val transaction = parentFragmentManager.beginTransaction()
+            // For a little polish, specify a transition animation
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            // To make it fullscreen, use the 'content' root view as the container
+            // for the fragment, which is always the root view for the activity
+            transaction
+                .add(android.R.id.content, WorkoutStartFSDialog())
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     override fun onStart() {

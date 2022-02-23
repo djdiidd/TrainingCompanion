@@ -41,7 +41,7 @@
             android:layout_alignBottom="@+id/set_timer_progress"
             android:gravity="center"
             android:paddingBottom="17dp"
-            android:shadowColor="@color/shadow_text_color"
+            android:shadowColor="@color/md_theme_shadow"
             android:shadowDx="1"
             android:shadowDy="1"
             android:shadowRadius="2"

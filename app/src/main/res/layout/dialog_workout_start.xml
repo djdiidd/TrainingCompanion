@@ -16,7 +16,6 @@
         android:id="@+id/dialog_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/dialog_rounded"
         android:clipToPadding="false"
         android:padding="12dp">
 
@@ -27,7 +26,6 @@
             android:gravity="center_vertical"
             android:paddingStart="8dp"
             android:text="@string/title_start_workout"
-            android:textAppearance="@style/MaterialAlertDialog.App.Title.Text"
             android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/button_cancel"
@@ -57,7 +55,6 @@
                 android:drawablePadding="10dp"
                 android:gravity="center"
                 android:text="@string/select_training_place"
-                android:textColor="@color/black"
                 android:textSize="16sp" />
 
             <RelativeLayout
@@ -69,9 +66,8 @@
                     android:layout_width="170dp"
                     android:layout_height="48dp"
                     android:layout_alignParentEnd="true"
-                    android:background="@drawable/background_border"
-                    android:contentDescription="@string/content_description_spinner"
-                    android:popupBackground="@drawable/spinner_popup_bg" />
+                    android:contentDescription="@string/content_description_spinner"  />
+
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -104,7 +100,6 @@
                 android:drawablePadding="10dp"
                 android:gravity="center"
                 android:text="@string/select_notifying_mode"
-                android:textColor="@color/black"
                 android:textSize="16sp" />
 
             <RelativeLayout
@@ -116,9 +111,8 @@
                     android:layout_width="170dp"
                     android:layout_height="48dp"
                     android:layout_alignParentEnd="true"
-                    android:background="@drawable/background_border"
-                    android:contentDescription="@string/content_description_spinner"
-                    android:popupBackground="@drawable/spinner_popup_bg" />
+                    android:contentDescription="@string/content_description_spinner" />
+
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -154,7 +148,6 @@
                 android:paddingTop="12dp"
                 android:paddingEnd="12dp"
                 android:text="@string/description_time_slider"
-                android:textColor="@color/black"
                 android:textSize="16sp" />
 
             <Space
@@ -168,10 +161,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="27dp"
                 android:layout_gravity="bottom"
-                android:background="@drawable/background_rounded_border"
                 android:orientation="horizontal"
                 android:paddingStart="2dp"
                 android:paddingEnd="5dp">
+<!--                android:background="@drawable/background_rounded_border"-->
 
                 <ImageView
                     android:id="@+id/keyboard_image"
@@ -185,7 +178,6 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="@string/slider_def_value60"
-                    android:textColor="@color/shrine_pink_900"
                     android:textSize="16sp"
                     android:textStyle="italic" />
 
@@ -220,7 +212,6 @@
             android:value="60"
             android:valueFrom="15.0"
             android:valueTo="240.0"
-
             app:layout_constraintBottom_toTopOf="@+id/button_cancel"
             app:layout_constraintEnd_toEndOf="@+id/slider_description_layout"
             app:layout_constraintStart_toStartOf="@+id/slider_description_layout"
@@ -232,13 +223,11 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/background_border"
             android:drawablePadding="10dp"
             android:gravity="start|center_vertical"
             android:hint="@string/select_body_part"
             android:paddingStart="8dp"
             android:paddingEnd="12dp"
-            android:textColor="@color/black"
             android:textSize="16sp"
             app:drawableEndCompat="@drawable/ic_body_mini"
             app:layout_constraintBottom_toTopOf="@+id/button_cancel"
@@ -247,31 +236,31 @@
             app:layout_constraintStart_toStartOf="@+id/slider_description_layout"
             app:layout_constraintTop_toBottomOf="@+id/timeSlider"
             app:layout_constraintVertical_bias="0.0" />
+<!--        android:background="@drawable/background_border"-->
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/muscles_selector"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/background_border"
             android:drawablePadding="10dp"
             android:gravity="start|center_vertical"
             android:hint="@string/select_muscles"
             android:paddingStart="8dp"
             android:paddingEnd="12dp"
-            android:textColor="@color/black"
             android:textSize="16sp"
             android:visibility="@{musclesIsVisible ? View.VISIBLE : View.GONE}"
-            app:drawableEndCompat="@drawable/ic_muscle_mini"
             app:layout_constraintBottom_toTopOf="@+id/button_cancel"
             app:layout_constraintEnd_toEndOf="@+id/body_part_selector"
             app:layout_constraintStart_toStartOf="@+id/body_part_selector"
             app:layout_constraintTop_toBottomOf="@id/body_part_selector"
             app:layout_constraintVertical_bias="0.0" />
+<!--        android:background="@drawable/background_border"-->
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_cancel"
-            style="@style/Widget.App.Button"
+            style="@style/Widget.App.FloatingButton.WithEndDrawable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -285,7 +274,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_accept"
-            style="@style/Widget.App.Button"
+            style="@style/Widget.App.FloatingButton.WithEndDrawable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"

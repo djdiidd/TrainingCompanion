@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/md_theme_surface"
+        android:clickable="true"
+        android:focusableInTouchMode="true">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/parameters_title_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/md_theme_secondaryContainer"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/cancel_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:minWidth="28dp"
+                    android:minHeight="28dp"
+                    android:layout_marginEnd="12dp"
+                    android:src="@drawable/ic_close"
+                    app:tint="@color/md_theme_onSecondaryContainer" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_toLeftOf="@id/start_button"
+                    android:layout_toRightOf="@id/cancel_button"
+                    android:text="@string/title_select_workout_parameters"
+                    android:textColor="@color/md_theme_onSecondaryContainer"
+                    android:textSize="32sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/start_button"
+                    style="@style/Widget.AppCompat.Light.ActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="12dp"
+                    android:text="start"
+                    android:textColor="@color/md_theme_onSecondaryContainer"
+                    android:textSize="16sp" />
+            </RelativeLayout>
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/parameters_title_toolbar"
+            app:layout_constraintVertical_bias="0.0">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:paddingBottom="60dp">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/select_workout_place"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginRight="16dp"
+                    app:cardBackgroundColor="@color/md_theme_primaryContainer"
+                    android:maxWidth="400dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/parameters_title_toolbar"
+                    app:shapeAppearanceOverlay="@style/StartWorkoutItem"
+                    app:strokeColor="@color/md_theme_tertiaryContainer">
+
+                    <RelativeLayout
+                        android:id="@+id/layout_select_workout_place"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="8dp"
+                        android:animateLayoutChanges="true">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/title_select_workout_place"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:gravity="center"
+                            android:text="Where are you going to train?"
+                            android:textColor="@color/md_theme_onPrimaryContainer"
+                            android:textSize="24sp" />
+
+                        <RelativeLayout
+                            android:id="@+id/place_items_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/title_select_workout_place"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="6dp"
+                            android:visibility="gone">
+
+
+                            <Button
+                                android:id="@+id/item_home"
+                                style="@style/Widget.App.FloatingButton.WithEndDrawable"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:drawableEnd="@drawable/ic_home_24"
+                                android:text="At home" />
+
+                            <Button
+                                android:id="@+id/item_gym"
+                                style="@style/Widget.App.FloatingButton.WithEndDrawable"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/item_home"
+                                android:drawableEnd="@drawable/ic_gym"
+                                android:text="In the gym" />
+
+                            <Button
+                                android:id="@+id/item_outdoors"
+                                style="@style/Widget.App.FloatingButton.WithEndDrawable"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/item_gym"
+                                android:drawableEnd="@drawable/ic_outdoors"
+                                android:text="Outdoors" />
+
+
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/select_notifying_mode"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="16dp"
+                    app:cardBackgroundColor="@color/md_theme_primaryContainer"
+                    android:maxWidth="400dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/select_workout_place"
+                    app:shapeAppearanceOverlay="@style/StartWorkoutItem"
+                    app:strokeColor="@color/md_theme_tertiaryContainer">
+
+                    <RelativeLayout
+                        android:id="@+id/layout_select_notifying_mode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="8dp"
+                        android:animateLayoutChanges="true">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/title_select_notifying_mode"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:gravity="center"
+                            android:text="How will you be notified?"
+                            android:textColor="@color/md_theme_onPrimaryContainer"
+                            android:textSize="24sp" />
+
+                        <RelativeLayout
+                            android:id="@+id/notifying_items_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/title_select_notifying_mode"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="6dp"
+                            android:visibility="gone">
+
+                            <Button
+                                android:id="@+id/item_sound"
+                                style="@style/Widget.App.FloatingButton.WithEndDrawable"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:drawableEnd="@drawable/ic_sound_outlined"
+                                android:text="By sound" />
+
+
+                            <Button
+                                android:id="@+id/item_vibration"
+                                style="@style/Widget.App.FloatingButton.WithEndDrawable"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/item_sound"
+                                android:drawableEnd="@drawable/ic_vibration_outlined"
+                                android:text="By vibration" />
+
+
+                            <Button
+                                android:id="@+id/item_animations"
+                                style="@style/Widget.App.FloatingButton.WithEndDrawable"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/item_vibration"
+                                android:drawableEnd="@drawable/ic_animation_outlined"
+                                android:text="By animations" />
+
+
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/select_bps_and_muscles"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="16dp"
+                    app:cardBackgroundColor="@color/md_theme_primaryContainer"
+                    android:maxWidth="400dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/select_notifying_mode"
+                    app:shapeAppearanceOverlay="@style/StartWorkoutItem"
+                    app:strokeColor="@color/md_theme_tertiaryContainer">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/layout_select_bps_and_muscles"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="6dp"
+                        android:layout_marginBottom="8dp"
+                        android:animateLayoutChanges="true">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/title_select_bps_and_muscles"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="What are you going to train?"
+                            android:textColor="@color/md_theme_onPrimaryContainer"
+                            android:textSize="24sp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/bps_or_muscles_buttons"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="6dp"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/title_select_bps_and_muscles">
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/body_parts_button"
+                                style="@style/Widget.App.FloatingButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Choose body parts"
+                                app:layout_constraintEnd_toStartOf="@id/guideline_train"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <androidx.constraintlayout.widget.Guideline
+                                android:id="@+id/guideline_train"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                app:layout_constraintGuide_percent="0.5" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/muscles_button"
+                                style="@style/Widget.Material3.FloatingActionButton.Surface"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:text="Choose muscles"
+                                android:visibility="gone"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="@+id/guideline_train"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/select_rest_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="16dp"
+                    android:maxWidth="400dp"
+                    app:cardBackgroundColor="@color/md_theme_primaryContainer"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/select_bps_and_muscles"
+                    app:shapeAppearanceOverlay="@style/StartWorkoutItem"
+                    app:strokeColor="@color/md_theme_tertiaryContainer">
+
+                    <RelativeLayout
+                        android:id="@+id/layout_select_rest_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="8dp"
+                        android:animateLayoutChanges="true">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/title_select_rest_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_above="@id/rest_time_buttons"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+                            android:gravity="center"
+                            android:text="What is your rest time?"
+                            android:textColor="@color/md_theme_onPrimaryContainer"
+                            android:textSize="24sp" />
+
+                        <RelativeLayout
+                            android:id="@+id/openable_layout_select_rest_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/title_select_rest_time"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginTop="6dp"
+                            android:visibility="gone">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:id="@+id/rest_time_buttons"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentEnd="true"
+                                android:orientation="horizontal">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/select_time_via_slider_button"
+                                    style="@style/Widget.App.FloatingButton"
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginRight="8dp"
+                                    android:text="Select via slider"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toStartOf="@+id/guideline_time"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <androidx.constraintlayout.widget.Guideline
+                                    android:id="@+id/guideline_time"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    app:layout_constraintGuide_percent="0.5" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/select_time_manually_button"
+                                    style="@style/Widget.App.FloatingButton"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="8dp"
+                                    android:layout_marginTop="1dp"
+                                    android:layout_marginBottom="1dp"
+                                    android:text="Input manually"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="@+id/guideline_time"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <com.google.android.material.slider.Slider
+                                android:id="@+id/time_slider"
+                                style="@style/SliderStyle"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_below="@id/rest_time_buttons"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentEnd="true"
+                                android:contentDescription="@string/content_description_slider"
+                                android:stepSize="5.0"
+                                android:value="60"
+                                android:valueFrom="15.0"
+                                android:valueTo="240.0"
+                                android:visibility="gone" />
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/input_time_field"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/rest_time_buttons"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="24dp"
+                                android:layout_marginRight="24dp"
+                                android:gravity="center"
+                                android:hint="Time of rest after a set"
+                                android:imeOptions="actionDone"
+                                android:inputType="number"
+                                android:maxLength="3"
+                                android:singleLine="true"
+                                android:textSize="18sp"
+                                android:visibility="gone" />
+
+                        </RelativeLayout>
+
+                    </RelativeLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

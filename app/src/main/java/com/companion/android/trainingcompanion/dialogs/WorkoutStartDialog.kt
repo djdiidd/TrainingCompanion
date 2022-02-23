@@ -1,5 +1,6 @@
 package com.companion.android.trainingcompanion.dialogs
 
+import android.app.Dialog
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
@@ -30,14 +31,14 @@ import com.google.android.material.slider.LabelFormatter
 import com.google.android.material.slider.Slider
 
 
-// Ключ для слушателя получения результата
-const val SELECT_BODY_PART_DIALOG = "select-body-part-dialog"
-
-// Ключ для слушателя получения результата
-const val SELECT_MUSCLE_DIALOG = "select-muscle-dialog"
-
-// Тег для передачи списка выбранных объектов из диалога
-const val LIST_BUNDLE_TAG = "list-bundle-tag"
+//// Ключ для слушателя получения результата
+//const val SELECT_BODY_PART_DIALOG = "select-body-part-dialog"
+//
+//// Ключ для слушателя получения результата
+//const val SELECT_MUSCLE_DIALOG = "select-muscle-dialog"
+//
+//// Тег для передачи списка выбранных объектов из диалога
+//const val LIST_BUNDLE_TAG = "list-bundle-tag"
 
 /**
  * Окно для выбора параметров перед тренировкой
@@ -147,6 +148,16 @@ class WorkoutStartDialog
 
         return binding.root
     }
+    // TODO: add to notion
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        // The only reason you might override this method when using onCreateView() is
+        // to modify any dialog characteristics. For example, the dialog includes a
+        // title by default, but your custom layout might not need it. So here you can
+        // remove the dialog title, but you must call the superclass to get the Dialog.
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        return dialog
+    }
 
     /**
      * Метод onStart жизненного цикла фрагмента
@@ -155,8 +166,6 @@ class WorkoutStartDialog
         super.onStart()
 
         callback = parentFragmentManager.findFragmentByTag(TAG_MAIN_FRAGMENT) as Callback
-
-        setDialogSize() // Устанавливаем необходимый размер диалогового окна
 
         // Проверяем на нажатие кнопки назад, после которой закроем окно
         dialog?.setOnKeyListener { _, keyCode, _ ->
@@ -338,23 +347,6 @@ class WorkoutStartDialog
         }
     }
 
-    private fun setDialogSize() {
-        val metrics = resources.displayMetrics
-        val width = metrics.widthPixels
-        val height = metrics.heightPixels
-        if (!isTablet()) {
-            if (height > 680)
-                dialog?.window?.setLayout(6 * width / 7, 4 * height / 5)
-            else
-                dialog?.window?.setLayout(
-                    WindowManager.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.MATCH_PARENT,
-                )
-        } else {
-            dialog?.window?.setLayout(width / 2, 2 * height / 3)
-        }
-
-    }
 
     private fun setWindowAnimation(res: Int) {
         dialog?.window?.setWindowAnimations(res)
@@ -557,10 +549,7 @@ class WorkoutStartDialog
         }
     }
 
-    fun isTablet(): Boolean {
-        return resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK >=
-                Configuration.SCREENLAYOUT_SIZE_LARGE
-    }
+
 
     var callback: Callback? = null
 
