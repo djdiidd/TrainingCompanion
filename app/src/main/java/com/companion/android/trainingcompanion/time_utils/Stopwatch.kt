@@ -17,7 +17,8 @@ import com.companion.android.trainingcompanion.R
 class Stopwatch(private val context: Context) {
 
     // Инициализация интента для класса сервиса
-    private var serviceIntent: Intent = Intent(context.applicationContext, StopwatchService::class.java)
+    private var serviceIntent: Intent =
+        Intent(context.applicationContext, StopwatchService::class.java)
 
     init {
         addLifeCycleObserver()
@@ -115,9 +116,12 @@ class Stopwatch(private val context: Context) {
             // время и получающего по интенту TIMER_UPDATED
             override fun onCreate(owner: LifecycleOwner) {
                 super.onCreate(owner)
-                context.registerReceiver(newTimeReceiver,
-                    IntentFilter(StopwatchService.TIMER_UPDATED))
+                context.registerReceiver(
+                    newTimeReceiver,
+                    IntentFilter(StopwatchService.TIMER_UPDATED)
+                )
             }
+
             // При уничтожении, удаляем связь
             override fun onDestroy(owner: LifecycleOwner) {
                 super.onDestroy(owner)
@@ -127,5 +131,4 @@ class Stopwatch(private val context: Context) {
         // Добавляем наблюдателя
         (context as LifecycleOwner).lifecycle.addObserver(defaultLifecycleObserver)
     }
-
 }

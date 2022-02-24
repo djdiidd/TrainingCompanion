@@ -11,5 +11,5 @@
         android:toXScale="1.0"
         android:fromYScale="0.85"
         android:toYScale="1.0"
-        android:duration="800"/>
+        android:duration="600"/>
 </set>

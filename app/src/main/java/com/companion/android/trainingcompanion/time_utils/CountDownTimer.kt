@@ -23,7 +23,7 @@ class CountDownTimer(private val context: Context) {
 
 //---------------------------------------[ Данные ]-------------------------------------------------
 
-//                                                                             Второстепенные данные
+    //                                                                             Второстепенные данные
     // Элементы экрана, которые можно добавить с помощью attachUI
     private var clockTextView: TextView? = null
     private var clockProgressBar: ProgressBar? = null
@@ -34,21 +34,7 @@ class CountDownTimer(private val context: Context) {
     // Аниматор для ProgressBar
     private lateinit var animator: ObjectAnimator
 
-    // Коэффициент анимации
-    private var animCoefficient: Int = 0
-        get() {
-            return if (startTime in Params.restTimeDefaultRange) {
-                (40 - startTime * 0.13).toInt()
-            } else {
-                (40 - startTime * 0.05).toInt()
-            }
-        }
-        set(value) {
-            if (value > 0) field = value
-            else throw Error("Coefficient of animation cannot be <= 0")
-        }
-
-//                                                                             Первостепенные данные
+    //                                                                             Первостепенные данные
     private var time: Int = 60     // Оставшееся время;
 
     var isGoing: Boolean = false   // Идет ли счет времени;
@@ -63,7 +49,9 @@ class CountDownTimer(private val context: Context) {
             Log.d("MyTag", "time is $time")
             time = intent.getIntExtra(CountDownService.TIME_EXTRA, 0)
             updateTextUI()
-            if (time == 0) { finish() }
+            if (time == 0) {
+                finish()
+            }
         }
     }
 
@@ -167,9 +155,11 @@ class CountDownTimer(private val context: Context) {
      * Восстановление или переопределение прогресса индикатора заполненности (при наличии)
      */
     private fun restoreProgressBar(maxValue: Int = startTime, currentValue: Int = time) {
-        if (clockProgressBar == null || currentValue == 0) { return }
+        if (clockProgressBar == null || currentValue == 0) {
+            return
+        }
 
-        val coefficient = animCoefficient
+        val coefficient = 100
         val currentProgress = currentValue * coefficient
 
         clockProgressBar!!.max = (maxValue * coefficient)
@@ -178,8 +168,12 @@ class CountDownTimer(private val context: Context) {
             clockProgressBar!!, "progress", currentProgress, 0
         ).apply {
             interpolator = null
-            duration = (currentProgress * 2000.0 / coefficient).toLong()
-            if (isGoing) { start() } else { clockProgressBar!!.progress = currentProgress }
+            duration = (currentProgress * 1000.0 / coefficient).toLong()
+            if (isGoing) {
+                start()
+            } else {
+                clockProgressBar!!.progress = currentProgress
+            }
         }
     }
 
@@ -192,8 +186,10 @@ class CountDownTimer(private val context: Context) {
         else isFinished = false
 
         if (startTime == 0)
-            throw Exception("startTime is 0. \nPossible problem: " +
-                    "Time was not selected automatically")
+            throw Exception(
+                "startTime is 0. \nPossible problem: " +
+                        "Time was not selected automatically"
+            )
         serviceIntent.putExtra(CountDownService.TIME_EXTRA, time)
         context.startService(serviceIntent)
         isGoing = true
@@ -227,9 +223,12 @@ class CountDownTimer(private val context: Context) {
             // время и получающего по интенту TIMER_UPDATED
             override fun onResume(owner: LifecycleOwner) {
                 super.onResume(owner)
-                context.registerReceiver(timeReceiver,
-                    IntentFilter(CountDownService.TIMER_UPDATED))
+                context.registerReceiver(
+                    timeReceiver,
+                    IntentFilter(CountDownService.TIMER_UPDATED)
+                )
             }
+
             // При уничтожении, удаляем связь
             override fun onDestroy(owner: LifecycleOwner) {
                 super.onDestroy(owner)

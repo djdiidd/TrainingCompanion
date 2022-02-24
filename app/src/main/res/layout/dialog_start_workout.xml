@@ -22,7 +22,8 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="2dp">
 
                 <ImageView
                     android:id="@+id/cancel_button"
@@ -30,9 +31,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
+                    android:layout_marginEnd="12dp"
                     android:minWidth="28dp"
                     android:minHeight="28dp"
-                    android:layout_marginEnd="12dp"
                     android:src="@drawable/ic_close"
                     app:tint="@color/md_theme_onSecondaryContainer" />
 
@@ -45,6 +46,8 @@
                     android:text="@string/title_select_workout_parameters"
                     android:textColor="@color/md_theme_onSecondaryContainer"
                     android:textSize="32sp"
+
+                    app:autoSizeTextType="uniform"
                     android:textStyle="bold" />
 
                 <com.google.android.material.button.MaterialButton
@@ -53,7 +56,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
                     android:layout_marginEnd="12dp"
+                    app:autoSizeTextType="uniform"
                     android:text="@string/button_dialog_start"
                     android:textColor="@color/md_theme_onSecondaryContainer"
                     android:textSize="16sp" />
@@ -292,7 +297,7 @@
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/body_parts_button"
                                 style="@style/Widget.App.FloatingButton"
-                                android:layout_width="match_parent"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:text="@string/select_body_parts"
                                 app:layout_constraintEnd_toStartOf="@id/guideline_train"
@@ -312,8 +317,9 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="8dp"
+                                android:enabled="false"
                                 android:text="@string/select_muscles"
-                                android:visibility="gone"
+                                android:visibility="visible"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="@+id/guideline_train"
                                 app:layout_constraintTop_toTopOf="parent" />

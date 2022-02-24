@@ -19,6 +19,7 @@
     <string name="select_body_parts">Choose body parts</string>
     <string name="select_muscles">Choose muscles</string>
     <string name="select_training_place">Where are you going to train?</string>
+    <string name="workout_place">Workout place</string>
     <string name="select_notifying_mode">How will you be notified?</string>
     <string name="select_rest_time">What is your rest time?</string>
     <string name="select_rest_time_via_slider">Select via slider</string>

@@ -17,7 +17,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import com.companion.android.trainingcompanion.R
 import com.companion.android.trainingcompanion.activities.TAG_MAIN_FRAGMENT
-import com.companion.android.trainingcompanion.adapters.PlaceSpinnerAdapter
 import com.companion.android.trainingcompanion.databinding.DialogWorkoutStartBinding
 import com.companion.android.trainingcompanion.objects.BreakNotifyingMode
 import com.companion.android.trainingcompanion.objects.Params
@@ -123,9 +122,6 @@ class WorkoutStartDialog
             dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
         }
         binding.timeSliderDescription.text = getString(R.string.description_time_slider)
-
-        // Устанавливаем спиннер с выбором места тренировок
-        setUpSpinners()
 
         binding.apply {
             buttonAccept.setOnClickListener(this@WorkoutStartDialog)     // Слушатель нажатий для кнопки начала тр-ки
@@ -346,20 +342,6 @@ class WorkoutStartDialog
 
     private fun setWindowAnimation(res: Int) {
         dialog?.window?.setWindowAnimations(res)
-    }
-
-    /**
-     * Метод для создания спиннера, с загруженными данными из ресурсов;
-     * Данный массив из ресурсов содержит места для тренировок
-     */
-    private fun setUpSpinners() {
-        val placeAdapter = PlaceSpinnerAdapter(requireContext(), Place.getList(requireContext()))
-        val notificationAdapter =
-            PlaceSpinnerAdapter(requireContext(), BreakNotifyingMode.getList(requireContext()))
-        binding.placeSpinner.adapter = placeAdapter
-        binding.placeSpinner.onItemSelectedListener = this
-        binding.notificationSpinner.adapter = notificationAdapter
-        binding.notificationSpinner.onItemSelectedListener = this
     }
 
     /** ИНТЕРФЕЙС (spinner)

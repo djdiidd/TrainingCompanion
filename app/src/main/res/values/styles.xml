@@ -10,23 +10,21 @@
         <item name="android:paddingStart">50dp</item>
     </style>
 
-
     <style name="BounceAnimation">
         <item name="android:windowEnterAnimation">@anim/anim_bounce</item>
-        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+        <item name="android:windowExitAnimation">@anim/anim_fade_out</item>
     </style>
 
     <style name="SliderStyle">
-                <item name="thumbColor">@android:color/white</item>
-                <item name="haloColor">@color/md_theme_secondary</item>
+        <item name="thumbColor">@android:color/white</item>
+        <item name="haloColor">@color/md_theme_secondary</item>
         <item name="haloRadius">14dp</item>
         <item name="thumbRadius">12dp</item>
-                <item name="trackColorInactive">@color/md_theme_onPrimary</item>
-                <item name="tickColorInactive">@color/md_theme_onPrimary</item>
+        <item name="trackColorInactive">@color/md_theme_onPrimary</item>
+        <item name="tickColorInactive">@color/md_theme_onPrimary</item>
         <item name="trackHeight">3dp</item>
 
     </style>
-
 
     <style name="SimpleOutlinedButton" parent="Widget.MaterialComponents.TimePicker.Button">
         <item name="android:textSize">18sp</item>

@@ -258,11 +258,7 @@ class WorkoutStartFSDialog : DialogFragment() {
                 // местоположение кнопки частей тела
                 binding.musclesButton.visibility = View.VISIBLE
 
-                binding.bodyPartsButton.layoutParams = LinearLayout.LayoutParams(
-                    0, LinearLayout.LayoutParams.WRAP_CONTENT
-                ).also {
-                    it.setMargins(0, 0, 8, 0)
-                }
+                binding.musclesButton.isEnabled = true
 
             }
             // Запуск диалогового окна с выбором частей тела
@@ -311,8 +307,11 @@ class WorkoutStartFSDialog : DialogFragment() {
         var startedInput = false
         binding.selectTimeManuallyButton.setOnClickListener {
             if (binding.inputTimeField.visibility == View.VISIBLE) {
-                validateRestTime(binding.inputTimeField.text.toString().toInt())
-                startedInput = false
+
+                if (!binding.inputTimeField.text.isNullOrEmpty()) {
+                    validateRestTime(binding.inputTimeField.text.toString().toInt())
+                    startedInput = false
+                }
             } else {
                 binding.inputTimeField.visibility = View.VISIBLE
                 binding.timeSlider.visibility = View.GONE
@@ -330,8 +329,10 @@ class WorkoutStartFSDialog : DialogFragment() {
         }
 
         binding.inputTimeField.onDone {
-            startedInput = false
-            validateRestTime(binding.inputTimeField.text.toString().toInt())
+            if (!binding.inputTimeField.text.isNullOrEmpty()) {
+                startedInput = false
+                validateRestTime(binding.inputTimeField.text.toString().toInt())
+            }
         }
 
         binding.timeSlider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {

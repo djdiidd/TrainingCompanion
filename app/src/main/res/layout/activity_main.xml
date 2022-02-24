@@ -54,7 +54,7 @@
                         android:id="@+id/options_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="14dp"
+                        android:layout_marginEnd="8dp"
                         android:background="@android:color/transparent"
                         android:minWidth="48dp"
                         android:minHeight="48dp"
@@ -83,6 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"
+            android:background="@color/md_theme_surface"
             app:headerLayout="@layout/side_header">
 
             <!-- Тело бокового меню -->
@@ -102,19 +103,22 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="12dp"
-                        android:text="@string/title_change_workout_settings" />
+                        android:text="@string/title_change_workout_settings"
+                        android:textColor="@color/md_theme_onSurface" />
 
                     <!-- Выбор места тренировки -->
                     <TextView
                         android:id="@+id/side_menu_place"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:gravity="center_vertical"
-                        android:textSize="16sp"
                         android:layout_marginLeft="12dp"
+                        android:drawableStart="@drawable/ic_place_on_24"
                         android:drawablePadding="10dp"
-                        android:text="@string/select_training_place"
-                        android:drawableStart="@drawable/ic_place_on_24"/>
+                        android:drawableTint="@color/md_theme_onSurface"
+                        android:gravity="center_vertical"
+                        android:text="@string/workout_place"
+                        android:textColor="@color/md_theme_onSurface"
+                        android:textSize="16sp" />
 
                     <!-- Динамичная вкладка для выбора нового места -->
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -130,36 +134,42 @@
                             android:id="@+id/sub_menu_dynamic_place_home"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
-                            android:gravity="center_vertical"
-                            app:layout_constraintTop_toTopOf="parent"
-                            android:textSize="14sp"
+                            android:drawableStart="@drawable/ic_home_24"
                             android:drawablePadding="8dp"
+                            android:drawableTint="@color/md_theme_onSurface"
+                            android:gravity="center_vertical"
                             android:text="@string/array_item_at_home"
-                            android:drawableStart="@drawable/ic_home_24"/>
+                            android:textColor="@color/md_theme_onSurface"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <!-- Подпункт динамичного меню -->
                         <TextView
                             android:id="@+id/sub_menu_dynamic_place_gym"
                             android:layout_width="match_parent"
                             android:layout_height="34dp"
-                            android:gravity="center_vertical"
-                            android:textSize="14sp"
-                            app:layout_constraintTop_toBottomOf="@id/sub_menu_dynamic_place_home"
+                            android:drawableStart="@drawable/ic_gym"
                             android:drawablePadding="8dp"
+                            android:drawableTint="@color/md_theme_onSurface"
+                            android:gravity="center_vertical"
                             android:text="@string/array_item_in_gym"
-                            android:drawableStart="@drawable/ic_gym"/>
+                            android:textColor="@color/md_theme_onSurface"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/sub_menu_dynamic_place_home" />
 
                         <!-- Подпункт динамичного меню -->
                         <TextView
                             android:id="@+id/sub_menu_dynamic_place_outdoors"
                             android:layout_width="match_parent"
                             android:layout_height="34dp"
-                            android:gravity="center_vertical"
-                            android:textSize="14sp"
-                            app:layout_constraintTop_toBottomOf="@id/sub_menu_dynamic_place_gym"
+                            android:drawableStart="@drawable/ic_outdoors"
                             android:drawablePadding="8dp"
+                            android:drawableTint="@color/md_theme_onSurface"
+                            android:gravity="center_vertical"
                             android:text="@string/array_item_outdoors"
-                            android:drawableStart="@drawable/ic_outdoors"/>
+                            android:textColor="@color/md_theme_onSurface"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/sub_menu_dynamic_place_gym" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -168,12 +178,14 @@
                         android:id="@+id/side_menu_bodyparts"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:gravity="center_vertical"
-                        android:textSize="16sp"
                         android:layout_marginLeft="12dp"
+                        android:drawableStart="@drawable/ic_body_parts"
                         android:drawablePadding="10dp"
+                        android:drawableTint="@color/md_theme_onSurface"
+                        android:gravity="center_vertical"
                         android:text="@string/change_body_parts"
-                        android:drawableStart="@drawable/ic_body_parts"/>
+                        android:textColor="@color/md_theme_onSurface"
+                        android:textSize="16sp" />
 
                     <!-- Динамичная вкладка для редактирования тренеруемых мышц -->
                     <androidx.recyclerview.widget.RecyclerView
@@ -188,12 +200,14 @@
                         android:id="@+id/side_menu_muscles"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:gravity="center_vertical"
-                        android:textSize="16sp"
                         android:layout_marginLeft="12dp"
+                        android:drawableStart="@drawable/ic_muscle"
                         android:drawablePadding="10dp"
+                        android:drawableTint="@color/md_theme_onSurface"
+                        android:gravity="center_vertical"
                         android:text="@string/change_muscles"
-                        android:drawableStart="@drawable/ic_muscle"/>
+                        android:textColor="@color/md_theme_onSurface"
+                        android:textSize="16sp" />
 
                     <!-- Динамичная вкладка для редактирования тренеруемых мышц -->
                     <androidx.recyclerview.widget.RecyclerView
@@ -208,12 +222,14 @@
                         android:id="@+id/side_menu_time"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:gravity="center_vertical"
-                        android:textSize="16sp"
                         android:layout_marginLeft="12dp"
+                        android:drawableStart="@drawable/ic_timer"
                         android:drawablePadding="10dp"
+                        android:drawableTint="@color/md_theme_onSurface"
+                        android:gravity="center_vertical"
                         android:text="@string/change_rest_time"
-                        android:drawableStart="@drawable/ic_timer"/>
+                        android:textColor="@color/md_theme_onSurface"
+                        android:textSize="16sp" />
 
                     <!-- Динамичная вкладка для редактирования времени отдыха -->
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -234,7 +250,7 @@
                             app:layout_constraintBottom_toTopOf="@+id/side_menu_input_rest_time"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintVertical_bias="0.0"  />
+                            app:layout_constraintVertical_bias="0.0" />
 
 
                         <com.google.android.material.textview.MaterialTextView
@@ -242,6 +258,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
+                            android:textColor="@color/md_theme_onSurface"
                             app:layout_constraintEnd_toStartOf="@+id/add5s"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toEndOf="@+id/sub5s"
@@ -268,6 +285,7 @@
                             android:hint="@string/side_menu_rest_time_hint"
                             android:inputType="number"
                             android:maxLength="3"
+                            android:textColor="@color/md_theme_onSurface"
                             android:textSize="15sp"
                             app:layout_constraintEnd_toEndOf="@+id/add5s"
                             app:layout_constraintHorizontal_bias="0.0"
@@ -281,6 +299,7 @@
                             android:layout_gravity="center"
                             android:enabled="false"
                             android:src="@drawable/ic_done_disabled"
+                            android:tint="@color/md_theme_onSurface"
                             android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.498"
@@ -301,19 +320,22 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="12dp"
                         android:layout_marginTop="6dp"
-                        android:text="@string/title_additional_settings" />
+                        android:text="@string/title_additional_settings"
+                        android:textColor="@color/md_theme_onSurface" />
 
                     <!-- Выбор уведомления пользователя -->
                     <TextView
                         android:id="@+id/side_menu_notification_mode"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:gravity="center_vertical"
-                        android:textSize="16sp"
                         android:layout_marginLeft="12dp"
+                        android:drawableStart="@drawable/ic_notifying"
                         android:drawablePadding="10dp"
+                        android:drawableTint="@color/md_theme_onSurface"
+                        android:gravity="center_vertical"
                         android:text="@string/workout_set_notifying"
-                        android:drawableStart="@drawable/ic_notifying"/>
+                        android:textColor="@color/md_theme_onSurface"
+                        android:textSize="16sp" />
 
                     <!-- Динамичная вкладка для выбора режима уведомления -->
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -328,36 +350,42 @@
                             android:id="@+id/sub_menu_dynamic_sound"
                             android:layout_width="match_parent"
                             android:layout_height="34dp"
-                            android:gravity="center_vertical"
-                            android:textSize="14sp"
-                            app:layout_constraintTop_toTopOf="parent"
+                            android:drawableStart="@drawable/ic_sound_outlined"
                             android:drawablePadding="8dp"
+                            android:drawableTint="@color/md_theme_onSurface"
+                            android:gravity="center_vertical"
                             android:text="@string/notifying_sd_with_sound"
-                            android:drawableStart="@drawable/ic_sound_outlined"/>
+                            android:textColor="@color/md_theme_onSurface"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toTopOf="parent" />
 
                         <!-- Подпункт динамичного меню -->
                         <TextView
                             android:id="@+id/sub_menu_dynamic_vibration"
                             android:layout_width="match_parent"
                             android:layout_height="34dp"
-                            android:gravity="center_vertical"
-                            android:textSize="14sp"
-                            app:layout_constraintTop_toBottomOf="@id/sub_menu_dynamic_sound"
+                            android:drawableStart="@drawable/ic_vibration_outlined"
                             android:drawablePadding="8dp"
+                            android:drawableTint="@color/md_theme_onSurface"
+                            android:gravity="center_vertical"
                             android:text="@string/notifying_sd_vibration"
-                            android:drawableStart="@drawable/ic_vibration_outlined"/>
+                            android:textColor="@color/md_theme_onSurface"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/sub_menu_dynamic_sound" />
 
                         <!-- Подпункт динамичного меню -->
                         <TextView
                             android:id="@+id/sub_menu_dynamic_anim"
                             android:layout_width="match_parent"
                             android:layout_height="34dp"
-                            android:gravity="center_vertical"
-                            android:textSize="14sp"
-                            app:layout_constraintTop_toBottomOf="@id/sub_menu_dynamic_vibration"
+                            android:drawableStart="@drawable/ic_animation_outlined"
                             android:drawablePadding="8dp"
+                            android:drawableTint="@color/md_theme_onSurface"
+                            android:gravity="center_vertical"
                             android:text="@string/notifying_sd_screen_anim"
-                            android:drawableStart="@drawable/ic_animation_outlined"/>
+                            android:textColor="@color/md_theme_onSurface"
+                            android:textSize="14sp"
+                            app:layout_constraintTop_toBottomOf="@id/sub_menu_dynamic_vibration" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 

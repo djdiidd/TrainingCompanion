@@ -720,7 +720,7 @@ class MainActivity : AppCompatActivity(),
 
                 timer.setDefaults(viewModel.restTime.value!!)
 
-                timer.attachUI( // STOPSHIP: TESTING
+                timer.attachUI(
                     findViewById(R.id.set_timer),
                     findViewById(R.id.set_timer_progress)
                 )
