@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.companion.android.trainingcompanion.R
-import com.companion.android.trainingcompanion.objects.BreakNotificationMode
+import com.companion.android.trainingcompanion.objects.BreakNotifyingMode
 import com.companion.android.trainingcompanion.objects.Params
 import com.companion.android.trainingcompanion.objects.Place
 import com.companion.android.trainingcompanion.objects.WorkoutProcess
@@ -27,7 +27,7 @@ class WorkoutViewModel : ViewModel() {
     // Хранение пользовательских настроек
     var breakNotificationMode: Int? = null
         set(value) {
-            if (value in BreakNotificationMode.SOUND..BreakNotificationMode.ANIMATION) {
+            if (value in BreakNotifyingMode.SOUND..BreakNotifyingMode.ANIMATION) {
                 field = value
             }
         }
@@ -109,7 +109,6 @@ class WorkoutViewModel : ViewModel() {
                         .getStringArray(appropriateMuscle[i]!!)
                 )
         }
-        assert(whichMuscleSelected.size == resArray.size)
         for (i in resArray.indices)
             if (!whichMuscleSelected[i])
                 resArray[i] = ""

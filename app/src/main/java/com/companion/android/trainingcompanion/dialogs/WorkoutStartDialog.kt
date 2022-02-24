@@ -2,13 +2,9 @@ package com.companion.android.trainingcompanion.dialogs
 
 import android.app.Dialog
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -23,7 +19,7 @@ import com.companion.android.trainingcompanion.R
 import com.companion.android.trainingcompanion.activities.TAG_MAIN_FRAGMENT
 import com.companion.android.trainingcompanion.adapters.PlaceSpinnerAdapter
 import com.companion.android.trainingcompanion.databinding.DialogWorkoutStartBinding
-import com.companion.android.trainingcompanion.objects.BreakNotificationMode
+import com.companion.android.trainingcompanion.objects.BreakNotifyingMode
 import com.companion.android.trainingcompanion.objects.Params
 import com.companion.android.trainingcompanion.objects.Place
 import com.companion.android.trainingcompanion.viewmodels.WorkoutViewModel
@@ -359,7 +355,7 @@ class WorkoutStartDialog
     private fun setUpSpinners() {
         val placeAdapter = PlaceSpinnerAdapter(requireContext(), Place.getList(requireContext()))
         val notificationAdapter =
-            PlaceSpinnerAdapter(requireContext(), BreakNotificationMode.getList(requireContext()))
+            PlaceSpinnerAdapter(requireContext(), BreakNotifyingMode.getList(requireContext()))
         binding.placeSpinner.adapter = placeAdapter
         binding.placeSpinner.onItemSelectedListener = this
         binding.notificationSpinner.adapter = notificationAdapter
@@ -379,9 +375,9 @@ class WorkoutStartDialog
         }
         else {
             when (pos) {
-                0 -> viewModel.breakNotificationMode = BreakNotificationMode.SOUND
-                1 -> viewModel.breakNotificationMode = BreakNotificationMode.VIBRATION
-                2 -> viewModel.breakNotificationMode = BreakNotificationMode.ANIMATION
+                0 -> viewModel.breakNotificationMode = BreakNotifyingMode.SOUND
+                1 -> viewModel.breakNotificationMode = BreakNotifyingMode.VIBRATION
+                2 -> viewModel.breakNotificationMode = BreakNotifyingMode.ANIMATION
             }
         }
     }

@@ -2,7 +2,6 @@ package com.companion.android.trainingcompanion.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -33,7 +32,7 @@ import com.companion.android.trainingcompanion.dialogs.WarningUnusedBPDialog
 import com.companion.android.trainingcompanion.fragments.ListFragment
 import com.companion.android.trainingcompanion.fragments.MainFragment
 import com.companion.android.trainingcompanion.models.SimpleListItem
-import com.companion.android.trainingcompanion.objects.BreakNotificationMode
+import com.companion.android.trainingcompanion.objects.BreakNotifyingMode
 import com.companion.android.trainingcompanion.objects.Params
 import com.companion.android.trainingcompanion.objects.Place
 import com.companion.android.trainingcompanion.objects.WorkoutProcess
@@ -174,7 +173,7 @@ class MainActivity : AppCompatActivity(),
                 binding.subMenuDynamicSound.setOnClickListener(getSideMenuItemOnClickListener(
                     R.string.side_menu_reselected_workout_set_notifying_toast,
                     R.string.side_menu_reselected_ws_item_sound
-                ) { viewModel.breakNotificationMode = BreakNotificationMode.SOUND })
+                ) { viewModel.breakNotificationMode = BreakNotifyingMode.SOUND })
 
 
 
@@ -182,7 +181,7 @@ class MainActivity : AppCompatActivity(),
                 binding.subMenuDynamicVibration.setOnClickListener(getSideMenuItemOnClickListener(
                     R.string.side_menu_reselected_workout_set_notifying_toast,
                     R.string.side_menu_reselected_ws_item_vibration
-                ) { viewModel.breakNotificationMode = BreakNotificationMode.VIBRATION })
+                ) { viewModel.breakNotificationMode = BreakNotifyingMode.VIBRATION })
 
 
 
@@ -190,7 +189,7 @@ class MainActivity : AppCompatActivity(),
                 binding.subMenuDynamicAnim.setOnClickListener(getSideMenuItemOnClickListener(
                     R.string.side_menu_reselected_workout_set_notifying_toast,
                     R.string.side_menu_reselected_ws_item_animation
-                ) { viewModel.breakNotificationMode = BreakNotificationMode.ANIMATION })
+                ) { viewModel.breakNotificationMode = BreakNotifyingMode.ANIMATION })
 
                 /* ОПРЕДЕЛИМ СЛУШАТЕЛИ ДЛЯ КАЖДОГО ОБЪЕКТА "ВРЕМЯ ОТДЫХА" */
 

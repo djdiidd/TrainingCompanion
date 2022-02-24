@@ -225,7 +225,7 @@
             android:layout_marginTop="4dp"
             android:drawablePadding="10dp"
             android:gravity="start|center_vertical"
-            android:hint="@string/select_body_part"
+            android:hint="@string/select_body_parts"
             android:paddingStart="8dp"
             android:paddingEnd="12dp"
             android:textSize="16sp"

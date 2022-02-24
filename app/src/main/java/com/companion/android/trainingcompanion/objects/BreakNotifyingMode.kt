@@ -4,7 +4,7 @@ import android.content.Context
 import com.companion.android.trainingcompanion.R
 import com.companion.android.trainingcompanion.models.SimpleSpinnerItem
 
-object BreakNotificationMode {
+object BreakNotifyingMode {
 
     const val SOUND    : Int = 111
     const val VIBRATION: Int = 112

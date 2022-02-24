@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="12dp"
-                    android:text="start"
+                    android:text="@string/button_dialog_start"
                     android:textColor="@color/md_theme_onSecondaryContainer"
                     android:textSize="16sp" />
             </RelativeLayout>
@@ -109,7 +109,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:gravity="center"
-                            android:text="Where are you going to train?"
+                            android:text="@string/select_training_place"
                             android:textColor="@color/md_theme_onPrimaryContainer"
                             android:textSize="24sp" />
 
@@ -131,7 +131,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentTop="true"
                                 android:drawableEnd="@drawable/ic_home_24"
-                                android:text="At home" />
+                                android:text="@string/array_item_at_home" />
 
                             <Button
                                 android:id="@+id/item_gym"
@@ -140,7 +140,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/item_home"
                                 android:drawableEnd="@drawable/ic_gym"
-                                android:text="In the gym" />
+                                android:text="@string/array_item_in_gym" />
 
                             <Button
                                 android:id="@+id/item_outdoors"
@@ -149,7 +149,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/item_gym"
                                 android:drawableEnd="@drawable/ic_outdoors"
-                                android:text="Outdoors" />
+                                android:text="@string/array_item_outdoors" />
 
 
                         </RelativeLayout>
@@ -190,7 +190,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:gravity="center"
-                            android:text="How will you be notified?"
+                            android:text="@string/select_notifying_mode"
                             android:textColor="@color/md_theme_onPrimaryContainer"
                             android:textSize="24sp" />
 
@@ -211,7 +211,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentTop="true"
                                 android:drawableEnd="@drawable/ic_sound_outlined"
-                                android:text="By sound" />
+                                android:text="@string/notifying_by_sound" />
 
 
                             <Button
@@ -221,7 +221,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/item_sound"
                                 android:drawableEnd="@drawable/ic_vibration_outlined"
-                                android:text="By vibration" />
+                                android:text="@string/notifying_by_vibration" />
 
 
                             <Button
@@ -231,7 +231,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/item_vibration"
                                 android:drawableEnd="@drawable/ic_animation_outlined"
-                                android:text="By animations" />
+                                android:text="@string/notifying_by_animations" />
 
 
                         </RelativeLayout>
@@ -272,7 +272,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="What are you going to train?"
+                            android:text="@string/select_trainees"
                             android:textColor="@color/md_theme_onPrimaryContainer"
                             android:textSize="24sp"
                             app:layout_constraintLeft_toLeftOf="parent"
@@ -294,7 +294,7 @@
                                 style="@style/Widget.App.FloatingButton"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="Choose body parts"
+                                android:text="@string/select_body_parts"
                                 app:layout_constraintEnd_toStartOf="@id/guideline_train"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -312,7 +312,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="8dp"
-                                android:text="Choose muscles"
+                                android:text="@string/select_muscles"
                                 android:visibility="gone"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="@+id/guideline_train"
@@ -360,7 +360,7 @@
                             android:layout_alignParentTop="true"
                             android:layout_alignParentEnd="true"
                             android:gravity="center"
-                            android:text="What is your rest time?"
+                            android:text="@string/select_rest_time"
                             android:textColor="@color/md_theme_onPrimaryContainer"
                             android:textSize="24sp" />
 
@@ -389,7 +389,7 @@
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_marginRight="8dp"
-                                    android:text="Select via slider"
+                                    android:text="@string/select_rest_time_via_slider"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toStartOf="@+id/guideline_time"
                                     app:layout_constraintStart_toStartOf="parent"
@@ -410,7 +410,7 @@
                                     android:layout_marginLeft="8dp"
                                     android:layout_marginTop="1dp"
                                     android:layout_marginBottom="1dp"
-                                    android:text="Input manually"
+                                    android:text="@string/select_rest_time_manually"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="@+id/guideline_time"
