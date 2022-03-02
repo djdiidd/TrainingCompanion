@@ -47,8 +47,8 @@
                     android:textColor="@color/md_theme_onSecondaryContainer"
                     android:textSize="32sp"
 
-                    app:autoSizeTextType="uniform"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:autoSizeTextType="uniform" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/start_button"
@@ -58,15 +58,15 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="12dp"
-                    app:autoSizeTextType="uniform"
                     android:text="@string/button_dialog_start"
                     android:textColor="@color/md_theme_onSecondaryContainer"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    app:autoSizeTextType="uniform" />
             </RelativeLayout>
 
         </com.google.android.material.appbar.MaterialToolbar>
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -77,10 +77,11 @@
             app:layout_constraintVertical_bias="0.0">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraint_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:paddingBottom="60dp">
+                android:layout_height="match_parent"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="50dp">
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/select_workout_place"
@@ -89,13 +90,13 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="40dp"
                     android:layout_marginRight="16dp"
-                    app:cardBackgroundColor="@color/md_theme_primaryContainer"
                     android:maxWidth="400dp"
+                    app:cardBackgroundColor="@color/md_theme_primaryContainer"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/parameters_title_toolbar"
                     app:shapeAppearanceOverlay="@style/StartWorkoutItem"
-                    app:strokeColor="@color/md_theme_tertiaryContainer">
+                    app:strokeWidth="0dp">
 
                     <RelativeLayout
                         android:id="@+id/layout_select_workout_place"
@@ -105,8 +106,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginRight="10dp"
-                        android:layout_marginBottom="8dp"
-                        android:animateLayoutChanges="true">
+                        android:layout_marginBottom="8dp">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/title_select_workout_place"
@@ -129,7 +129,7 @@
                             android:visibility="gone">
 
 
-                            <Button
+                            <com.google.android.material.button.MaterialButton
                                 android:id="@+id/item_home"
                                 style="@style/Widget.App.FloatingButton.WithEndDrawable"
                                 android:layout_width="match_parent"
@@ -138,16 +138,16 @@
                                 android:drawableEnd="@drawable/ic_home_24"
                                 android:text="@string/array_item_at_home" />
 
-                            <Button
+                            <com.google.android.material.button.MaterialButton
                                 android:id="@+id/item_gym"
-                                style="@style/Widget.App.FloatingButton.WithEndDrawable"
+                                style="@style/Widget.App.FloatingButton.WithEndDrawable.NoCorners"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/item_home"
                                 android:drawableEnd="@drawable/ic_gym"
                                 android:text="@string/array_item_in_gym" />
 
-                            <Button
+                            <com.google.android.material.button.MaterialButton
                                 android:id="@+id/item_outdoors"
                                 style="@style/Widget.App.FloatingButton.WithEndDrawable"
                                 android:layout_width="match_parent"
@@ -170,13 +170,13 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginRight="16dp"
-                    app:cardBackgroundColor="@color/md_theme_primaryContainer"
                     android:maxWidth="400dp"
+                    app:cardBackgroundColor="@color/md_theme_primaryContainer"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/select_workout_place"
                     app:shapeAppearanceOverlay="@style/StartWorkoutItem"
-                    app:strokeColor="@color/md_theme_tertiaryContainer">
+                    app:strokeWidth="0dp">
 
                     <RelativeLayout
                         android:id="@+id/layout_select_notifying_mode"
@@ -186,8 +186,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginRight="10dp"
-                        android:layout_marginBottom="8dp"
-                        android:animateLayoutChanges="true">
+                        android:layout_marginBottom="8dp">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/title_select_notifying_mode"
@@ -209,7 +208,7 @@
                             android:layout_marginTop="6dp"
                             android:visibility="gone">
 
-                            <Button
+                            <com.google.android.material.button.MaterialButton
                                 android:id="@+id/item_sound"
                                 style="@style/Widget.App.FloatingButton.WithEndDrawable"
                                 android:layout_width="match_parent"
@@ -219,9 +218,9 @@
                                 android:text="@string/notifying_by_sound" />
 
 
-                            <Button
+                            <com.google.android.material.button.MaterialButton
                                 android:id="@+id/item_vibration"
-                                style="@style/Widget.App.FloatingButton.WithEndDrawable"
+                                style="@style/Widget.App.FloatingButton.WithEndDrawable.NoCorners"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/item_sound"
@@ -229,7 +228,7 @@
                                 android:text="@string/notifying_by_vibration" />
 
 
-                            <Button
+                            <com.google.android.material.button.MaterialButton
                                 android:id="@+id/item_animations"
                                 style="@style/Widget.App.FloatingButton.WithEndDrawable"
                                 android:layout_width="match_parent"
@@ -253,13 +252,13 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginRight="16dp"
-                    app:cardBackgroundColor="@color/md_theme_primaryContainer"
                     android:maxWidth="400dp"
+                    app:cardBackgroundColor="@color/md_theme_primaryContainer"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/select_notifying_mode"
                     app:shapeAppearanceOverlay="@style/StartWorkoutItem"
-                    app:strokeColor="@color/md_theme_tertiaryContainer">
+                    app:strokeWidth="0dp">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/layout_select_bps_and_muscles"
@@ -269,8 +268,7 @@
                         android:layout_marginLeft="6dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginRight="6dp"
-                        android:layout_marginBottom="8dp"
-                        android:animateLayoutChanges="true">
+                        android:layout_marginBottom="8dp">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/title_select_bps_and_muscles"
@@ -284,11 +282,12 @@
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
+                        <RelativeLayout
                             android:id="@+id/bps_or_muscles_buttons"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
+                            android:animateLayoutChanges="true"
                             android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -297,34 +296,22 @@
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/body_parts_button"
                                 style="@style/Widget.App.FloatingButton"
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/select_body_parts"
-                                app:layout_constraintEnd_toStartOf="@id/guideline_train"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                android:layout_alignParentTop="true"
+                                android:text="@string/select_body_parts" />
 
-                            <androidx.constraintlayout.widget.Guideline
-                                android:id="@+id/guideline_train"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical"
-                                app:layout_constraintGuide_percent="0.5" />
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/muscles_button"
                                 style="@style/Widget.Material3.FloatingActionButton.Surface"
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="8dp"
-                                android:enabled="false"
+                                android:layout_below="@id/body_parts_button"
                                 android:text="@string/select_muscles"
-                                android:visibility="visible"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="@+id/guideline_train"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                android:visibility="gone" />
 
-                        </androidx.constraintlayout.widget.ConstraintLayout>
+                        </RelativeLayout>
 
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -344,7 +331,7 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/select_bps_and_muscles"
                     app:shapeAppearanceOverlay="@style/StartWorkoutItem"
-                    app:strokeColor="@color/md_theme_tertiaryContainer">
+                    app:strokeWidth="0dp">
 
                     <RelativeLayout
                         android:id="@+id/layout_select_rest_time"
@@ -354,8 +341,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginRight="10dp"
-                        android:layout_marginBottom="8dp"
-                        android:animateLayoutChanges="true">
+                        android:layout_marginBottom="8dp">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/title_select_rest_time"
@@ -464,7 +450,7 @@
                 </com.google.android.material.card.MaterialCardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

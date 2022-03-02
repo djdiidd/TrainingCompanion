@@ -1,6 +1,6 @@
 <resources>
     <!-- Имя приложения -->
-    <string name="app_name">Training Companion</string>
+    <string name="app_name">Workout Companion</string>
 
     <!-- Кнопки Bottom Navigation View -->
     <string name="button_bnv_start">Start page</string>

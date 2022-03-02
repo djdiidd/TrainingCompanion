@@ -1,4 +1,4 @@
-package com.companion.android.trainingcompanion
+package com.companion.android.workoutcompanion
 
 import org.junit.Test
 
