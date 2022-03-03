@@ -3,6 +3,7 @@ package com.companion.android.workoutcompanion.timeutils
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
 import java.util.TimerTask
 import java.util.Timer
 
@@ -40,7 +41,7 @@ class StopwatchService : Service() {
         // Переопределяем действия, которые будут происходит каждую секунду
         override fun run() {
             val intent = Intent(TIMER_UPDATED)
-            time++ // Обновляем полученное время на секунду
+            ++time // Обновляем полученное время на секунду
             intent.putExtra(TIME_EXTRA, time)
             // Отправляем интент с временем, который будет получен
             sendBroadcast(intent) //  в TimeViewModel.updateTime (Receiver)

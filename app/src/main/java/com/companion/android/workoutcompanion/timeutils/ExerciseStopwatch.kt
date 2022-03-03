@@ -4,6 +4,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.ProgressBar
 import android.widget.TextView
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ExerciseStopwatch(
     private var listeningView: TextView,
@@ -14,18 +16,20 @@ class ExerciseStopwatch(
     private val exerciseTime: ArrayList<Int> = arrayListOf()
 
     private val updateTimeWatcher = object : TextWatcher {
+        val id = UUID.randomUUID()
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+        override fun afterTextChanged(p0: Editable?) {}
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             textView?.text = getTimeInFormatMMSS(time)
             time++
         }
-        override fun afterTextChanged(p0: Editable?) {}
-
     }
 
     var time: Int = 0
 
-    fun start() { startFrom(0) }
+    fun start() {
+        startFrom(0)
+    }
 
     fun startFrom(start: Int) {
         if (start < 0) throw Exception("start time cannot be negative")
@@ -54,19 +58,23 @@ class ExerciseStopwatch(
         }
     }
 
-    fun getExerciseTimeOf(index: Int) : Int {
+    fun getExerciseTimeOf(index: Int): Int {
         if (index in exerciseTime.indices) {
             return exerciseTime[index]
         } else {
-            throw Exception("Trying to get exercise time of " +
-                    "$index exercise which is not executed")
+            throw Exception(
+                "Trying to get exercise time of " +
+                        "$index exercise which is not executed"
+            )
         }
     }
 
-    fun getExerciseTimeOfLast() : Int {
+    fun getExerciseTimeOfLast(): Int {
         if (exerciseTime.isEmpty())
-            throw NullPointerException("Trying to get exercise time of last" +
-                    "exercise when exerciseTime is empty")
+            throw NullPointerException(
+                "Trying to get exercise time of last" +
+                        "exercise when exerciseTime is empty"
+            )
         return exerciseTime.last()
     }
 
@@ -74,20 +82,28 @@ class ExerciseStopwatch(
         if (index in exerciseTime.indices) {
             exerciseTime[index] = value
         } else {
-            throw Exception("Trying to get exercise time of " +
-                    "$index exercise which is not executed")
+            throw Exception(
+                "Trying to get exercise time of " +
+                        "$index exercise which is not executed"
+            )
         }
     }
 
     fun attachUI(listening_tv: TextView, tv: TextView?, pb: ProgressBar?) {
-        listeningView= listening_tv; textView = tv; progressBar = pb
+        listeningView = listening_tv; textView = tv; progressBar = pb
         textView?.text = getTimeInFormatMMSS(time)
+    }
+
+    fun detachUI() {
+        textView = null; progressBar = null
     }
 
     fun setExerciseTimeOfLast(value: Int) {
         if (exerciseTime.isEmpty())
-            throw NullPointerException("Trying to get exercise time of last" +
-                    "exercise when exerciseTime is empty")
+            throw NullPointerException(
+                "Trying to get exercise time of last" +
+                        "exercise when exerciseTime is empty"
+            )
         exerciseTime[exerciseTime.lastIndex] = value
     }
 

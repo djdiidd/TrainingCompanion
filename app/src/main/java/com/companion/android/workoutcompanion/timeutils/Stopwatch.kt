@@ -24,13 +24,14 @@ class Stopwatch(private val context: Context) {
         addLifeCycleObserver()
     }
 
-    private var generalTime: Int = -1 // Общее время (в секундах)
+    private var generalTime: Int = 0 // Общее время (в секундах)
     private var timeIsGoing = false   // Идет ли счет времени
 
     private val clockView: TextView? = (context as Activity).findViewById(R.id.general_clock)
     private val pauseResumeButton: AppCompatImageButton =
         (context as Activity).findViewById(R.id.pause_resume_button)
 
+    private var isEnabled: Boolean = true
 
     /** Идет ли счет времени */
     fun isGoing() = timeIsGoing
@@ -63,14 +64,12 @@ class Stopwatch(private val context: Context) {
     }
 
     /**
-     * Объект, который будет сохранять полученное
-     * значение и отображать его на экране
+     * Полная остановка секундомера;
      */
-    private val newTimeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            generalTime = intent.getIntExtra(StopwatchService.TIME_EXTRA, 0)
-            updateText()
-        }
+    fun stopAndUnregister() {
+        stop()
+        isEnabled = false
+        context.unregisterReceiver(newTimeReceiver)
     }
 
     /**
@@ -83,10 +82,27 @@ class Stopwatch(private val context: Context) {
     }
 
     /**
+     * Объект, который будет сохранять полученное
+     * значение и отображать его на экране
+     */
+    private val newTimeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            generalTime = intent.getIntExtra(StopwatchService.TIME_EXTRA, 0)
+            updateText()
+        }
+    }
+
+    /**
      * Запуск секундомера посредством запуска сервиса
      * с переданным интентом в виде значения текущего времени
      */
     private fun start() {
+        if (!isEnabled) {
+            context.registerReceiver(newTimeReceiver,
+                IntentFilter(StopwatchService.TIMER_UPDATED))
+            generalTime = 0
+            isEnabled = true
+        }
         pauseResumeButton.setImageResource(R.drawable.ic_pause)
         serviceIntent.putExtra(StopwatchService.TIME_EXTRA, generalTime)
         context.startService(serviceIntent)

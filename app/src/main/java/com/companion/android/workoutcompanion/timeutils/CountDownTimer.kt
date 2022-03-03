@@ -19,12 +19,13 @@ import androidx.lifecycle.LifecycleOwner
 import com.companion.android.workoutcompanion.R
 import com.companion.android.workoutcompanion.objects.BreakNotifyingMode
 import com.companion.android.workoutcompanion.objects.WorkoutParams
+import com.companion.android.workoutcompanion.timeutils.CountDownService.Companion.TIMER_UPDATED
 
 
 /**
  * Таймер, работающий в качестве сервиса, который использует широкое вещание.
  */
-class CountDownTimer(private val context: Context) {
+class CountDownTimer(private val context: Context) {//=================================================================================================
 
     init {
         addLifeCycleObserver()
@@ -55,10 +56,11 @@ class CountDownTimer(private val context: Context) {
 
     private var isFinished = false // Закончился ли таймер;
 
+    private var isEnabled = true   // Зарегистрирован ли сервис?
+
     // Получатель данных, обновляющий значение времени
     private val timeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            Log.d("MyTag", "time is $time")
             time = intent.getIntExtra(CountDownService.TIME_EXTRA, 0)
             handleCurrentTime()
         }
@@ -125,7 +127,8 @@ class CountDownTimer(private val context: Context) {
     fun detachUI() {
         clockProgressBar = null
         clockTextView = null
-        animator.cancel()
+        if (this::animator.isInitialized)
+            animator.cancel()
     }
 
     /**
@@ -138,6 +141,15 @@ class CountDownTimer(private val context: Context) {
         isFinished = false
         return this
     }
+
+    /**
+     * Полная остановка таймера;
+     */
+    fun stopAndUnregister() {
+        stop(); isEnabled = false
+        context.unregisterReceiver(timeReceiver)
+    }
+
 
     /**
      * Интерфейс, функция которого будет вызвана при завершении таймера;
@@ -223,10 +235,16 @@ class CountDownTimer(private val context: Context) {
                 "startTime is 0. \nPossible problem: " +
                         "Time was not selected automatically"
             )
+        if (!isEnabled) {
+            context.registerReceiver(timeReceiver,
+                IntentFilter(TIMER_UPDATED))
+            isEnabled = true
+        }
         serviceIntent.putExtra(CountDownService.TIME_EXTRA, time)
         context.startService(serviceIntent)
         isGoing = true
         restoreProgressBar()
+        notifyingSignalCount = getSignalCountOfTime()
     }
 
     /**
@@ -234,7 +252,7 @@ class CountDownTimer(private val context: Context) {
      * после которого будет прекращен
      */
     private fun stop() {
-        animator.pause()
+        if (this::animator.isInitialized) animator.pause()
         context.stopService(serviceIntent)
         isGoing = false
     }
@@ -258,7 +276,7 @@ class CountDownTimer(private val context: Context) {
                 super.onResume(owner)
                 context.registerReceiver(
                     timeReceiver,
-                    IntentFilter(CountDownService.TIMER_UPDATED)
+                    IntentFilter(TIMER_UPDATED)
                 )
             }
 
@@ -347,5 +365,5 @@ class CountDownTimer(private val context: Context) {
     }
 
 
-}//=================================================================================================
+}
 

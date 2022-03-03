@@ -179,7 +179,6 @@ class WorkoutViewModel : ViewModel() {
 
     /** Сохранение переданных мышц */
     fun saveSelectedMuscles(array: Array<Boolean>) {
-        Log.d("MyTag", "Array Saved")
         whichMuscleSelected = array
     }
 

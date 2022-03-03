@@ -83,8 +83,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"
-            app:drawerLayoutCornerSize="30dp"
             android:background="@color/md_theme_surface"
+            app:drawerLayoutCornerSize="30dp"
             app:headerLayout="@layout/side_header">
 
             <!-- Тело бокового меню -->
@@ -319,8 +319,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="12dp"
-                        android:layout_marginTop="6dp"
+                        android:layout_margin="12dp"
                         android:text="@string/title_additional_settings"
                         android:textColor="@color/md_theme_onSurface" />
 
@@ -344,6 +343,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="50dp"
+                        android:layout_marginBottom="4dp"
                         android:visibility="gone">
 
                         <!-- Подпункт динамичного меню -->
@@ -389,6 +389,42 @@
                             app:layout_constraintTop_toBottomOf="@id/sub_menu_dynamic_vibration" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginRight="12dp"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="12dp"
+                        android:text="@string/title_other"
+                        android:textColor="@color/md_theme_onSurface" />
+
+                    <!-- Элемент, отвечающий за прекращение тренировки -->
+                    <TextView
+                        android:id="@+id/sub_menu_stop_stop_workout"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="12dp"
+                        android:drawableStart="@drawable/stop_workout_24"
+                        android:drawablePadding="10dp"
+                        android:drawableTint="@color/md_theme_error"
+                        android:gravity="center_vertical"
+                        android:text="@string/stop_workout"
+                        android:textColor="@color/md_theme_error"
+                        android:textSize="16sp" />
+
+                    <!-- Вкладка для подтверждения тренировки -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/side_menu_stop_workout_submit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="50dp"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 

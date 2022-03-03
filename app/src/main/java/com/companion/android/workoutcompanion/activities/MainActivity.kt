@@ -93,6 +93,8 @@ class MainActivity : AppCompatActivity(),
     // Глобальная ViewModel, инкапсулирующая данные тренировки
     private val viewModel: WorkoutViewModel by viewModels()
 
+    private var restTimeTextWatcher: TextWatcher? = null
+
 //----------------------------------------------[ Переопределение функций жизненного цикла ]--------
 
 
@@ -110,7 +112,9 @@ class MainActivity : AppCompatActivity(),
         timer = CountDownTimer(this)
         exerciseStopwatch = ExerciseStopwatch(binding.generalClock)
 
-        if (savedInstanceState == null || viewModel.activeProcess.value == WorkoutProcess.NOT_STARTED) {
+        if (savedInstanceState == null
+            || viewModel.activeProcess.value == WorkoutProcess.NOT_STARTED
+        ) {
             hideToolbarAndDisableSideMenu()
         } else {
             restoreTimeData(savedInstanceState)
@@ -231,7 +235,7 @@ class MainActivity : AppCompatActivity(),
                 })
 
                 // Ввод времени отдыха в соответствующем поле
-                binding.sideMenuInputRestTime.addTextChangedListener(object : TextWatcher {
+                restTimeTextWatcher = object : TextWatcher {
                     override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                     override fun afterTextChanged(p0: Editable?) {}
                     override fun onTextChanged(chars: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -247,7 +251,8 @@ class MainActivity : AppCompatActivity(),
                             binding.sideMenuRestTimeAcceptButton.isEnabled = false
                         }
                     }
-                })
+                }
+                binding.sideMenuInputRestTime.addTextChangedListener(restTimeTextWatcher)
 
                 // Нажатие на кнопку подтверждения выбранного времени отдыха
                 binding.sideMenuRestTimeAcceptButton.setOnClickListener {
@@ -303,6 +308,11 @@ class MainActivity : AppCompatActivity(),
         binding.sideMenuNotificationMode.setOnClickListener(
             getSideMenuListener(binding.sideMenuDynamicBreakMode) {}
         )
+
+        // Слушатель прекращение тренировки
+        binding.subMenuStopStopWorkout.setOnClickListener {
+            stopWorkout()
+        }
 
 
         //-- -- -- -- -- -- -- -- -- -- -- -- -- -- -[ Обаботка нижнего меню ]- -- -- -- -- -- -- --
@@ -382,7 +392,7 @@ class MainActivity : AppCompatActivity(),
         // Отлеживание изменения времени отдыха
         viewModel.restTime.observe(this) {
             if (viewModel.activeProcess.value != WorkoutProcess.TIMER)
-                timer.setTime(viewModel.restTime.value!! + 1)
+                timer.setTime(viewModel.restTime.value!!)
             Log.d("MyTag", "restTime observed")
         }
     }
@@ -571,7 +581,6 @@ class MainActivity : AppCompatActivity(),
         visibility = View.VISIBLE
         val anim: Animation = object : Animation() {
             override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
-                Log.d("MyTag", "interpolatedTime = $interpolatedTime")
                 layoutParams.height =
                     if (interpolatedTime == 1f)
                         ViewGroup.LayoutParams.WRAP_CONTENT
@@ -665,6 +674,58 @@ class MainActivity : AppCompatActivity(),
     }
 
     /**
+     * Запустить фрагмент принудительно, даже если он уже запущен;
+     */
+    private fun launchFragmentForced(tag: String) {
+        val fragment =
+            if (tag == TAG_MAIN_FRAGMENT) {
+                lastRunFragmentTag = TAG_MAIN_FRAGMENT
+                MainFragment()
+            } else {
+                lastRunFragmentTag = TAG_LIST_FRAGMENT
+                ListFragment()
+            }
+        supportFragmentManager
+            .beginTransaction() // Начинаем транзакцию
+            .replace(R.id.fragment_container, fragment, tag) // Заменяем фрагмент
+            .commit() // Закрепляем процесс
+    }
+
+    /**
+     * Прекращение тренировки; (TODO:1.0)
+     */
+    private fun stopWorkout() {
+
+        hideToolbarAndDisableSideMenu()
+
+        viewModel.activeProcess.value = WorkoutProcess.NOT_STARTED
+        viewModel.clearAllData()
+        exerciseStopwatch.detachUI()
+        exerciseStopwatch.stop()
+
+        timer.detachUI()
+        timer.stopAndUnregister()
+
+        stopwatch.stopAndUnregister()
+        launchFragmentForced(TAG_MAIN_FRAGMENT)
+        //And others add
+        binding.subMenuDynamicPlaceHome.setOnClickListener(null)
+        binding.subMenuDynamicPlaceGym.setOnClickListener(null)
+        binding.subMenuDynamicPlaceOutdoors.setOnClickListener(null)
+        binding.subMenuDynamicSound.setOnClickListener(null)
+        binding.subMenuDynamicVibration.setOnClickListener(null)
+        binding.subMenuDynamicAnim.setOnClickListener(null)
+        binding.add5s.setOnClickListener(null)
+        binding.sub5s.setOnClickListener(null)
+        binding.sideMenuInputRestTime.removeTextChangedListener(restTimeTextWatcher)
+        binding.sideMenuRestTimeAcceptButton.setOnClickListener(null)
+
+
+        //TODO: Запустить фрагмент со списком;
+        // Перенести данные в базу данных;
+    }
+
+    /**
      * Скрытие toolbar и блокировка бокового меню;
      */
     private fun hideToolbarAndDisableSideMenu() {
@@ -679,6 +740,7 @@ class MainActivity : AppCompatActivity(),
         supportActionBar?.show()
         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
+
 
 
 //----------------------------------------------[ Переопределение функций обратного вызова ]--------
@@ -762,18 +824,18 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun workoutStarted() {
-        timer.setNotifyingType(viewModel.breakNotificationMode!!)
-        // Обновляем View, используемые для отображения данных таймера
-        timer.attachUI(
+        // Обновляем View, используемые для отображения данных секундомера;
+        showToolbarAndActivateSideMenu()
+        stopwatch.startOrStop()
+        exerciseStopwatch.attachUI(
+            binding.generalClock,
             findViewById(R.id.set_timer),
             findViewById(R.id.set_timer_progress)
         )
-        Log.d("MyTag", "Started from main")
-        showToolbarAndActivateSideMenu()
-        stopwatch.startOrStop()
-        timer.startOrStop()
-        // Сохраняем текущим процессом таймер
-        viewModel.activeProcess.value = WorkoutProcess.TIMER
+        exerciseStopwatch.start()
+        // Сохраняем текущим процессом секундомер;
+        viewModel.activeProcess.value = WorkoutProcess.EXERCISE_STOPWATCH
+        timer.setNotifyingType(viewModel.breakNotificationMode!!)
     }
 
     /**

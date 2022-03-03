@@ -76,7 +76,7 @@ class MainFragment : Fragment(), WorkoutStartFSDialog.Callback {
 
     private fun showStartDialog() {
         if (isLargeLayout) {
-            WorkoutStartFSDialog().show(this@MainFragment.parentFragmentManager, DIALOG_START)
+            //WorkoutStartFSDialog().show(this@MainFragment.parentFragmentManager, DIALOG_START)
         } else {
             // The device is smaller, so show the fragment fullscreen
             val transaction = parentFragmentManager.beginTransaction()
@@ -110,7 +110,6 @@ class MainFragment : Fragment(), WorkoutStartFSDialog.Callback {
     override fun onStop() {
         super.onStop()
         Log.d("LF", "F onStop")
-
     }
 
     override fun onDestroy() {

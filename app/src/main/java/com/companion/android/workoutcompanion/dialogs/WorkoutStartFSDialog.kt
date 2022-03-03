@@ -448,6 +448,10 @@ class WorkoutStartFSDialog : DialogFragment() {
                 && viewModel.trainingPlace != null
     }
 
+    /**
+     * Удаление углов у содержимого CardView,
+     * а именно с выбором места и режима уведомления;
+     */
     private fun remakeCorners(place: Boolean = true, mode: Boolean = true) = with(binding) {
         if (place) {
             when (viewModel.trainingPlace) {
@@ -479,6 +483,10 @@ class WorkoutStartFSDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Установка необходимых атрибутов View,
+     * таких, которые были установлены изначально;
+     */
     private fun setRestTimeInitState() {
         binding.openableLayoutSelectRestTime.visibility = View.GONE
         binding.selectTimeViaSliderButton.setText(R.string.select_rest_time_via_slider)
@@ -492,6 +500,9 @@ class WorkoutStartFSDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Удаление верхних углов кнопки;
+     */
     private fun removeTopCorners(button: MaterialButton) {
         button.shapeAppearanceModel = ShapeAppearanceModel.builder()
             .setTopLeftCorner(CornerFamily.ROUNDED, 10f)
@@ -501,6 +512,9 @@ class WorkoutStartFSDialog : DialogFragment() {
             .build()
     }
 
+    /**
+     * Удаление нижних углов кнопки;
+     */
     private fun removeBottomCorners(button: MaterialButton) {
         button.shapeAppearanceModel = ShapeAppearanceModel.builder()
             .setBottomLeftCorner(CornerFamily.ROUNDED, 10f)
@@ -509,17 +523,11 @@ class WorkoutStartFSDialog : DialogFragment() {
             .setTopRightCorner(CornerFamily.ROUNDED, Utils.normalButtonCorner!!)
             .build()
     }
-//    private fun closeItems() = with(binding) {
-//        placeItemsLayout.visibility = View.GONE
-//        notifyingItemsLayout.visibility = View.GONE
-//        bpsOrMusclesButtons.visibility = View.GONE
-//        openableLayoutSelectRestTime.visibility = View.GONE
-//    }
 
     /**
-     * Метод вызовет error у не заполненных объектов TextView
+     * Метод вызовет анимацию предупреждения
+     * у не заполненных объектов TextView;
      */
-
     private fun requireAllFieldsCompleted() {
         if (viewModel.trainingPlace == null) {
             binding.selectWorkoutPlace.animateAsError()
@@ -536,12 +544,15 @@ class WorkoutStartFSDialog : DialogFragment() {
     }
 
     /**
-     * Анимация изменения цвета
+     * Анимация изменения цвета;
      */
     private fun CardView.animateAsError() {
         animateToColor(R.color.md_theme_errorContainer)
     }
 
+    /**
+     * Анимация изменения цвета у CardView;
+     */
     private fun CardView.animateToColor(colorId: Int) {
         ObjectAnimator.ofInt(
             this,
@@ -560,17 +571,25 @@ class WorkoutStartFSDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Анимация изменения цвета для успеха;
+     */
     private fun CardView.animateAsSuccess() {
         animateToColor(R.color.success_color)
     }
 
-
+    /**
+     * Функция для скрытия клавиатуры;
+     */
     private fun View.hideKeyboard() {
         val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE)
                 as InputMethodManager
         imm.hideSoftInputFromWindow(this.windowToken, 0)
     }
 
+    /**
+     * Функция подтверждения ввода с клавиатуры;
+     */
     private fun EditText.onDone(callback: () -> Unit) {
         setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -602,6 +621,11 @@ class WorkoutStartFSDialog : DialogFragment() {
 
     }
 
+    /**
+     * Проверка данного времени на корректность;
+     * В случае правильности/неправильности,
+     * соответствующее CardView будет анимировано;
+     */
     private fun validateRestTime(checkableTime: Int) {
         if (checkableTime in WorkoutParams.restTimeAdvRange) {
             viewModel.restTime.value = checkableTime
@@ -614,6 +638,9 @@ class WorkoutStartFSDialog : DialogFragment() {
         }
     }
 
+    /**
+     * Анимация изменения текста;
+     */
     private fun TextView.animateTextChange(resId: Int, fast: Boolean = false) {
         val duration = if (fast) 100L else 200L
         val anim = AlphaAnimation(1.0f, 0.0f)
@@ -632,6 +659,9 @@ class WorkoutStartFSDialog : DialogFragment() {
         this.startAnimation(anim)
     }
 
+    /*
+    Интерфейс, необходимый для отправки данных в хост Activity;
+     */
     interface Callback {
         fun workoutStarted(success: Boolean)
     }
