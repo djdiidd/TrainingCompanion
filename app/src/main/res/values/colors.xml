@@ -1,42 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bnv_checked">#91A8EE</color>
-    <color name="bnv_unchecked">#FFFFFFFF</color>
-    <color name="shrine_pink_100">#FEDBD0</color>
-    <color name="shrine_pink_900">#442C2E</color>
-    <color name="shrine_pink_light">#FEEAE6</color>
-    <color name="main_color">#ABCBCF</color>
-    <!-- DEPRECATED -->
-    <color name="slight">#a7c0cd</color>
-    <color name="sdark">#4b636e</color>
-    <color name="light_sea_green">#20B2AA</color>
-    <color name="dark_grey">#6E7F80</color>
-    <color name="test">#4A4458</color>
-    <color name="red">#EC1D26</color>
-    <color name="special_text_color">#181717</color>
-    <color name="slider_label_color">@color/shrine_pink_100</color>
-    <color name="tick_color_active">@color/shrine_pink_100</color>
+
     <color name="raisin">#0d1137</color>
     <color name="pink">#E52165</color>
-    <!-- Конфигурация таймера -->
-    <color name="digits_color">@color/shrine_pink_900</color>
-    <color name="progress_bar_edge">#f0f0f0</color>
-    <color name="progress_bar_static">#e2e2e2</color>
-    <color name="progress_bar_edge_dots">@android:color/white</color>
-    <color name="progress_bar_filled">@android:color/white</color>
-    <color name="progress_bar_start_gradient">@color/main_color</color>
-    <color name="progress_bar_center_gradient">@color/shrine_pink_900</color>
-    <color name="progress_bar_end_gradient">@color/shrine_pink_100</color>
-    <color name="toolbar_color">@color/special_white</color>
-    <color name="special_white">#E8EBF2</color>
-    <color name="progress_bar_background_color">@color/special_white</color>
-    <color name="progress_bar_bg_gradient_1_color">@color/special_white</color>
-    <color name="progress_bar_bg_gradient_2_color">@color/special_white</color>
-    <color name="progress_bar_bg_gradient_3_color">@color/main_color</color>
-    <color name="keyboard_color">@color/shrine_pink_900</color>
-    <color name="input_manually_button_border_color">@color/shrine_pink_900</color>
-    <color name="input_manually_button_bg_color">#B3D2E6</color>
-    <color name="side_menu_text_color">@android:color/black</color>
+
+    <color name="success_color">#4bb543</color>
 
     <color name="md_theme_primary">#4E57A9</color>
     <color name="md_theme_onPrimary">#FFFFFF</color>
@@ -66,7 +34,5 @@
     <color name="md_theme_inversePrimary">#BBC2FF</color>
     <color name="md_theme_shadow">#000000</color>
     <color name="md_theme_primaryInverse">#BBC2FF</color>
-
-    <color name="success_color">#4bb543</color>
 
 </resources>

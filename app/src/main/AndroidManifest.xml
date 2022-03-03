@@ -14,8 +14,7 @@
         <activity
             android:name=".activities.SplashScreenActivity"
             android:exported="true"
-            android:theme="@style/SplashScreenTheme"
-            android:windowSoftInputMode="stateVisible">
+            android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

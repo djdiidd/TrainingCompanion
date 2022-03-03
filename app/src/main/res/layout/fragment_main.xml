@@ -5,8 +5,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <ImageButton
             android:id="@+id/startButton"
@@ -15,6 +14,7 @@
             android:background="?android:selectableItemBackground"
             android:scaleType="centerInside"
             android:visibility="visible"
+            android:contentDescription="@string/content_description_start_your_workout"
             app:srcCompat="@drawable/start"
             android:layout_centerInParent="true"
             tools:visibility="gone" />
@@ -46,7 +46,7 @@
             android:shadowDy="1"
             android:shadowRadius="2"
             android:textAppearance="@style/TextAppearance.Material3.DisplayLarge"
-            android:textColor="@color/digits_color"
+            android:textColor="@color/md_theme_onSurface"
             android:textSize="70sp"
             android:visibility="gone"
             app:fontFamily="@font/lato_black"

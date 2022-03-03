@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -96,6 +97,9 @@ class MainFragment : Fragment(), WorkoutStartFSDialog.Callback {
         Log.d("LF", "F onStart")
 
         val bounceAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_bounce)
+
+        // Фиксируем разметку, что позволит вводить текст с клавиатуры без изменений разметки;
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
 
         binding.mainButton.setOnClickListener {
             it.startAnimation(bounceAnim)

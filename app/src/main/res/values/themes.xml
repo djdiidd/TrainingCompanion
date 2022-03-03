@@ -28,11 +28,11 @@
         <item name="colorSurfaceInverse">@color/md_theme_inverseSurface</item>
         <item name="android:shadowColor">@color/md_theme_shadow</item>
         <item name="colorPrimaryInverse">@color/md_theme_primaryInverse</item>
+
         <item name="android:windowFullscreen">true</item>
         <item name="windowNoTitle">true</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
         <item name="fontFamily">@font/lato</item>
-        <!--        <item name="main_background">@drawable/main_background_day_list</item>-->
     </style>
 
     <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">

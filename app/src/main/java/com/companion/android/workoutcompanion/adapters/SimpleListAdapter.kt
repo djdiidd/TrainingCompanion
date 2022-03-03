@@ -20,6 +20,7 @@ class SimpleListAdapter(context: Context, val tag: String)
         val binding = SideMenuItemCheckedBinding.bind(item)
 
         init { binding.root.setOnClickListener(this) }
+
         fun bind(item: SimpleListItem) {
             binding.dynamicSideMenuItemText.text = item.text
             binding.dynamicSideMenuItemCheckbox.isChecked = item.isChecked

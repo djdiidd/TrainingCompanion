@@ -31,19 +31,11 @@
         <item name="windowNoTitle">true</item>
         <item name="fontFamily">@font/lato</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <!--        <item name="main_background">@drawable/main_background_night_list</item>-->
         <item name="android:windowFullscreen">true</item>
 
     </style>
 
     <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
-        <!--        &lt;!&ndash; ОК &ndash;&gt;-->
-        <!--        <item name="colorPrimary">@color/main_color</item>-->
-        <!--        &lt;!&ndash; ОК &ndash;&gt;-->
-        <!--        <item name="colorSecondary">@color/shrine_pink_900</item>-->
-        <!--        &lt;!&ndash; ОК &ndash;&gt;-->
-        <!--        <item name="colorSurface">@color/main_color</item>-->
-        <!--        <item name="colorOnSurface">@color/black</item>-->
         <item name="android:windowAnimationStyle">@style/BounceAnimation</item>
     </style>
 

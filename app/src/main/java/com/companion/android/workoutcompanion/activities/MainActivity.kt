@@ -2,6 +2,8 @@ package com.companion.android.workoutcompanion.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -19,8 +21,10 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
+import androidx.core.widget.ImageViewCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -213,15 +217,17 @@ class MainActivity : AppCompatActivity(),
 
                 // Нажатие кнопки "подтвердить" на клавиатуре после ввода времени отдыха
                 binding.sideMenuInputRestTime.onDone {
-                    val seconds = binding.sideMenuInputRestTime.text.toString().toInt()
-                    if (seconds in WorkoutParams.restTimeAdvRange) {
-                        viewModel.restTime.value = seconds
-                        binding.sideMenuCurrentRestTime.text =
-                            getString(R.string.selected_seconds, seconds)
+                    if (binding.sideMenuRestTimeAcceptButton.isEnabled) {
+                        viewModel.restTime.value = binding.sideMenuInputRestTime.text
+                            .toString().toInt().also {
+                                binding.sideMenuCurrentRestTime.text =
+                                    getString(R.string.selected_seconds, it)
+                            }
                         binding.sideMenuInputRestTime.text = null
                         binding.sideMenuRestTimeAcceptButton.visibility = View.GONE
                         binding.sideMenuInputRestTime.clearFocus()
-                    }
+                        true
+                    } else false
                 }
 
                 // Нажатие кнопки увеличения времени отдыха вручную на 5
@@ -242,12 +248,20 @@ class MainActivity : AppCompatActivity(),
                         if (!chars.isNullOrEmpty()
                             && chars.toString().toInt() in WorkoutParams.restTimeAdvRange
                         ) {
-                            binding.sideMenuRestTimeAcceptButton
-                                .setImageResource(R.drawable.ic_done)
+                            ImageViewCompat.setImageTintList(
+                                binding.sideMenuRestTimeAcceptButton,
+                                ColorStateList.valueOf(
+                                    ContextCompat.getColor(
+                                        this@MainActivity, R.color.md_theme_onSurface
+                                    )
+                                )
+                            )
                             binding.sideMenuRestTimeAcceptButton.isEnabled = true
                         } else {
-                            binding.sideMenuRestTimeAcceptButton
-                                .setImageResource(R.drawable.ic_done_disabled)
+                            ImageViewCompat.setImageTintList(
+                                binding.sideMenuRestTimeAcceptButton,
+                                ColorStateList.valueOf(Color.DKGRAY)
+                            )
                             binding.sideMenuRestTimeAcceptButton.isEnabled = false
                         }
                     }
@@ -300,7 +314,10 @@ class MainActivity : AppCompatActivity(),
                 binding.sideMenuCurrentRestTime.text =
                     getString(R.string.selected_seconds, viewModel.restTime.value!!)
                 // Определим исходное изображение и заблокируем кнопку
-                binding.sideMenuRestTimeAcceptButton.setImageResource(R.drawable.ic_done_disabled)
+                ImageViewCompat.setImageTintList(
+                    binding.sideMenuRestTimeAcceptButton,
+                    ColorStateList.valueOf(Color.DKGRAY)
+                )
                 binding.sideMenuRestTimeAcceptButton.isEnabled = false
             }
         )
@@ -556,15 +573,16 @@ class MainActivity : AppCompatActivity(),
     /**
      * Обработка подтверждения ввода из клавиатурного набора текста;
      */
-    private fun EditText.onDone(callback: () -> Unit) {
+    private fun EditText.onDone(callback: () -> Boolean) {
         setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                callback.invoke()
-                hideKeyboard()
+                if (callback.invoke())
+                    hideKeyboard()
             }
             false
         }
     }
+
 
     /**
      * Раскрытие контейнера по вертикали;
@@ -740,7 +758,6 @@ class MainActivity : AppCompatActivity(),
         supportActionBar?.show()
         binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
-
 
 
 //----------------------------------------------[ Переопределение функций обратного вызова ]--------
