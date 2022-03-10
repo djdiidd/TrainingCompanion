@@ -2,7 +2,8 @@
 <resources>
 
     <style name="Widget.App.FloatingButton" parent="Widget.Material3.FloatingActionButton.Large.Surface">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">@dimen/start_dialog_inner_item_text_size</item>
+        <item name="cornerSize">@dimen/start_dialog_inner_item_corner_size</item>
     </style>
 
     <style name="Widget.App.FloatingButton.WithEndDrawable">
@@ -27,7 +28,6 @@
         <item name="trackColorInactive">@color/md_theme_onPrimary</item>
         <item name="tickColorInactive">@color/md_theme_onPrimary</item>
         <item name="trackHeight">3dp</item>
-
     </style>
 
     <style name="SimpleOutlinedButton" parent="Widget.MaterialComponents.TimePicker.Button">
@@ -36,10 +36,10 @@
 
     <style name="CircularDeterminateProgressBar">
         <item name="android:indeterminateOnly">false</item>
-        <item name="android:progressDrawable">@drawable/timer_circle</item>
+        <item name="android:progressDrawable">@drawable/timer_circle_progress</item>
     </style>
 
-    <style name="StartWorkoutItem" parent="ShapeAppearance.Material3.MediumComponent">
+    <style name="StartWorkoutItemShape" parent="ShapeAppearance.Material3.MediumComponent">
         <item name="cornerFamilyTopLeft">cut</item>
         <item name="cornerSizeTopLeft">5dp</item>
         <item name="cornerFamilyBottomRight">cut</item>
@@ -50,5 +50,25 @@
         <item name="cornerSizeTopRight">36dp</item>
     </style>
 
+    <style name="StartWorkoutItem">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/start_dialog_cardView_height</item>
+        <item name="android:layout_margin">@dimen/start_dialog_item_margins</item>
+        <item name="cardBackgroundColor">@color/md_theme_primaryContainer</item>
+        <item name="cardElevation">2dp</item>
+        <item name="shapeAppearanceOverlay">@style/StartWorkoutItemShape</item>
+        <item name="strokeWidth">0dp</item>
+        <item name="layout_constraintLeft_toLeftOf">parent</item>
+        <item name="layout_constraintRight_toRightOf">parent</item>
+        <item name="android:paddingBottom">4dp</item>
+    </style>
+
+    <style name="StartWorkoutItemTitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/start_dialog_item_title_text_size</item>
+        <item name="android:textColor">@color/md_theme_onPrimaryContainer</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
 </resources>
 

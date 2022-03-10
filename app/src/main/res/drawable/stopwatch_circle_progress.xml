@@ -6,7 +6,7 @@
             android:innerRadius="106dp"
             android:shape="ring"
             android:thickness="16dp"
-            android:useLevel="false">
+            android:useLevel="true">
             <solid android:color="@color/md_theme_onSurface" />
         </shape>
     </item>
@@ -19,7 +19,7 @@
                 android:innerRadius="106dp"
                 android:shape="ring"
                 android:thickness="16dp"
-                android:useLevel="true">
+                android:useLevel="false">
                 <solid android:color="@color/md_theme_secondaryContainer" />
             </shape>
         </rotate>

@@ -55,7 +55,6 @@ class WarningUnusedBPDialog(private val whichAreUnusedBP: Array<Boolean>) : Dial
         )
 
         val adb: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(requireContext())
-            .setIcon(R.drawable.ic_warning_amber)
             .setTitle(R.string.warning_dialog_unused_bp_title)
             .setMessage(message)
             .setPositiveButton(R.string.button_dialog_remove, this)

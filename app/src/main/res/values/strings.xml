@@ -102,7 +102,7 @@
     <!-- Диалог предупреждения о неиспользованности некоторых выбранных частей тела -->
     <string name="warning_dialog_unused_bp_title">Remove unused body parts?</string>
     <string name="warning_dialog_unused_bp_message">
-        It seems that you chose %s and you are not going to train it. \nAlso you can change workout settings in right panel later.
+        It seems that you chose %s and you are not going to train it. \n\nAlso you can change workout settings in right panel later.
     </string>
     <!-- Диалог настройки оповещений начала/конца подхода -->
     <string name="title_change_notifying_params">Change notifying parameters</string>
@@ -126,5 +126,7 @@
     <string name="side_menu_reselected_ws_item_animation">animations</string>
 
     <string name="stop_workout">Stop workout</string>
+    <string name="content_description_start_your_workout">Start your workout</string>
+    <string name="content_description_cancel_workout_preparations">Cancel workout preparations</string>
 
 </resources>

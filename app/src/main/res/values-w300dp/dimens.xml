@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="start_dialog_cardView_height">72dp</dimen>
+    <dimen name="slider_height">40dp</dimen>
+    <dimen name="text_input_height">44dp</dimen>
+    <dimen name="start_dialog_inner_item_height">48dp</dimen>
+    <dimen name="start_dialog_item_title_text_size">20sp</dimen>
+    <dimen name="start_dialog_inner_item_text_size">13sp</dimen>
+    <dimen name="toolbar_text_size">26sp</dimen>
+    <dimen name="start_dialog_item_margins">20dp</dimen>
+    <dimen name="timer_progress_bar_size">240dp</dimen>
+    <dimen name="timer_progress_bar_radius">96dp</dimen>
+    <dimen name="timer_progress_bar_thickness">14dp</dimen>
+    <dimen name="timer_progress_bar_points_thickness">7dp</dimen>
+    <dimen name="timer_progress_bar_points_insets">206dp</dimen>
+    <dimen name="main_button_size">90dp</dimen>
+    <dimen name="set_timer_text_size">64sp</dimen>
+</resources>

@@ -146,6 +146,7 @@ class CountDownTimer(private val context: Context) {//==========================
      * Полная остановка таймера;
      */
     fun stopAndUnregister() {
+        if (!isEnabled) return
         stop(); isEnabled = false
         context.unregisterReceiver(timeReceiver)
     }

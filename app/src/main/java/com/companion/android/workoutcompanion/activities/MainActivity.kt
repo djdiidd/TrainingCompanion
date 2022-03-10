@@ -3,12 +3,14 @@ package com.companion.android.workoutcompanion.activities
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.ContextThemeWrapper
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +23,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
@@ -131,13 +135,6 @@ class MainActivity : AppCompatActivity(),
     override fun onStart() {
         super.onStart()
 
-//        // Устанавливаем анимацию переливания фона у фрагментов
-//        (binding.fragmentContainer.background as AnimationDrawable).also {
-//            it.setEnterFadeDuration(2000)
-//            it.setExitFadeDuration(4000)
-//            it.start()
-//        }
-
         //-- -- -- -- -- -- -- -- -- -- -- -- -- -- -[ Обаботка бокового меню ]- -- -- -- -- -- -- -
 
         // Определяем поведение при открытии и закрытии бокового меню
@@ -149,7 +146,7 @@ class MainActivity : AppCompatActivity(),
             }
 
             /** Определение динамических действий бокового меню, при его открытии */
-            override fun onDrawerOpened(drawerView: View) { // При открытии бокового меню:
+            override fun onDrawerOpened(drawerView: View) {  // При открытии бокового меню:
 
                 /* ИНИЦИАЛИЗИРУЕМ СЛУШАТЕЛИ ДЛЯ КАЖДОГО ПОДПУНКТА "МЕСТО ТРЕНИРОВКИ" */
 
@@ -610,7 +607,6 @@ class MainActivity : AppCompatActivity(),
                 return true
             }
         }
-
         // Скорость - 1dp/ms
         anim.duration = (targetHeight / context.resources.displayMetrics.density).toLong()
         startAnimation(anim)
@@ -784,6 +780,9 @@ class MainActivity : AppCompatActivity(),
     override fun timerFinished() {
         exerciseStopwatch.start()
         viewModel.activeProcess.value = WorkoutProcess.EXERCISE_STOPWATCH
+
+        //TODO: Изменить drawable progressbar на stopwatch_circle_progress;!!
+
         exerciseStopwatch.attachUI(
             binding.generalClock,
             findViewById(R.id.set_timer),

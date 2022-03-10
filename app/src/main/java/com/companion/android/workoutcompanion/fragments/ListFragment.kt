@@ -11,15 +11,21 @@ import com.companion.android.workoutcompanion.databinding.FragmentListBinding
 
 class ListFragment: Fragment() {
     // ранняя инициализация объекта класса привязки данных
-    private lateinit var binding: FragmentListBinding
-
+    private var _binding: FragmentListBinding? = null
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil // определяем привязку данных
-            .inflate(layoutInflater, R.layout.fragment_list, container, false)
+        _binding = FragmentListBinding // определяем привязку данных
+            .inflate(layoutInflater, container, false)
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Сообщаем сборщику мусора, что можно очистить;
+        _binding = null
     }
 }

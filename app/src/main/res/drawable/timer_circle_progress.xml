@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item> <!-- Задняя статичная часть -->
+        <shape
+            android:innerRadius="@dimen/timer_progress_bar_radius"
+            android:shape="ring"
+            android:thickness="@dimen/timer_progress_bar_thickness"
+            android:useLevel="false">
+            <solid android:color="@color/md_theme_onSurface" />
+        </shape>
+    </item>
+
+    <item> <!-- Передняя динамичная часть -->
+        <rotate
+            android:fromDegrees="270"
+            android:toDegrees="270">
+            <shape
+                android:innerRadius="@dimen/timer_progress_bar_radius"
+                android:shape="ring"
+                android:thickness="@dimen/timer_progress_bar_thickness"
+                android:useLevel="true">
+                <solid android:color="@color/md_theme_secondaryContainer" />
+            </shape>
+        </rotate>
+    </item>
+
+    <!-- Закругление на верхнем статическом конце -->
+    <item android:bottom="@dimen/timer_progress_bar_points_insets">
+        <shape
+            android:innerRadius="0dp"
+            android:shape="ring"
+            android:thickness="@dimen/timer_progress_bar_points_thickness"
+            android:useLevel="false">
+            <solid android:color="@color/md_theme_secondaryContainer" />
+        </shape>
+    </item>
+
+    <!-- Закругление на верхнем динамичном конце -->
+    <item>
+        <rotate>
+            <inset android:insetBottom="@dimen/timer_progress_bar_points_insets">
+                <shape
+                    android:innerRadius="0dp"
+                    android:shape="ring"
+                    android:thickness="@dimen/timer_progress_bar_points_thickness"
+                    android:useLevel="false">
+                    <solid android:color="@color/md_theme_secondaryContainer" />
+                </shape>
+            </inset>
+        </rotate>
+    </item>
+
+</layer-list>

@@ -5,10 +5,15 @@
       <map>
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/bnv_selector.xml" value="0.208" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/ic_done_disabled.xml" value="0.156" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/ic_sound_outlined.xml" value="0.2375" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/ic_warning_amber.xml" value="0.1745" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/stop_workout_24.xml" value="0.156" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/stopwatch_circle_progress.xml" value="0.156" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/timer_circle.xml" value="0.156" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/timer_circle_progress.xml" value="0.156" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout-v21/dialog_start_workout.xml" value="0.72" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/dialog_start_workout.xml" value="0.264" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/dialog_start_workout.xml" value="0.2" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/dialog_workout_start.xml" value="0.25" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/fragment_main.xml" value="0.4" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/layout/side_menu_item_checked.xml" value="0.25" />
@@ -21,4 +26,11 @@
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.4" />
+      </ProjectState>
+    </option>
+  </component>
 </project>
