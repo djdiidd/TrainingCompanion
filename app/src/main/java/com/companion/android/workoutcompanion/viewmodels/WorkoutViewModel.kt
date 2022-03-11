@@ -1,7 +1,6 @@
 package com.companion.android.workoutcompanion.viewmodels
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.companion.android.workoutcompanion.R
@@ -25,9 +24,10 @@ class WorkoutViewModel : ViewModel() {
     private var whichMuscleSelected: Array<Boolean> = arrayOf()
 
     // Хранение пользовательских настроек
-    var breakNotificationMode: Int? = null
+    var breakNotifyingMode: Int? = null
         set(value) {
-            if (value in BreakNotifyingMode.SOUND..BreakNotifyingMode.ANIMATION) {
+            if (value in BreakNotifyingMode.SOUND..BreakNotifyingMode.ANIMATION
+                || value == null) {
                 field = value
             }
         }
@@ -35,7 +35,8 @@ class WorkoutViewModel : ViewModel() {
     // Хранение места тренировки
     var trainingPlace: Int? = null
         set(value) {
-            if (value in Place.TRAINING_AT_HOME..Place.TRAINING_OUTDOORS) {
+            if (value in Place.TRAINING_AT_HOME..Place.TRAINING_OUTDOORS
+                || value == null) {
                 field = value
             }
         }
@@ -184,7 +185,7 @@ class WorkoutViewModel : ViewModel() {
 
     // DANGEROUS -> USE updateData instead
     /** Установка выбранных частей тела */
-    fun setWhichBPsAreSelected(bodyParts: Array<Boolean>) {
+    fun setWhichBPsAreSelectedForce(bodyParts: Array<Boolean>) {
         whichBodyPartSelected = bodyParts
     }
 
@@ -194,7 +195,9 @@ class WorkoutViewModel : ViewModel() {
     fun clearAllData() {
         whichBodyPartSelected = Array(5) { false }
         whichMuscleSelected = emptyArray()
-        restTime.value = 60
+        restTime.value = 0
+        breakNotifyingMode = null
+        trainingPlace = null
     }
 
     /**

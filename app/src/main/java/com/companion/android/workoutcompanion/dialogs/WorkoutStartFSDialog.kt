@@ -10,7 +10,10 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
@@ -24,7 +27,6 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
@@ -53,12 +55,14 @@ const val SELECT_MUSCLE_DIALOG = "select-muscle-dialog"
 const val LIST_BUNDLE_TAG = "list-bundle-tag"
 
 
+
 /**
  * Диалоговое окно, занимающее весь экран,
  * для выбора параметров перед тренировкой;
  * Будет запускать необходимые диалоговые окна
  */
 class WorkoutStartFSDialog : DialogFragment() {
+
     // ViewModel для сохранения необходимых данных, выбранных пользователем
     private val viewModel: WorkoutViewModel by activityViewModels()
 
@@ -67,8 +71,6 @@ class WorkoutStartFSDialog : DialogFragment() {
     private val binding get() = _binding!!
 
     private var callback: Callback? = null
-
-    private val fadeAnim = Fade()
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -111,75 +113,61 @@ class WorkoutStartFSDialog : DialogFragment() {
             viewModel.trainingPlace = place
             selectWorkoutPlace.collapse(
                 placeItemsLayout,
-                titleSelectWorkoutPlace,
-                {
-                    item.visibility = View.GONE
-                    when (item) {
-                        itemHome -> {
-                            if (!itemGym.isVisible)
-                                itemGym.visibility = View.VISIBLE
-                            if (!itemOutdoors.isVisible)
-                                itemOutdoors.visibility = View.VISIBLE
-                        }
-                        itemGym -> {
-                            if (!itemHome.isVisible)
-                                itemHome.visibility = View.VISIBLE
-                            if (!itemOutdoors.isVisible)
-                                itemOutdoors.visibility = View.VISIBLE
-                        }
-                        itemOutdoors -> {
-                            if (!itemHome.isVisible)
-                                itemHome.visibility = View.VISIBLE
-                            if (!itemGym.isVisible)
-                                itemGym.visibility = View.VISIBLE
-                        }
+                titleSelectWorkoutPlace
+            ) {
+                item.visibility = View.GONE
+                when (item) {
+                    itemHome -> {
+                        if (!itemGym.isVisible)
+                            itemGym.visibility = View.VISIBLE
+                        if (!itemOutdoors.isVisible)
+                            itemOutdoors.visibility = View.VISIBLE
+                    }
+                    itemGym -> {
+                        if (!itemHome.isVisible)
+                            itemHome.visibility = View.VISIBLE
+                        if (!itemOutdoors.isVisible)
+                            itemOutdoors.visibility = View.VISIBLE
+                    }
+                    itemOutdoors -> {
+                        if (!itemHome.isVisible)
+                            itemHome.visibility = View.VISIBLE
+                        if (!itemGym.isVisible)
+                            itemGym.visibility = View.VISIBLE
                     }
                 }
-            )
+            }
         }
 
         fun handleBreakModeItemClick(item: View, mode: Int) = with(binding) {
             selectNotifyingMode.animateAsSuccess()
-            viewModel.breakNotificationMode = mode
+            viewModel.breakNotifyingMode = mode
             selectNotifyingMode.collapse(
                 notifyingItemsLayout,
-                titleSelectNotifyingMode,
-                {
-                    item.visibility = View.GONE
-                    when (item) {
-                        itemSound -> {
-                            if (!itemVibration.isVisible)
-                                itemVibration.visibility = View.VISIBLE
-                            if (!itemAnimations.isVisible)
-                                itemAnimations.visibility = View.VISIBLE
-                        }
-                        itemVibration -> {
-                            if (!itemSound.isVisible)
-                                itemSound.visibility = View.VISIBLE
-                            if (!itemAnimations.isVisible)
-                                itemAnimations.visibility = View.VISIBLE
-                        }
-                        itemAnimations -> {
-                            if (!itemSound.isVisible)
-                                itemSound.visibility = View.VISIBLE
-                            if (!itemVibration.isVisible)
-                                itemVibration.visibility = View.VISIBLE
-                        }
+                titleSelectNotifyingMode
+            ) {
+                item.visibility = View.GONE
+                when (item) {
+                    itemSound -> {
+                        if (!itemVibration.isVisible)
+                            itemVibration.visibility = View.VISIBLE
+                        if (!itemAnimations.isVisible)
+                            itemAnimations.visibility = View.VISIBLE
+                    }
+                    itemVibration -> {
+                        if (!itemSound.isVisible)
+                            itemSound.visibility = View.VISIBLE
+                        if (!itemAnimations.isVisible)
+                            itemAnimations.visibility = View.VISIBLE
+                    }
+                    itemAnimations -> {
+                        if (!itemSound.isVisible)
+                            itemSound.visibility = View.VISIBLE
+                        if (!itemVibration.isVisible)
+                            itemVibration.visibility = View.VISIBLE
                     }
                 }
-            )
-        }
-
-        fadeAnim.apply {
-            duration = 400
-            addTarget(binding.bpsAndMusclesButtons)
-            addTarget(binding.selectRestTimeLayout)
-            addTarget(binding.placeItemsLayout)
-            addTarget(binding.notifyingItemsLayout)
-            addTarget(binding.titleSelectBpsAndMuscles)
-            addTarget(binding.titleSelectRestTime)
-            addTarget(binding.titleSelectWorkoutPlace)
-            addTarget(binding.titleSelectNotifyingMode)
+            }
         }
 
         // Инициализация поведения кнопки выбора места тренировки:
@@ -206,13 +194,12 @@ class WorkoutStartFSDialog : DialogFragment() {
         }
 
         // Инициализация поведения кнопки выбора режима уведомления:
-        binding.selectNotifyingMode.setOnClickListener {
+        binding.selectNotifyingMode.setOnClickListener { card ->
             binding.apply {
                 if (notifyingItemsLayout.visibility == View.VISIBLE) {
                     selectNotifyingMode.collapse(notifyingItemsLayout, titleSelectNotifyingMode)
                 } else {
                     remakeCorners(place = false, mode = true)
-                    //TransitionManager.beginDelayedTransition(it as ViewGroup, fadeAnim)
                     selectNotifyingMode.expand(notifyingItemsLayout, titleSelectNotifyingMode)
                 }
                 itemSound.setOnClickListener {
@@ -225,7 +212,7 @@ class WorkoutStartFSDialog : DialogFragment() {
                     handleBreakModeItemClick(it, BreakNotifyingMode.ANIMATION)
                 }
             }
-            it.hideKeyboard()
+            card.hideKeyboard()
         }
 
         // Инициализация поведения кнопки выбора частей тела и мышц:
@@ -236,7 +223,6 @@ class WorkoutStartFSDialog : DialogFragment() {
                     binding.titleSelectBpsAndMuscles
                 )
             } else {
-                //TransitionManager.beginDelayedTransition(it as ViewGroup, fadeAnim)
                 binding.selectBpsAndMuscles.expand(
                     binding.bpsAndMusclesButtons,
                     binding.titleSelectBpsAndMuscles
@@ -270,27 +256,20 @@ class WorkoutStartFSDialog : DialogFragment() {
                     binding.selectBpsAndMuscles.expand(
                         binding.bpsAndMusclesButtons,
                         binding.titleSelectBpsAndMuscles,
-                        getAnimation = true,
-                        binding.selectBpsAndMuscles.height
-                    )!!.apply {
-                        setAnimationListener(object : Animation.AnimationListener {
-                            override fun onAnimationStart(a: Animation?) {
-                                binding.titleSelectBpsAndMuscles.visibility = View.GONE
-                                binding.layoutSelectBpsAndMuscles.visibility = View.GONE
-                                removeBottomCorners(binding.bodyPartsButton)
-                                removeTopCorners(binding.musclesButton)
-                            }
-
-                            override fun onAnimationEnd(a: Animation?) {
-                                binding.titleSelectBpsAndMuscles.visibility = View.VISIBLE
-                                binding.layoutSelectBpsAndMuscles.visibility = View.VISIBLE
-                                binding.musclesButton.visibility = View.VISIBLE
-                            }
-
-                            override fun onAnimationRepeat(a: Animation?) {}
-                        })
-                        binding.selectBpsAndMuscles.startAnimation(this)
-                    }
+                        binding.selectBpsAndMuscles.height,
+                        null,
+                        doOnStart = {
+                            binding.bodyPartsButton.visibility = View.GONE
+                            removeBottomCorners(binding.bodyPartsButton)
+                            removeTopCorners(binding.musclesButton)
+                        },
+                        doOnEnd = {
+                            TransitionManager
+                                .beginDelayedTransition(binding.selectBpsAndMuscles, Fade())
+                            binding.musclesButton.visibility = View.VISIBLE
+                            binding.bodyPartsButton.visibility = View.VISIBLE
+                        }
+                    )
                 }
                 binding.selectBpsAndMuscles.animateAsSuccess()
                 // TODO: animation
@@ -331,11 +310,9 @@ class WorkoutStartFSDialog : DialogFragment() {
                 startedInput = false
                 binding.selectRestTime.collapse(
                     binding.selectRestTimeLayout,
-                    binding.titleSelectRestTime,
-                    { setRestTimeInitState() }
-                )
+                    binding.titleSelectRestTime
+                ) { setRestTimeInitState() }
             } else {
-                //TransitionManager.beginDelayedTransition(it as ViewGroup, fadeAnim)
                 binding.selectRestTime.expand(
                     binding.selectRestTimeLayout,
                     binding.titleSelectRestTime
@@ -349,9 +326,8 @@ class WorkoutStartFSDialog : DialogFragment() {
                 viewModel.restTime.value = binding.timeSlider.value.toInt()
                 binding.selectRestTime.collapse(
                     binding.selectRestTimeLayout,
-                    binding.titleSelectRestTime,
-                    { setRestTimeInitState() }
-                )
+                    binding.titleSelectRestTime
+                ) { setRestTimeInitState() }
             } else {
                 binding.selectRestTime.expandRestTimeItemTo(
                     binding.timeSlider,
@@ -432,14 +408,12 @@ class WorkoutStartFSDialog : DialogFragment() {
             // Если обязательные поля заполнены:
             if (requiredFieldsCompleted()) {
                 callback?.workoutStarted(true)
-                if (viewModel.getNumberOfSelectedMuscles() != 0.toShort()) {
+                if (viewModel.isSomeMuscleSelected()) {
                     val unused = viewModel.getWhichBPAreUnused()
                     if (unused.contains(true)) {
                         WarningUnusedBPDialog(unused).show(parentFragmentManager, "")
                     }
                 }
-
-                // TODO:Сохранить все значения в бд
                 dismiss()
             }
             // Если не все обязательные поля заполнены
@@ -462,9 +436,7 @@ class WorkoutStartFSDialog : DialogFragment() {
 
     override fun onDetach() {
         super.onDetach()
-        callback?.workoutStarted(false)
         callback = null
-        viewModel.clearAllData()
     }
 
     override fun onDestroyView() {
@@ -479,8 +451,9 @@ class WorkoutStartFSDialog : DialogFragment() {
      */
     private fun requiredFieldsCompleted(): Boolean {
         return viewModel.getSelectedBP(requireContext()).isNotEmpty()
-                && viewModel.breakNotificationMode != null
+                && viewModel.breakNotifyingMode != null
                 && viewModel.restTime.value != null
+                && viewModel.restTime.value != 0
                 && viewModel.trainingPlace != null
     }
 
@@ -504,7 +477,7 @@ class WorkoutStartFSDialog : DialogFragment() {
             }
         }
         if (mode) {
-            when (viewModel.breakNotificationMode) {
+            when (viewModel.breakNotifyingMode) {
                 null -> {
                     removeTopCorners(itemAnimations)
                     removeBottomCorners(itemSound)
@@ -583,10 +556,10 @@ class WorkoutStartFSDialog : DialogFragment() {
         if (viewModel.getSelectedBP(requireContext()).isEmpty()) {
             binding.selectBpsAndMuscles.animateAsError()
         }
-        if (viewModel.breakNotificationMode == null) {
+        if (viewModel.breakNotifyingMode == null) {
             binding.selectNotifyingMode.animateAsError()
         }
-        if (viewModel.restTime.value == null) {
+        if (viewModel.restTime.value == null || viewModel.restTime.value == 0) {
             binding.selectRestTime.animateAsError()
         }
     }
@@ -658,7 +631,7 @@ class WorkoutStartFSDialog : DialogFragment() {
             Place.TRAINING_IN_GYM -> itemGym.visibility = View.GONE
             Place.TRAINING_OUTDOORS -> itemOutdoors.visibility = View.GONE
         }
-        when (viewModel.breakNotificationMode) {
+        when (viewModel.breakNotifyingMode) {
             BreakNotifyingMode.SOUND -> itemSound.visibility = View.GONE
             BreakNotifyingMode.VIBRATION -> itemVibration.visibility = View.GONE
             BreakNotifyingMode.ANIMATION -> itemAnimations.visibility = View.GONE
@@ -680,9 +653,8 @@ class WorkoutStartFSDialog : DialogFragment() {
             binding.selectRestTime.animateAsSuccess()
             binding.selectRestTime.collapse(
                 binding.selectRestTimeLayout,
-                binding.titleSelectRestTime,
-                { setRestTimeInitState() }
-            )
+                binding.titleSelectRestTime
+            ) { setRestTimeInitState() }
         } else {
             binding.selectRestTime.animateAsError()
             Toast.makeText(requireContext(), R.string.error_incorrect_time, Toast.LENGTH_SHORT)
@@ -716,26 +688,28 @@ class WorkoutStartFSDialog : DialogFragment() {
      * Раскрытие содержимого CardView;
      * @param innerLayout Layout, который будет
      * преобразован из состояния GONE в состояние VISIBLE;
-     *
      * @param title Заголовок, который есть в каждом
      * CardView элемента тренировки;
      *
-     * @param getAnimation Вернуть или нет анимацию
-     * для самостоятельной обработки;
-     *
      * @param startHeight Начальная высота, при значении null
      * определяется автоматически от высоты данного CardView;
-     *
      * @param endHeight Конечная высота,
      * вычисляется аналогично startHeight;
+     *
+     * @param doOnStart Команды, которые
+     * выполнятся в момент начала анимации;
+     * @param doOnEnd Команды, которые
+     * выполнятся в момент конца анимации;
      */
     private fun CardView.expand(
         innerLayout: ViewGroup,
         title: TextView,
-        getAnimation: Boolean = false,
         startHeight: Int? = null,
-        endHeight: Int? = null
-    ): Animation? {
+        endHeight: Int? = null,
+        doOnStart: (() -> Unit)? = null,
+        doOnEnd: (() -> Unit)? = null
+    ) {
+        isClickable = false
         val initialHeight: Int = startHeight
             ?: resources.getDimension(R.dimen.start_dialog_cardView_height).toInt()
 
@@ -756,18 +730,19 @@ class WorkoutStartFSDialog : DialogFragment() {
 
         }.apply {
             duration = 128L
-            if (getAnimation)
-                return this
             setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(a: Animation?) {
                     title.visibility = View.GONE
                     innerLayout.visibility = View.GONE
+                    doOnStart?.invoke()
                 }
 
                 override fun onAnimationEnd(a: Animation?) {
-                    TransitionManager.beginDelayedTransition(this@expand, fadeAnim)
+                    TransitionManager.beginDelayedTransition(this@expand, Fade())
                     innerLayout.visibility = View.VISIBLE
                     title.visibility = View.VISIBLE
+                    doOnEnd?.invoke()
+                    isClickable = true
                 }
 
                 override fun onAnimationRepeat(a: Animation?) {}
@@ -775,7 +750,6 @@ class WorkoutStartFSDialog : DialogFragment() {
             })
             startAnimation(this)
         }
-        return null
     }
 
     /**
@@ -790,16 +764,13 @@ class WorkoutStartFSDialog : DialogFragment() {
      *
      * @param doOnEnd Команды, которые
      * выполнятся в момент конца анимации;
-     *
-     * @param getAnimation Вернуть или нет анимацию
-     * для самостоятельной обработки;
      */
     private fun CardView.collapse(
         innerLayout: ViewGroup,
         title: TextView,
-        doOnEnd: (() -> Unit)? = null,
-        getAnimation: Boolean = false
-    ): Animation? {
+        doOnEnd: (() -> Unit)? = null
+    ) {
+        isClickable = false
         val initialHeight: Int = measuredHeight
         val distanceToCollapse =
             initialHeight - resources.getDimension(R.dimen.start_dialog_cardView_height)
@@ -809,21 +780,22 @@ class WorkoutStartFSDialog : DialogFragment() {
                     (initialHeight - distanceToCollapse * interpolatedTime).toInt()
                 requestLayout()
             }
+
             override fun willChangeBounds() = true
         }.apply {
             duration = 256L
-            if (getAnimation) return this
             setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(a: Animation?) {
-                    TransitionManager.beginDelayedTransition(this@collapse, fadeAnim)
+                    TransitionManager.beginDelayedTransition(this@collapse, Fade())
                     innerLayout.visibility = View.GONE
                     title.visibility = View.GONE
                 }
 
                 override fun onAnimationEnd(a: Animation?) {
-                    TransitionManager.beginDelayedTransition(this@collapse, fadeAnim)
+                    TransitionManager.beginDelayedTransition(this@collapse, Fade())
                     title.visibility = View.VISIBLE
                     doOnEnd?.invoke()
+                    isClickable = true
                 }
 
                 override fun onAnimationRepeat(p0: Animation?) {}
@@ -831,7 +803,6 @@ class WorkoutStartFSDialog : DialogFragment() {
             })
             startAnimation(this)
         }
-        return null
     }
 
     /**
@@ -849,47 +820,16 @@ class WorkoutStartFSDialog : DialogFragment() {
             expand(
                 binding.selectRestTimeLayout,
                 binding.titleSelectRestTime,
-                getAnimation = true,
-                binding.selectRestTime.height
-            )!!.apply {
-                setAnimationListener(object : Animation.AnimationListener {
-                    override fun onAnimationStart(a: Animation?) {
-                        hide.visibility = View.GONE
-                        binding.selectRestTimeLayout.visibility = View.GONE
-                        binding.titleSelectRestTime.visibility = View.GONE
-                    }
-
-                    override fun onAnimationEnd(a: Animation?) {
-                        show.visibility = View.VISIBLE
-                        binding.selectRestTimeLayout.visibility = View.VISIBLE
-                        binding.titleSelectRestTime.visibility = View.VISIBLE
-                    }
-
-                    override fun onAnimationRepeat(a: Animation?) {}
-                })
-                startAnimation(this)
-            }
+                binding.selectRestTime.height,
+                null,
+                { hide.visibility = View.GONE },
+                { show.visibility = View.VISIBLE })
         }
         if (hide.isVisible) {
             collapse(
                 binding.selectRestTimeLayout,
                 binding.titleSelectRestTime,
-                getAnimation = true,
-            )!!.apply {
-                setAnimationListener(object : Animation.AnimationListener {
-                    override fun onAnimationStart(p0: Animation?) {
-                        binding.selectRestTimeLayout.visibility = View.GONE
-                        binding.titleSelectRestTime.visibility = View.GONE
-                    }
-
-                    override fun onAnimationEnd(p0: Animation?) {
-                        expand()
-                    }
-
-                    override fun onAnimationRepeat(p0: Animation?) {}
-                })
-                startAnimation(this)
-            }
+            )
         } else expand()
     }
 

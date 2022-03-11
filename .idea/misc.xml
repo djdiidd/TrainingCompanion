@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/bnv_selector.xml" value="0.208" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/ic_arrow_down_24.xml" value="0.2425" />
+        <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/ic_arrow_up_24.xml" value="0.2425" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/ic_done_disabled.xml" value="0.156" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/ic_sound_outlined.xml" value="0.2375" />
         <entry key="..\:/Android Studio Projects/TrainingCompanion/app/src/main/res/drawable/ic_warning_amber.xml" value="0.1745" />

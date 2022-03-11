@@ -62,6 +62,7 @@ class CountDownTimer(private val context: Context) {//==========================
     private val timeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             time = intent.getIntExtra(CountDownService.TIME_EXTRA, 0)
+            Log.d("MyTag", "time = $time")
             handleCurrentTime()
         }
     }
@@ -280,15 +281,18 @@ class CountDownTimer(private val context: Context) {//==========================
                     IntentFilter(TIMER_UPDATED)
                 )
             }
-
             // При уничтожении, удаляем связь
             override fun onDestroy(owner: LifecycleOwner) {
                 super.onDestroy(owner)
-                context.unregisterReceiver(timeReceiver)
+                if (isEnabled) {
+                    isEnabled = false
+                    context.unregisterReceiver(timeReceiver)
+                }
             }
         }
         // Добавляем наблюдателя
-        (context as LifecycleOwner).lifecycle.addObserver(defaultLifecycleObserver)
+        (context as LifecycleOwner).lifecycle
+            .addObserver(defaultLifecycleObserver)
     }
 
     /**

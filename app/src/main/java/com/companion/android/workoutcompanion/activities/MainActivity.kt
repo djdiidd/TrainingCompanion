@@ -3,14 +3,12 @@ package com.companion.android.workoutcompanion.activities
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
-import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.ContextThemeWrapper
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -22,10 +20,9 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.viewModels
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.ImageViewCompat
@@ -41,8 +38,8 @@ import com.companion.android.workoutcompanion.fragments.ListFragment
 import com.companion.android.workoutcompanion.fragments.MainFragment
 import com.companion.android.workoutcompanion.models.SimpleListItem
 import com.companion.android.workoutcompanion.objects.BreakNotifyingMode
-import com.companion.android.workoutcompanion.objects.WorkoutParams
 import com.companion.android.workoutcompanion.objects.Place
+import com.companion.android.workoutcompanion.objects.WorkoutParams
 import com.companion.android.workoutcompanion.objects.WorkoutProcess
 import com.companion.android.workoutcompanion.timeutils.CountDownTimer
 import com.companion.android.workoutcompanion.timeutils.ExerciseStopwatch
@@ -181,7 +178,7 @@ class MainActivity : AppCompatActivity(),
                         R.string.side_menu_reselected_workout_set_notifying_toast,
                         R.string.side_menu_reselected_ws_item_sound
                     ) {
-                        viewModel.breakNotificationMode = BreakNotifyingMode.SOUND.also {
+                        viewModel.breakNotifyingMode = BreakNotifyingMode.SOUND.also {
                             timer.setNotifyingType(it)
                         }
                     })
@@ -192,7 +189,7 @@ class MainActivity : AppCompatActivity(),
                     R.string.side_menu_reselected_workout_set_notifying_toast,
                     R.string.side_menu_reselected_ws_item_vibration
                 ) {
-                    viewModel.breakNotificationMode = BreakNotifyingMode.VIBRATION.also {
+                    viewModel.breakNotifyingMode = BreakNotifyingMode.VIBRATION.also {
                         timer.setNotifyingType(it)
                     }
                 })
@@ -202,7 +199,7 @@ class MainActivity : AppCompatActivity(),
                 binding.subMenuDynamicAnim.setOnClickListener(getSideMenuItemOnClickListener(
                     R.string.side_menu_reselected_workout_set_notifying_toast,
                     R.string.side_menu_reselected_ws_item_animation
-                ) { viewModel.breakNotificationMode = BreakNotifyingMode.ANIMATION })
+                ) { viewModel.breakNotifyingMode = BreakNotifyingMode.ANIMATION })
 
                 /* ОПРЕДЕЛИМ СЛУШАТЕЛИ ДЛЯ КАЖДОГО ОБЪЕКТА "ВРЕМЯ ОТДЫХА" */
 
@@ -290,7 +287,7 @@ class MainActivity : AppCompatActivity(),
 
         // Слушатель запуска подпунктов места тренировки
         binding.sideMenuPlace.setOnClickListener(
-            getSideMenuListener(binding.sideMenuDynamicPlace) {}
+            getSideMenuListener(binding.sideMenuDynamicPlace)
         )
         // Слушатель запуска подпунктов частей тела
         binding.sideMenuBodyparts.setOnClickListener(
@@ -320,7 +317,7 @@ class MainActivity : AppCompatActivity(),
         )
         // Слушатель запуска подпунктов с режимом уведомления о начале подхода
         binding.sideMenuNotificationMode.setOnClickListener(
-            getSideMenuListener(binding.sideMenuDynamicBreakMode) {}
+            getSideMenuListener(binding.sideMenuDynamicBreakMode)
         )
 
         // Слушатель прекращение тренировки
@@ -371,7 +368,6 @@ class MainActivity : AppCompatActivity(),
             Handler(mainLooper).postDelayed({
                 it.isClickable = true
             }, 1000)
-
 
         }
         // Слушатель касания на кнопку паузы общего времени на Toolbar (для анимирования)
@@ -508,14 +504,18 @@ class MainActivity : AppCompatActivity(),
      */
     private fun getSideMenuListener(
         container: ViewGroup,
-        action: () -> Unit
+        action: () -> Unit = {}
     ): View.OnClickListener {
-        val bounceAnim = AnimationUtils.loadAnimation(this@MainActivity, R.anim.anim_bounce)
+        val bounceAnim = AnimationUtils
+            .loadAnimation(this@MainActivity, R.anim.anim_bounce)
         return View.OnClickListener {
             it.startAnimation(bounceAnim)
             closeOpenedSideSubmenu(container)
             action.invoke()
-            showOrCloseSideSubmenu(container)
+            if (showOrCloseSideSubmenu(container))
+                (it as TextView).setRightDrawable(R.drawable.ic_arrow_up_24)
+            else
+                (it as TextView).setRightDrawable(R.drawable.ic_arrow_down_24)
         }
     }
 
@@ -650,7 +650,7 @@ class MainActivity : AppCompatActivity(),
         stopwatch.setGoing(getBoolean(STOPWATCH_IS_GOING))
         binding.generalClock.text = stopwatch.getTimeInFormatHMMSS(stopwatch.getRemaining())
         exerciseStopwatch.time = getInt(EXERCISE_TIME)
-        timer.setNotifyingType(viewModel.breakNotificationMode!!)
+        timer.setNotifyingType(viewModel.breakNotifyingMode!!)
         if (viewModel.activeProcess.value == WorkoutProcess.EXERCISE_STOPWATCH)
             exerciseStopwatch.`continue`()
         if (stopwatch.isGoing()) {
@@ -737,6 +737,15 @@ class MainActivity : AppCompatActivity(),
 
         //TODO: Запустить фрагмент со списком;
         // Перенести данные в базу данных;
+    }
+
+    private fun TextView.setRightDrawable(@DrawableRes res: Int) {
+        setCompoundDrawablesWithIntrinsicBounds(
+            compoundDrawables[0],
+            null,
+            ContextCompat.getDrawable(this@MainActivity, res),
+            null
+        )
     }
 
     /**
@@ -851,7 +860,7 @@ class MainActivity : AppCompatActivity(),
         exerciseStopwatch.start()
         // Сохраняем текущим процессом секундомер;
         viewModel.activeProcess.value = WorkoutProcess.EXERCISE_STOPWATCH
-        timer.setNotifyingType(viewModel.breakNotificationMode!!)
+        timer.setNotifyingType(viewModel.breakNotifyingMode!!)
     }
 
     /**

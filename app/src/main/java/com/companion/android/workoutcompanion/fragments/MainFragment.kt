@@ -11,7 +11,8 @@ import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.databinding.DataBindingUtil
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
@@ -25,20 +26,15 @@ import com.companion.android.workoutcompanion.viewmodels.WorkoutViewModel
 private const val DIALOG_START = "dialog-start" // Метка диалога
 
 
-/////////////////////////TODO:
-      //1) Сделать обработку кнопки назад в выборе параметров тренировки;
-      //2) Добавить анимацию fade
-      //3) Не запускать анимацию, при запущенной другой
-      //4) Настроить скорости анимации
-      //5) Проверить при запуске размер экрана, при очень маленьком экране, уменьшить шрифт TODO
+
 /**
  * Данный фрагмент сопровождает пользователя во время тренировки и является основным
  */
 class MainFragment : Fragment(), WorkoutStartFSDialog.Callback {
 
-    private lateinit var binding: FragmentMainBinding               // Объект класса привязки данных
+    private var _binding: FragmentMainBinding? = null  // Объект класса привязки данных
+    private val binding get() = _binding!!
     private val viewModel: WorkoutViewModel by activityViewModels() // Общая ViewModel
-
     private var callback: FragmentCallback? = null
 
     private var isLargeLayout = false
@@ -49,8 +45,8 @@ class MainFragment : Fragment(), WorkoutStartFSDialog.Callback {
         savedInstanceState: Bundle?
     ): View {
         Log.d("LF", "F onCreateView")
-        binding = DataBindingUtil // определяем привязку данных
-            .inflate(layoutInflater, R.layout.fragment_main, container, false)
+        _binding = FragmentMainBinding // определяем привязку данных
+            .inflate(layoutInflater, container, false)
 
         isLargeLayout = resources.getBoolean(R.bool.large_layout)
 
@@ -68,16 +64,13 @@ class MainFragment : Fragment(), WorkoutStartFSDialog.Callback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("LF", "F onViewCreated")
-//        val bounceAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_bounce)
         // Слушатель нажатий для кнопки начала тренировки
         binding.startButton.setOnClickListener {
-//            it.startAnimation(bounceAnim)
 
             if (parentFragmentManager.findFragmentByTag(DIALOG_START) == null) {
                 showStartDialog()
                 binding.startButton.visibility = View.GONE
             }
-//            it.clearAnimation()
         }
         callback?.fragmentUICreated(binding.setTimer, binding.setTimerProgress)
     }
@@ -116,6 +109,15 @@ class MainFragment : Fragment(), WorkoutStartFSDialog.Callback {
                 it.isEnabled = true
             }, 1000)
         }
+
+        requireActivity()
+            .onBackPressedDispatcher
+            .addCallback(this, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    Toast.makeText(requireContext(), " Attempt to exit...", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            })
     }
 
     override fun onStop() {
@@ -127,6 +129,11 @@ class MainFragment : Fragment(), WorkoutStartFSDialog.Callback {
         super.onDestroy()
         Log.d("LF", "F onDestroy")
         callback?.fragmentDestroyed()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onAttach(context: Context) {

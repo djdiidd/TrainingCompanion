@@ -16,11 +16,8 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/dynamic_side_menu_item_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/array_item_chest"
-            android:textColor="@color/md_theme_onSurface"
-            android:textSize="14sp" />
+            style="@style/DrawerLayoutInnerItem"
+            android:text="@string/array_item_chest" />
 
     </LinearLayout>
 </layout>
