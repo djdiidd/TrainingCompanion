@@ -3,6 +3,7 @@ package com.companion.android.workoutcompanion.timeutils
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
 import java.util.Timer
 import java.util.TimerTask
 
@@ -32,6 +33,7 @@ class CountDownService : Service() {
     // При остановке сервиса (по нажатию кнопки пауза)
     // остановим счет таймера
     override fun onDestroy() {
+        Log.d("MyTag", "SERVICE DESTROYED")
         timer.cancel()
         super.onDestroy()
     }
@@ -45,6 +47,7 @@ class CountDownService : Service() {
             val intent = Intent(TIMER_UPDATED)
             --time // Обновляем полученное время на секунду
             if (time <= 0) { timer.cancel(); timer = Timer() }
+            Log.d("Tic", "cdt - $time")
             intent.putExtra(TIME_EXTRA, time)
             // Отправляем интент с временем, который будет получен
             sendBroadcast(intent) //  в TimeViewModel.updateTime (Receiver)

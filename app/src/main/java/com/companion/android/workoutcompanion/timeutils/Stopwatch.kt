@@ -10,6 +10,7 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.companion.android.workoutcompanion.R
+import com.companion.android.workoutcompanion.timeutils.ActionManager.Companion.getTimeInFormatHMMSS
 
 /**
  * Сервис секундомер, использующий broadCast
@@ -24,8 +25,17 @@ class Stopwatch(private val context: Context) {
         addLifeCycleObserver()
     }
 
-    private var generalTime: Int = 0 // Общее время (в секундах)
-    private var timeIsGoing = false   // Идет ли счет времени
+    var time: Int = 0 // Общее время (в секундах)
+        set(value) {
+            field = value
+            clockView?.text = getTimeInFormatHMMSS(time)
+        }
+    var isGoing = false   // Идет ли счет времени
+        set(value) {
+            if (value) pauseResumeButton.setImageResource(R.drawable.ic_pause)
+            else pauseResumeButton.setImageResource(R.drawable.ic_play)
+            field = value
+        }
 
     private val clockView: TextView? = (context as Activity).findViewById(R.id.general_clock)
     private val pauseResumeButton: AppCompatImageButton =
@@ -33,40 +43,11 @@ class Stopwatch(private val context: Context) {
 
     private var isEnabled: Boolean = true
 
-    /** Идет ли счет времени */
-    fun isGoing() = timeIsGoing
-
-    /** Установить, что счет времени идет/не идет */
-    fun setGoing(isGoing: Boolean) {
-        timeIsGoing = isGoing
-    }
-
-    /** Получение оставшегося времени */
-    fun getRemaining() = generalTime
-
-    /** Установка нового времени */
-    fun setTime(time: Int) {
-        generalTime = time
-    }
-
-    /**
-     * Получение времени в String из Int
-     */
-    fun getTimeInFormatHMMSS(time: Int): String {
-        time.also {
-            return String.format(
-                "%d:%02d:%02d",
-                it % 86400 / 3600,
-                it % 86400 % 3600 / 60,
-                it % 86400 % 3600 % 60
-            )
-        }
-    }
-
     /**
      * Полная остановка секундомера;
      */
     fun stopAndUnregister() {
+        if (!isEnabled) return
         stop()
         isEnabled = false
         context.unregisterReceiver(newTimeReceiver)
@@ -77,7 +58,7 @@ class Stopwatch(private val context: Context) {
      * соответственно, остановка, если он запущен
      */
     fun startOrStop() {
-        if (timeIsGoing) stop()
+        if (isGoing) stop()
         else start()
     }
 
@@ -87,8 +68,7 @@ class Stopwatch(private val context: Context) {
      */
     private val newTimeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            generalTime = intent.getIntExtra(StopwatchService.TIME_EXTRA, 0)
-            updateText()
+            time = intent.getIntExtra(StopwatchService.TIME_EXTRA, 0)
         }
     }
 
@@ -100,13 +80,13 @@ class Stopwatch(private val context: Context) {
         if (!isEnabled) {
             context.registerReceiver(newTimeReceiver,
                 IntentFilter(StopwatchService.TIMER_UPDATED))
-            generalTime = 0
+            time = 0
             isEnabled = true
         }
         pauseResumeButton.setImageResource(R.drawable.ic_pause)
-        serviceIntent.putExtra(StopwatchService.TIME_EXTRA, generalTime)
+        serviceIntent.putExtra(StopwatchService.TIME_EXTRA, time)
         context.startService(serviceIntent)
-        timeIsGoing = true
+        isGoing = true
     }
 
     /**
@@ -115,12 +95,9 @@ class Stopwatch(private val context: Context) {
     private fun stop() {
         pauseResumeButton.setImageResource(R.drawable.ic_play)
         context.stopService(serviceIntent)
-        timeIsGoing = false
+        isGoing = false
     }
 
-    private fun updateText() {
-        clockView?.text = getTimeInFormatHMMSS(generalTime)
-    }
 
     /**
      * Определение поведения наблюдателя жизненного цикла
@@ -136,6 +113,7 @@ class Stopwatch(private val context: Context) {
                     newTimeReceiver,
                     IntentFilter(StopwatchService.TIMER_UPDATED)
                 )
+                isEnabled = true
             }
 
             // При уничтожении, удаляем связь

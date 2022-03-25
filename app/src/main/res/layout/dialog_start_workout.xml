@@ -68,30 +68,30 @@
             android:layout_height="match_parent"
             android:paddingTop="40dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/main_container"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:orientation="vertical"
                 android:paddingTop="4dp"
                 android:paddingBottom="32dp">
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/select_workout_place"
-                    style="@style/StartWorkoutItem"
-                    app:layout_constraintTop_toBottomOf="@id/parameters_title_toolbar">
+                    style="@style/StartWorkoutItem">
 
-                    <RelativeLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/place_items_layout_with_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:orientation="vertical"
                         android:layout_marginLeft="4dp"
                         android:layout_marginRight="4dp">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/title_select_workout_place"
                             style="@style/StartWorkoutItemTitle"
-                            android:layout_alignParentTop="true"
                             android:text="@string/select_training_place" />
 
                         <LinearLayout
@@ -99,12 +99,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/title_select_workout_place"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentEnd="true"
                             android:layout_marginTop="6dp"
                             android:orientation="vertical"
                             android:visibility="gone">
-
 
                             <com.google.android.material.button.MaterialButton
                                 android:id="@+id/item_home"
@@ -132,7 +129,7 @@
 
                         </LinearLayout>
 
-                    </RelativeLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                 </com.google.android.material.card.MaterialCardView>
 
@@ -141,17 +138,17 @@
                     style="@style/StartWorkoutItem"
                     app:layout_constraintTop_toBottomOf="@id/select_workout_place">
 
-                    <RelativeLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="4dp"
+                        android:orientation="vertical"
                         android:layout_marginRight="4dp">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/title_select_notifying_mode"
                             style="@style/StartWorkoutItemTitle"
-                            android:layout_alignParentTop="true"
                             android:text="@string/select_notifying_mode" />
 
                         <LinearLayout
@@ -159,8 +156,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/title_select_notifying_mode"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentEnd="true"
                             android:layout_marginTop="6dp"
                             android:orientation="vertical"
                             android:visibility="gone">
@@ -193,7 +188,7 @@
 
                         </LinearLayout>
 
-                    </RelativeLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
                 </com.google.android.material.card.MaterialCardView>
@@ -257,9 +252,10 @@
                     style="@style/StartWorkoutItem"
                     app:layout_constraintTop_toBottomOf="@id/select_bps_and_muscles">
 
-                    <RelativeLayout
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:orientation="vertical"
                         android:layout_gravity="center"
                         android:layout_marginLeft="4dp"
                         android:layout_marginRight="4dp">
@@ -267,19 +263,12 @@
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/title_select_rest_time"
                             style="@style/StartWorkoutItemTitle"
-                            android:layout_above="@id/rest_time_buttons"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentEnd="true"
                             android:text="@string/select_rest_time" />
 
                         <RelativeLayout
                             android:id="@+id/select_rest_time_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_below="@id/title_select_rest_time"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentEnd="true"
                             android:layout_marginTop="6dp"
                             android:visibility="gone">
 
@@ -362,11 +351,11 @@
 
                         </RelativeLayout>
 
-                    </RelativeLayout>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                 </com.google.android.material.card.MaterialCardView>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </ScrollView>
 

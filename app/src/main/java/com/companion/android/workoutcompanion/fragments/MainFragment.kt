@@ -13,12 +13,13 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.companion.android.workoutcompanion.R
 import com.companion.android.workoutcompanion.databinding.FragmentMainBinding
-import com.companion.android.workoutcompanion.dialogs.WorkoutStartFSDialog
 import com.companion.android.workoutcompanion.objects.WorkoutProcess
 import com.companion.android.workoutcompanion.viewmodels.WorkoutViewModel
 
@@ -26,11 +27,12 @@ import com.companion.android.workoutcompanion.viewmodels.WorkoutViewModel
 private const val DIALOG_START = "dialog-start" // Метка диалога
 
 
-
 /**
  * Данный фрагмент сопровождает пользователя во время тренировки и является основным
  */
-class MainFragment : Fragment(), WorkoutStartFSDialog.Callback {
+class MainFragment : Fragment() {
+
+    private val args: MainFragmentArgs by navArgs()
 
     private var _binding: FragmentMainBinding? = null  // Объект класса привязки данных
     private val binding get() = _binding!!
@@ -52,10 +54,7 @@ class MainFragment : Fragment(), WorkoutStartFSDialog.Callback {
 
         // Если тренировка уже началась, то убираем лишнее с экрана;
         if (viewModel.activeProcess.value != WorkoutProcess.NOT_STARTED) {
-            binding.startButton.visibility = View.GONE
-            binding.setTimerProgress.visibility = View.VISIBLE
-            binding.setTimer.visibility = View.VISIBLE
-            binding.mainButton.visibility = View.VISIBLE
+            setProcessViews()
         }
 
         return binding.root
@@ -72,28 +71,11 @@ class MainFragment : Fragment(), WorkoutStartFSDialog.Callback {
                 binding.startButton.visibility = View.GONE
             }
         }
-        callback?.fragmentUICreated(binding.setTimer, binding.setTimerProgress)
-    }
-
-    private fun showStartDialog() {
-        if (isLargeLayout) {
-            //WorkoutStartFSDialog().show(this@MainFragment.parentFragmentManager, DIALOG_START)
-        } else {
-            // The device is smaller, so show the fragment fullscreen
-            val transaction = parentFragmentManager.beginTransaction()
-            // For a little polish, specify a transition animation
-            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            // To make it fullscreen, use the 'content' root view as the container
-            // for the fragment, which is always the root view for the activity
-            transaction
-                .add(android.R.id.content, WorkoutStartFSDialog())
-                .addToBackStack(null)
-                .commit()
-        }
     }
 
     override fun onStart() {
         super.onStart()
+        callback?.fragmentUICreated(binding.setTimer, binding.setTimerProgress)
         Log.d("LF", "F onStart")
 
         val bounceAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_bounce)
@@ -118,6 +100,19 @@ class MainFragment : Fragment(), WorkoutStartFSDialog.Callback {
                         .show()
                 }
             })
+        if (viewModel.activeProcess.value == WorkoutProcess.NOT_STARTED) {
+            if (args.workoutStartedSuccessfully) {
+                callback?.workoutStarted()
+                setProcessViews()
+            } else {
+                setStartViews()
+            }
+        }
+
+        viewModel.activeProcess.observe(this) {
+            if (it == WorkoutProcess.NOT_STARTED && binding.mainButton.isVisible)
+                setStartViews()
+        }
     }
 
     override fun onStop() {
@@ -148,23 +143,35 @@ class MainFragment : Fragment(), WorkoutStartFSDialog.Callback {
         callback = null
     }
 
+    private fun showStartDialog() {
+        if (isLargeLayout) {
+
+        } else {
+            findNavController().navigate(R.id.navigate_to_workoutStartFSDialog)
+        }
+    }
+
+    private fun setStartViews() {
+        binding.startButton.visibility = View.VISIBLE
+        if (binding.setTimer.isVisible) {
+            binding.setTimerProgress.visibility = View.GONE
+            binding.setTimer.visibility = View.GONE
+            binding.mainButton.visibility = View.GONE
+        }
+    }
+
+    private fun setProcessViews() {
+        binding.startButton.visibility = View.GONE
+        binding.setTimerProgress.visibility = View.VISIBLE
+        binding.setTimer.visibility = View.VISIBLE
+        binding.mainButton.visibility = View.VISIBLE
+    }
+
     interface FragmentCallback {
         fun mainButtonClicked()
         fun fragmentDestroyed()
         fun fragmentUICreated(textView: TextView, progressBar: ProgressBar)
         fun workoutStarted()
-    }
-
-    override fun workoutStarted(success: Boolean) {
-        if (success) {
-            callback?.workoutStarted()
-            binding.startButton.visibility = View.GONE
-            binding.setTimerProgress.visibility = View.VISIBLE
-            binding.setTimer.visibility = View.VISIBLE
-            binding.mainButton.visibility = View.VISIBLE
-        } else {
-            binding.startButton.visibility = View.VISIBLE
-        }
     }
 
 }

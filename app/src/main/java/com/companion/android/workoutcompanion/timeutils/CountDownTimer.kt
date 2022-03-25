@@ -14,18 +14,21 @@ import android.os.VibratorManager
 import android.util.Log
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.animation.doOnEnd
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.companion.android.workoutcompanion.R
 import com.companion.android.workoutcompanion.objects.BreakNotifyingMode
 import com.companion.android.workoutcompanion.objects.WorkoutParams
+import com.companion.android.workoutcompanion.timeutils.ActionManager.Companion.getTimeInFormatMMSS
 import com.companion.android.workoutcompanion.timeutils.CountDownService.Companion.TIMER_UPDATED
 
 
 /**
  * Таймер, работающий в качестве сервиса, который использует широкое вещание.
  */
-class CountDownTimer(private val context: Context) {//=================================================================================================
+class CountDownTimer(private val context: Context, private val callbackNew: Callback) {
+//==================================================================================================
 
     init {
         addLifeCycleObserver()
@@ -38,14 +41,11 @@ class CountDownTimer(private val context: Context) {//==========================
     private var clockTextView: TextView? = null
     private var clockProgressBar: ProgressBar? = null
 
-    private lateinit var notifying: Notifying
+    private var notifying: Notifying? = null
     private var notifyingSignalCount: Int = 0
 
-    // Экземпляр интерфейса, функция которого вызовется при окончании таймера
-    private var callback: Callback = context as Callback
-
     // Аниматор для ProgressBar
-    private lateinit var animator: ObjectAnimator
+    private var animator: ObjectAnimator? = null
 
     //                                                                         Первостепенные данные
     private var time: Int = 60     // Оставшееся время;
@@ -53,8 +53,10 @@ class CountDownTimer(private val context: Context) {//==========================
     var isGoing: Boolean = false   // Идет ли счет времени;
 
     var startTime: Int = 0         // Изначальное время;
+        set(value) { field = value; Log.d("MyTag", "Start time set to $field") }
 
-    private var isFinished = false // Закончился ли таймер;
+    var isFinished = false         // Закончился ли таймер;
+        private set
 
     private var isEnabled = true   // Зарегистрирован ли сервис?
 
@@ -62,8 +64,7 @@ class CountDownTimer(private val context: Context) {//==========================
     private val timeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             time = intent.getIntExtra(CountDownService.TIME_EXTRA, 0)
-            Log.d("MyTag", "time = $time")
-            handleCurrentTime()
+            handleReceivedTime()
         }
     }
 
@@ -71,7 +72,6 @@ class CountDownTimer(private val context: Context) {//==========================
 
 
 //--------------------------------[ Открытый интерфейс ]--------------------------------------------
-
 
     /**
      * Получение текущего времени;
@@ -83,10 +83,7 @@ class CountDownTimer(private val context: Context) {//==========================
      */
     fun setTime(time: Int) {
         this.time = time
-        if (startTime == 0 || !isGoing) {
-            Log.d("MyTag", "start time successfully set to $time")
-            startTime = time
-        }
+        if (startTime == 0) startTime = time
         notifyingSignalCount = getSignalCountOfTime()
     }
 
@@ -116,7 +113,7 @@ class CountDownTimer(private val context: Context) {//==========================
      */
     fun attachUI(textView: TextView, progressBar: ProgressBar) {
         clockTextView = textView
-        textView.text = getTimeInFormatMMSS()
+        textView.text = getTimeInFormatMMSS(time)
         clockProgressBar = progressBar
         restoreProgressBar()
     }
@@ -125,17 +122,23 @@ class CountDownTimer(private val context: Context) {//==========================
      * Удаления представлений на экране, которые
      * использовались для отображения соответствующих данных;
      */
-    fun detachUI() {
-        clockProgressBar = null
+    fun detachUI(waitEnd: Boolean = false) {
         clockTextView = null
-        if (this::animator.isInitialized)
-            animator.cancel()
+        if (!waitEnd) {
+            animator?.cancel()
+            clockProgressBar = null
+        } else {
+            animator?.doOnEnd {
+                clockProgressBar = null
+                animator?.cancel()
+            }
+        }
     }
 
     /**
      * Установка стартовых значений объекту;
      */
-    fun setDefaults(start_time: Int): CountDownTimer {
+    fun setStartState(start_time: Int): CountDownTimer {
         time = start_time
         startTime = start_time
         isGoing = false
@@ -150,6 +153,7 @@ class CountDownTimer(private val context: Context) {//==========================
         if (!isEnabled) return
         stop(); isEnabled = false
         context.unregisterReceiver(timeReceiver)
+        detachUI()
     }
 
 
@@ -182,32 +186,21 @@ class CountDownTimer(private val context: Context) {//==========================
         isFinished = true
         startTime = 0
         notifyingSignalCount = 0
-        callback.timerFinished()
-    }
-
-    /**
-     * Получение времени в формате "ММ:СС"
-     */
-    private fun getTimeInFormatMMSS(time: Int = this.time): String {
-        time.also {
-            return String.format(
-                "%02d:%02d",
-                it % 86400 % 3600 / 60,
-                it % 86400 % 3600 % 60
-            )
-        }
+        callbackNew.timerFinished()
     }
 
     /**
      * Восстановление или переопределение прогресса индикатора заполненности (при наличии)
      */
     private fun restoreProgressBar(maxValue: Int = startTime, currentValue: Int = time) {
-        if (clockProgressBar == null || currentValue == 0) {
-            return
-        }
+        if (clockProgressBar == null || currentValue == 0) return
+
+        if (maxValue == 0) throw Error("maxValue is 0")
 
         val coefficient = 100
         val currentProgress = currentValue * coefficient
+
+        Log.d("MyTag", "currentProgress = $currentProgress; maxProgress = ${maxValue * coefficient}")
 
         clockProgressBar!!.max = (maxValue * coefficient)
 
@@ -229,7 +222,7 @@ class CountDownTimer(private val context: Context) {//==========================
      * с переданным интентом в виде значения текущего времени
      */
     private fun start() {
-        if (time <= 0) return
+        if (time == 0) return
         else isFinished = false
 
         if (startTime == 0)
@@ -238,8 +231,10 @@ class CountDownTimer(private val context: Context) {//==========================
                         "Time was not selected automatically"
             )
         if (!isEnabled) {
-            context.registerReceiver(timeReceiver,
-                IntentFilter(TIMER_UPDATED))
+            context.registerReceiver(
+                timeReceiver,
+                IntentFilter(TIMER_UPDATED)
+            )
             isEnabled = true
         }
         serviceIntent.putExtra(CountDownService.TIME_EXTRA, time)
@@ -254,7 +249,7 @@ class CountDownTimer(private val context: Context) {//==========================
      * после которого будет прекращен
      */
     private fun stop() {
-        if (this::animator.isInitialized) animator.pause()
+        animator?.pause()
         context.stopService(serviceIntent)
         isGoing = false
     }
@@ -280,7 +275,9 @@ class CountDownTimer(private val context: Context) {//==========================
                     timeReceiver,
                     IntentFilter(TIMER_UPDATED)
                 )
+                isEnabled = true
             }
+
             // При уничтожении, удаляем связь
             override fun onDestroy(owner: LifecycleOwner) {
                 super.onDestroy(owner)
@@ -298,13 +295,14 @@ class CountDownTimer(private val context: Context) {//==========================
     /**
      * Определяем обработчик текущего времени;
      */
-    private fun handleCurrentTime() {
+    private fun handleReceivedTime() {
         updateTextUI()
         if (time == WorkoutParams.notifyingSignalAt[notifyingSignalCount]) {
-            notifying.play()
+            if (notifying == null) throw Error("notifying == null")
+            notifying?.play()
             ++notifyingSignalCount
         } else if (time == 0) {
-            notifying.playLast()
+            notifying?.playLast()
             finish()
         }
     }
@@ -331,21 +329,24 @@ class CountDownTimer(private val context: Context) {//==========================
                             context.getSystemService(VIBRATOR_SERVICE) as Vibrator
                         }
                 }
+                BreakNotifyingMode.ANIMATION -> Unit
+                else -> throw Error("Notifying type is not defined")
             }
         }
 
         fun play() {
             when (notifying) {
-                is MediaPlayer -> (notifying!! as MediaPlayer).start()
+                null -> Unit
+                is MediaPlayer -> (notifying as MediaPlayer).start()
                 else -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        (notifying!! as Vibrator).vibrate(
+                        (notifying as Vibrator).vibrate(
                             VibrationEffect
                                 .createOneShot(700, VibrationEffect.EFFECT_TICK)
                         )
                     } else {
                         @Suppress("Deprecation")
-                        (notifying!! as Vibrator).vibrate(700)
+                        (notifying as Vibrator).vibrate(700)
                     }
                 }
             }
@@ -354,21 +355,20 @@ class CountDownTimer(private val context: Context) {//==========================
         fun playLast() {
             when (lastNotifying) {
                 null -> {
+                    if (notifying == null) return
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        (notifying!! as Vibrator).vibrate(
+                        (notifying as Vibrator).vibrate(
                             VibrationEffect
                                 .createOneShot(1000, VibrationEffect.EFFECT_TICK)
                         )
                     } else {
                         @Suppress("Deprecation")
-                        (notifying!! as Vibrator).vibrate(1000)
+                        (notifying as Vibrator).vibrate(1000)
                     }
                 }
-                else -> (lastNotifying!! as MediaPlayer).start()
+                else -> (lastNotifying as MediaPlayer).start()
             }
         }
     }
-
-
 }
 

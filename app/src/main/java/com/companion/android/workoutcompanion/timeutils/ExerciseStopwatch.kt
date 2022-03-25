@@ -2,13 +2,13 @@ package com.companion.android.workoutcompanion.timeutils
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.ProgressBar
 import android.widget.TextView
-import java.util.*
-import kotlin.collections.ArrayList
+import com.companion.android.workoutcompanion.timeutils.ActionManager.Companion.getTimeInFormatMMSS
 
 class ExerciseStopwatch(
-    private var listeningView: TextView,
+    private var observedView: TextView,
     private var textView: TextView? = null,
     private var progressBar: ProgressBar? = null
 ) {
@@ -16,14 +16,15 @@ class ExerciseStopwatch(
     private val exerciseTime: ArrayList<Int> = arrayListOf()
 
     private val updateTimeWatcher = object : TextWatcher {
-        val id = UUID.randomUUID()
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
         override fun afterTextChanged(p0: Editable?) {}
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            textView?.text = getTimeInFormatMMSS(time)
-            time++
+            Log.d("Tic", "esw - $time")
+            textView?.text = getTimeInFormatMMSS(time++)
         }
     }
+
+    var isGoing = false
 
     var time: Int = 0
 
@@ -32,9 +33,10 @@ class ExerciseStopwatch(
     }
 
     fun startFrom(start: Int) {
-        if (start < 0) throw Exception("start time cannot be negative")
         time = start
-        listeningView.addTextChangedListener(updateTimeWatcher)
+        if (!isGoing)
+            observedView.addTextChangedListener(updateTimeWatcher)
+        isGoing = true
     }
 
     fun `continue`() {
@@ -42,21 +44,10 @@ class ExerciseStopwatch(
     }
 
     fun stop() {
-        listeningView.removeTextChangedListener(updateTimeWatcher)
+        observedView.removeTextChangedListener(updateTimeWatcher)
+        isGoing = false
     }
 
-    /**
-     * Получение времени в формате "ММ:СС"
-     */
-    private fun getTimeInFormatMMSS(time: Int): String {
-        time.also {
-            return String.format(
-                "%02d:%02d",
-                it % 86400 % 3600 / 60,
-                it % 86400 % 3600 % 60
-            )
-        }
-    }
 
     fun getExerciseTimeOf(index: Int): Int {
         if (index in exerciseTime.indices) {
@@ -90,12 +81,17 @@ class ExerciseStopwatch(
     }
 
     fun attachUI(listening_tv: TextView, tv: TextView?, pb: ProgressBar?) {
-        listeningView = listening_tv; textView = tv; progressBar = pb
-        textView?.text = getTimeInFormatMMSS(time)
+        observedView = listening_tv; textView = tv; progressBar = pb
+    }
+
+    fun updateTextByTime(uTime: Int = time) {
+        textView?.text = getTimeInFormatMMSS(uTime)
     }
 
     fun detachUI() {
-        textView = null; progressBar = null
+        progressBar = null
+        textView = null
+        stop()
     }
 
     fun setExerciseTimeOfLast(value: Int) {

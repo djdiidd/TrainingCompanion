@@ -16,7 +16,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
  * Диалоговое окно, которое предупредит пользователя о том,
  * что он содержит выбранную часть тела, которая не используется
  * (часть тела выбрана, а мышцы для нее - нет)
- */
+ */ //todo BottomSheetDialog
 class WarningUnusedBPDialog(private val whichAreUnusedBP: Array<Boolean>) : DialogFragment(),
     DialogInterface.OnClickListener {
 

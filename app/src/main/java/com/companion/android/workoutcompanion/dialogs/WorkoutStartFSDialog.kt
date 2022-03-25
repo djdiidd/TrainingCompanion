@@ -30,10 +30,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
+import androidx.navigation.Navigation
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
 import com.companion.android.workoutcompanion.R
-import com.companion.android.workoutcompanion.activities.TAG_MAIN_FRAGMENT
 import com.companion.android.workoutcompanion.databinding.DialogStartWorkoutBinding
 import com.companion.android.workoutcompanion.objects.BreakNotifyingMode
 import com.companion.android.workoutcompanion.objects.Place
@@ -70,8 +70,6 @@ class WorkoutStartFSDialog : DialogFragment() {
     private var _binding: DialogStartWorkoutBinding? = null
     private val binding get() = _binding!!
 
-    private var callback: Callback? = null
-
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         // The only reason you might override this method when using onCreateView() is
@@ -101,7 +99,6 @@ class WorkoutStartFSDialog : DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        callback = parentFragmentManager.findFragmentByTag(TAG_MAIN_FRAGMENT) as Callback
 
         remakeCorners()
 
@@ -407,7 +404,9 @@ class WorkoutStartFSDialog : DialogFragment() {
         binding.startButton.setOnClickListener {
             // Если обязательные поля заполнены:
             if (requiredFieldsCompleted()) {
-                callback?.workoutStarted(true)
+                val action = WorkoutStartFSDialogDirections
+                    .navigateToMainFragment(true)
+                Navigation.findNavController(requireView()).navigate(action)
                 if (viewModel.isSomeMuscleSelected()) {
                     val unused = viewModel.getWhichBPAreUnused()
                     if (unused.contains(true)) {
@@ -424,7 +423,9 @@ class WorkoutStartFSDialog : DialogFragment() {
 
         binding.cancelButton.setOnClickListener {
             viewModel.clearAllData()
-            callback?.workoutStarted(false)
+            val action = WorkoutStartFSDialogDirections
+                .navigateToMainFragment(false)
+            Navigation.findNavController(requireView()).navigate(action)
             dismiss()
         }
     }
@@ -432,11 +433,6 @@ class WorkoutStartFSDialog : DialogFragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean("1", true)
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        callback = null
     }
 
     override fun onDestroyView() {
@@ -828,15 +824,8 @@ class WorkoutStartFSDialog : DialogFragment() {
         if (hide.isVisible) {
             collapse(
                 binding.selectRestTimeLayout,
-                binding.titleSelectRestTime,
-            )
+                binding.titleSelectRestTime
+            ) { expand() }
         } else expand()
-    }
-
-    /*
-    Интерфейс, необходимый для отправки данных в хост Activity;
-     */
-    interface Callback {
-        fun workoutStarted(success: Boolean)
     }
 }

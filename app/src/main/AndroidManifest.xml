@@ -3,6 +3,7 @@
     package="com.companion.android.workoutcompanion">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
         android:allowBackup="true"
@@ -25,7 +26,6 @@
             android:name=".activities.MainActivity"
             android:exported="false"
             android:screenOrientation="portrait">
-
         </activity>
 
         <service android:name=".timeutils.StopwatchService" />

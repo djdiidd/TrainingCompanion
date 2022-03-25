@@ -41,8 +41,8 @@ class StopwatchService : Service() {
         // Переопределяем действия, которые будут происходит каждую секунду
         override fun run() {
             val intent = Intent(TIMER_UPDATED)
-            ++time // Обновляем полученное время на секунду
-            intent.putExtra(TIME_EXTRA, time)
+            Log.d("Tic", "sw - $time")
+            intent.putExtra(TIME_EXTRA, time++)
             // Отправляем интент с временем, который будет получен
             sendBroadcast(intent) //  в TimeViewModel.updateTime (Receiver)
         }

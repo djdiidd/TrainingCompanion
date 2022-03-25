@@ -89,6 +89,7 @@
     <string name="title_additional_settings">Additional settings</string>
     <string name="title_other">Other</string>
     <string name="workout_set_notifying">Workout set notifying</string>
+    <string name="toast_need_at_least_one_bp">You need at least 1 selected body part</string>
     <!-- Диалог изменения времени -->
     <string name="title_change_rest_time">Rest time changing</string>
     <string name="dialog_rest_time_sub5">-5</string>
