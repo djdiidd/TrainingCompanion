@@ -4,10 +4,15 @@
     android:id="@+id/nav"
     app:startDestination="@id/mainFragment">
 
+    <action
+        android:id="@+id/action_global_to_mainFragment"
+        app:destination="@id/mainFragment"
+        app:launchSingleTop="true" />
+
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.companion.android.workoutcompanion.fragments.MainFragment"
-        android:label="MainFragment" >
+        android:label="MainFragment">
         <action
             android:id="@+id/navigate_to_workoutStartFSDialog"
             app:destination="@id/workoutStartFSDialog"
@@ -17,8 +22,8 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <argument
             android:name="workoutStartedSuccessfully"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/listFragment"
@@ -27,7 +32,7 @@
     <fragment
         android:id="@+id/workoutStartFSDialog"
         android:name="com.companion.android.workoutcompanion.dialogs.WorkoutStartFSDialog"
-        android:label="WorkoutStartFSDialog" >
+        android:label="WorkoutStartFSDialog">
         <action
             android:id="@+id/navigate_to_mainFragment"
             app:destination="@id/mainFragment"

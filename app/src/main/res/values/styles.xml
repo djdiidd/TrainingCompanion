@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Widget.App.FloatingButton" parent="Widget.Material3.FloatingActionButton.Large.Surface">
         <item name="android:textSize">@dimen/start_dialog_inner_item_text_size</item>
@@ -22,16 +22,19 @@
 
     <style name="SliderStyle">
         <item name="thumbColor">@android:color/white</item>
-        <item name="haloColor">@color/md_theme_secondary</item>
+        <item name="haloColor">@color/secondary</item>
         <item name="haloRadius">14dp</item>
         <item name="thumbRadius">12dp</item>
-        <item name="trackColorInactive">@color/md_theme_onPrimary</item>
-        <item name="tickColorInactive">@color/md_theme_onPrimary</item>
+        <item name="trackColorInactive">@color/on_primary</item>
+        <item name="tickColorInactive">@color/on_primary</item>
         <item name="trackHeight">3dp</item>
     </style>
 
-    <style name="SimpleOutlinedButton" parent="Widget.MaterialComponents.TimePicker.Button">
+    <style name="SideMenuOutlinedButton" parent="Widget.MaterialComponents.TimePicker.Button">
         <item name="android:textSize">18sp</item>
+        <item name="android:layout_width">54dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_marginTop">8dp</item>
     </style>
 
     <style name="CircularDeterminateProgressBar">
@@ -56,7 +59,7 @@
         <item name="android:layout_marginRight">@dimen/start_dialog_item_margins</item>
         <item name="android:layout_marginLeft">@dimen/start_dialog_item_margins</item>
         <item name="android:layout_marginBottom">@dimen/start_dialog_item_margins</item>
-        <item name="cardBackgroundColor">@color/md_theme_primaryContainer</item>
+        <item name="cardBackgroundColor">@color/primary_container</item>
         <item name="cardElevation">2dp</item>
         <item name="shapeAppearanceOverlay">@style/StartWorkoutItemShape</item>
         <item name="strokeWidth">0dp</item>
@@ -67,7 +70,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/start_dialog_item_title_text_size</item>
-        <item name="android:textColor">@color/md_theme_onPrimaryContainer</item>
+        <item name="android:textColor">@color/on_primary_container</item>
         <item name="android:gravity">center_horizontal</item>
     </style>
 
@@ -75,19 +78,65 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">34dp</item>
         <item name="android:drawablePadding">8dp</item>
-        <item name="drawableTint">@color/md_theme_onSurface</item>
+        <item name="android:layout_marginStart">50dp</item>
+        <item name="drawableTint">@color/on_surface</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:textColor">@color/md_theme_onSurface</item>
+        <item name="android:textColor">@color/on_surface</item>
         <item name="android:textSize">14sp</item>
     </style>
 
     <style name="DrawerLayoutInnerTitle" parent="DrawerLayoutInnerItem">
         <item name="android:layout_height">40dp</item>
-        <item name="android:drawableEnd">@drawable/ic_arrow_down_24</item>
+        <item name="drawableEndCompat">@drawable/ic_arrow_down</item>
         <item name="android:drawablePadding">10dp</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:layout_marginLeft">12dp</item>
-        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:layout_marginStart">0dp</item>
     </style>
+
+    <style name="DrawerLayoutInnerTitleRed" parent="DrawerLayoutInnerTitle">
+        <item name="drawableEndCompat">@null</item>
+        <item name="drawableTint">@color/error</item>
+        <item name="android:textColor">@color/error</item>
+    </style>
+
+    <style name="MainButtonActionSecondaryButton">
+        <item name="android:layout_width">132dp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="cornerRadius">15sp</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="android:maxEms">16</item>
+        <item name="strokeColor">@color/main_button_action_outline</item>
+        <item name="android:layout_marginRight">2dp</item>
+        <item name="android:layout_marginLeft">2dp</item>
+        <item name="backgroundTint">@color/secondary_container</item>
+        <item name="android:textColor">@color/on_secondary_container</item>
+    </style>
+
+    <style name="MainButtonActionPrimaryButton" parent="MainButtonActionSecondaryButton">
+        <item name="android:layout_marginRight">36dp</item>
+        <item name="android:layout_marginLeft">36dp</item>
+        <item name="backgroundTint">@color/primary_container</item>
+        <item name="android:textColor">@color/on_primary_container</item>
+    </style>
+
+
+    <style name="MainButtonActionButtonOutlined">
+        <item name="strokeWidth">2dp</item>
+        <item name="strokeColor">@color/secondary_container</item>
+        <item name="backgroundTint">@color/surface</item>
+        <item name="android:textColor">@color/secondary_container</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="MainButtonActionButtonFilled" parent="MainButtonActionButtonOutlined">
+        <item name="android:textColor">@color/on_secondary_container</item>
+        <item name="backgroundTint">@color/secondary_container</item>
+        <item name="android:insetTop">3dp</item>
+        <item name="android:insetBottom">3dp</item>
+        <item name="android:elevation" tools:targetApi="lollipop">1dp</item>
+        <item name="android:stateListAnimator" tools:targetApi="lollipop">@null</item>
+        <item name="cornerSize">@dimen/main_button_action_button_corner_size</item>
+    </style>
+
 </resources>
 

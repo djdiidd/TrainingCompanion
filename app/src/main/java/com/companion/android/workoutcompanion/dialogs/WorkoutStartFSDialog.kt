@@ -564,7 +564,7 @@ class WorkoutStartFSDialog : DialogFragment() {
      * Анимация изменения цвета;
      */
     private fun CardView.animateAsError() {
-        animateToColor(R.color.md_theme_errorContainer)
+        animateToColor(R.color.error_container)
     }
 
     /**
@@ -574,7 +574,7 @@ class WorkoutStartFSDialog : DialogFragment() {
         ObjectAnimator.ofInt(
             this,
             "cardBackgroundColor",
-            ContextCompat.getColor(requireContext(), R.color.md_theme_primaryContainer),
+            ContextCompat.getColor(requireContext(), R.color.primary_container),
             ContextCompat.getColor(requireContext(), colorId)
         ).apply {
             interpolator = LinearInterpolator()
@@ -714,7 +714,7 @@ class WorkoutStartFSDialog : DialogFragment() {
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         val targetHeight: Int = endHeight
-            ?: innerLayout.measuredHeight + initialHeight
+            ?: (innerLayout.measuredHeight + initialHeight)
         val distanceToExpand = targetHeight - initialHeight
         object : Animation() {
             override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
@@ -725,7 +725,7 @@ class WorkoutStartFSDialog : DialogFragment() {
             override fun willChangeBounds() = true
 
         }.apply {
-            duration = 128L
+            duration = 100L
             setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(a: Animation?) {
                     title.visibility = View.GONE
@@ -779,7 +779,7 @@ class WorkoutStartFSDialog : DialogFragment() {
 
             override fun willChangeBounds() = true
         }.apply {
-            duration = 256L
+            duration = 138L
             setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(a: Animation?) {
                     TransitionManager.beginDelayedTransition(this@collapse, Fade())

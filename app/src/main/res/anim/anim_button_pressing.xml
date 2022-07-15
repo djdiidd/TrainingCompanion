@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<scale xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fromXScale="1"
-    android:fromYScale="1"
-    android:toXScale="1.2"
-    android:toYScale="1.2"
-    android:duration="200"
-    android:pivotX="50%"
-    android:pivotY="50%"
-    android:fillAfter="true"/>
+<set
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillAfter="true"
+    android:interpolator="@android:anim/bounce_interpolator"
+    android:duration="@integer/long_anim_600">
+
+    <scale
+        android:fromXScale="1"
+        android:fromYScale="1"
+        android:toXScale="0.8"
+        android:toYScale="0.8"
+        android:pivotX="50%"
+        android:pivotY="50%"/>
+</set>

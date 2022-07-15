@@ -89,6 +89,7 @@ class ExerciseStopwatch(
     }
 
     fun detachUI() {
+        Log.d("MyTag", "Detach exercise stopwatch")
         progressBar = null
         textView = null
         stop()

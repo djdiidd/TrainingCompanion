@@ -1,89 +1,10 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
-    android:viewportWidth="220"
-    android:viewportHeight="220">
-    <group>
-        <clip-path android:pathData="M0,0h220v220h-220z" />
-        <group>
-            <clip-path android:pathData="M33.801,46.31h152.397v151.361h-152.397z" />
-            <path
-                android:fillColor="#00000000"
-                android:pathData="M33.801,46.31h152.397v151.361h-152.397z"
-                android:strokeWidth="36"
-                android:strokeColor="#000000"
-                android:strokeLineCap="square"
-                android:strokeLineJoin="miter" />
-        </group>
-        <group>
-            <clip-path android:pathData="M23,22.328h174v35.698h-174z" />
-            <path
-                android:fillColor="#00000000"
-                android:pathData="M23,22.328h174v35.698h-174z"
-                android:strokeWidth="28"
-                android:strokeColor="#000000"
-                android:strokeLineCap="square"
-                android:strokeLineJoin="miter" />
-        </group>
-        <path
-            android:fillColor="#000000"
-            android:pathData="M76.902,81.087L153.839,150.325C155.643,151.948 155.527,154.443 153.581,155.893L151.665,157.319C149.718,158.768 146.673,158.627 144.868,157.003L67.931,87.765C66.127,86.142 66.243,83.647 68.189,82.197L70.105,80.771C72.052,79.322 75.097,79.463 76.902,81.087Z"
-            android:strokeColor="#00000000" />
-        <path
-            android:fillColor="#FF000000"
-            android:pathData="M64.584,102.511L92.96,76.975"
-            android:strokeWidth="6"
-            android:strokeColor="#000000"
-            android:strokeLineCap="square"
-            android:strokeLineJoin="miter" />
-        <path
-            android:fillColor="#FF000000"
-            android:pathData="M63.233,113.642L103.977,76.975"
-            android:strokeWidth="8"
-            android:strokeColor="#000000"
-            android:strokeLineCap="square"
-            android:strokeLineJoin="miter" />
-        <path
-            android:fillColor="#FF000000"
-            android:pathData="M66.664,123.008L113.229,81.103"
-            android:strokeWidth="10"
-            android:strokeColor="#000000"
-            android:strokeLineCap="square"
-            android:strokeLineJoin="miter" />
-        <path
-            android:fillColor="#FF000000"
-            android:pathData="M155.416,135.58L127.04,161.116"
-            android:strokeWidth="6"
-            android:strokeColor="#000000"
-            android:strokeLineCap="square"
-            android:strokeLineJoin="miter" />
-        <path
-            android:fillColor="#FF000000"
-            android:pathData="M156.767,124.449L116.023,161.116"
-            android:strokeWidth="8"
-            android:strokeColor="#000000"
-            android:strokeLineCap="square"
-            android:strokeLineJoin="miter" />
-        <path
-            android:fillColor="#FF000000"
-            android:pathData="M153.336,115.082L106.771,156.988"
-            android:strokeWidth="10"
-            android:strokeColor="#000000"
-            android:strokeLineCap="square"
-            android:strokeLineJoin="miter" />
-        <path
-            android:fillColor="#FF000000"
-            android:pathData="M77.825,146.968L63.348,159.368"
-            android:strokeWidth="1"
-            android:strokeColor="#000000"
-            android:strokeLineCap="square"
-            android:strokeLineJoin="miter" />
-        <path
-            android:fillColor="#FF000000"
-            android:pathData="M77.71,154.608L63.233,167.007"
-            android:strokeWidth="1"
-            android:strokeColor="#000000"
-            android:strokeLineCap="square"
-            android:strokeLineJoin="miter" />
-    </group>
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="?attr/colorControlNormal">
+  <path
+      android:fillColor="@android:color/white"
+      android:pathData="M13.4,21.9 L12,20.5 15.55,16.95 7.05,8.45 3.5,12 2.1,10.6 3.5,9.15 2.1,7.75 4.2,5.65 2.8,4.2 4.2,2.8 5.65,4.2 7.75,2.1 9.15,3.5 10.6,2.1 12,3.5 8.45,7.05 16.95,15.55 20.5,12 21.9,13.4 20.5,14.85 21.9,16.25 19.8,18.35 21.2,19.8 19.8,21.2 18.35,19.8 16.25,21.9 14.85,20.5Z"/>
 </vector>

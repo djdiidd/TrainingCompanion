@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/main_button_action_outline"/>
+        </shape>
+    </item>
+    <item
+        android:top="6dp"
+        android:right="6dp"
+        android:bottom="6dp"
+        android:left="6dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/surface"/>
+        </shape>
+    </item>
+</layer-list>

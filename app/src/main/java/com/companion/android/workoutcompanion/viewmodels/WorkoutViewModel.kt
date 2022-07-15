@@ -19,6 +19,8 @@ class WorkoutViewModel : ViewModel() {
     val activeProcess = MutableLiveData(WorkoutProcess.NOT_STARTED)
     val restTime = MutableLiveData<Int>() // Время перерыва
 
+    var areActionsOnLeftSide = true
+
     // Хранение массива выбранных объектов из доступного списка (boolean)
     private var whichBodyPartSelected = Array(5) { false }
     private var whichMuscleSelected: Array<Boolean> = arrayOf()
@@ -51,9 +53,9 @@ class WorkoutViewModel : ViewModel() {
 
     /** Получение массива с мышцами, соответствуюми выбранным частям тела */
     fun getAvailableMuscles(context: Context): Array<String> {
-        if (whichBodyPartSelected.isNullOrEmpty())
+        if (whichBodyPartSelected.isEmpty())
             throw NullPointerException(
-                "DataViewModel -> getMusclesStringList -> isBodyPartSelected.value is null"
+                "DataViewModel -> getMusclesStringList -> isBodyPartSelected.value is empty"
             )
         val appropriateMuscle = mapOf(
             0 to R.array.arms_muscles,  // массив с мышцами рук
@@ -79,9 +81,9 @@ class WorkoutViewModel : ViewModel() {
 
     /** Получение массива строк с выбранными частям тела */
     fun getSelectedBP(context: Context): Array<String> {
-        if (whichBodyPartSelected.isNullOrEmpty())
+        if (whichBodyPartSelected.isEmpty())
             throw java.lang.NullPointerException(
-                "DataViewModel -> getStringListOfSelectedBP -> isBodyPartSelected is null or empty"
+                "DataViewModel -> getStringListOfSelectedBP -> isBodyPartSelected is empty"
             )
         val tempList = arrayListOf<String>()
         val fullList = getAllBP(context)
@@ -122,9 +124,9 @@ class WorkoutViewModel : ViewModel() {
      * @return Содержит ли массив с мышцами true
      */
     fun isSomeMuscleSelected(): Boolean {
-        if (whichMuscleSelected.isNullOrEmpty()) {
+        if (whichMuscleSelected.isEmpty()) {
             throw java.lang.NullPointerException(
-                "DataViewModel -> someBPSelected -> whichMuscleSelected is null or empty"
+                "DataViewModel -> someBPSelected -> whichMuscleSelected is empty"
             )
         }
         return whichMuscleSelected.contains(true)
@@ -135,9 +137,9 @@ class WorkoutViewModel : ViewModel() {
      * @return Содержит ли массив с частями тела true
      */
     fun isSomeBPSelected(): Boolean {
-        if (whichBodyPartSelected.isNullOrEmpty()) {
+        if (whichBodyPartSelected.isEmpty()) {
             throw java.lang.NullPointerException(
-                "DataViewModel -> someBPSelected -> isBodyPartSelected is null or empty"
+                "DataViewModel -> someBPSelected -> isBodyPartSelected is empty"
             )
         }
         return whichBodyPartSelected.contains(true)

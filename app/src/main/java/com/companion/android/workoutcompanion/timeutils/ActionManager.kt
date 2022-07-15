@@ -3,17 +3,21 @@ package com.companion.android.workoutcompanion.timeutils
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.os.bundleOf
+import androidx.transition.TransitionManager
 import com.companion.android.workoutcompanion.R
 import com.companion.android.workoutcompanion.objects.BreakNotifyingMode
 import com.companion.android.workoutcompanion.objects.WorkoutProcess
+import com.google.android.material.transition.MaterialFade
 
 
 private const val GENERAL_CLOCK_ID = R.id.general_clock
 private const val SET_TIMER_ID = R.id.set_timer
 private const val SET_TIMER_PROGRESS_ID = R.id.set_timer_progress
+private const val SET_TIMER_PULSE_VIEW_ID = R.id.pulse_anim_view
 
 private const val CURRENT_PROCESS = "current-progress"
 private const val CURRENT_ACTIONS = "current-actions"
@@ -105,7 +109,8 @@ class ActionManager(private val activity: Activity) : CountDownTimer.Callback {
 
         breakTimer.attachUI(
             activity.findViewById(SET_TIMER_ID),
-            activity.findViewById(SET_TIMER_PROGRESS_ID)
+            activity.findViewById(SET_TIMER_PROGRESS_ID),
+            activity.findViewById(SET_TIMER_PULSE_VIEW_ID)
         )
         if (breakTimer.isGoing) return
 
@@ -117,6 +122,7 @@ class ActionManager(private val activity: Activity) : CountDownTimer.Callback {
         currentActions.remove(Action.EXERCISE_STOPWATCH)
             .also { if (it) exerciseStopwatch.detachUI() }
         currentActions.add(Action.BREAK_TIMER)
+        setProgressBarVisible()
     }
 
     private fun performExerciseStopwatch(fromTime: Int = exerciseStopwatch.time) {
@@ -130,6 +136,9 @@ class ActionManager(private val activity: Activity) : CountDownTimer.Callback {
             exerciseStopwatch.updateTextByTime()
             return
         }
+
+        setProgressBarInvisible()
+
         exerciseStopwatch.updateTextByTime(0)
         exerciseStopwatch.startFrom(fromTime)
         if (currentActions.contains(Action.EXERCISE_STOPWATCH)) return
@@ -139,6 +148,7 @@ class ActionManager(private val activity: Activity) : CountDownTimer.Callback {
             if (removed) breakTimer.detachUI(true) //todo: also stop timer
         }
         currentActions.add(Action.EXERCISE_STOPWATCH)
+        Log.d("Bug1", "While performing exercise stopwatch was added EXERCISE_STOPWATCH in currentActions")
     }
 
     private fun performGeneralStopwatch(fromTime: Int) {
@@ -183,7 +193,7 @@ class ActionManager(private val activity: Activity) : CountDownTimer.Callback {
         }
     }
 
-    fun updateUI(timerTextView: TextView, circleView: ProgressBar) {
+    fun updateUI(timerTextView: TextView, circleView: ProgressBar, pulseView: View) {
         when (currentProcess) {
             WorkoutProcess.EXERCISE_STOPWATCH -> {
                 exerciseStopwatch.attachUI(
@@ -192,17 +202,18 @@ class ActionManager(private val activity: Activity) : CountDownTimer.Callback {
                 exerciseStopwatch.updateTextByTime()
             }
             WorkoutProcess.TIMER -> breakTimer.attachUI(
-                timerTextView, circleView
+                timerTextView, circleView, pulseView
             )
             // TODO: add new actions
         }
     }
 
 
-    fun clear() {
+    fun clear(setDefaultProcess: Int = WorkoutProcess.NOT_STARTED) {
         breakTimer.stopAndUnregister()
         exerciseStopwatch.detachUI()
         generalStopwatch.stopAndUnregister()
+        currentProcess = setDefaultProcess
     }
 
     fun getInstanceState(): Bundle? {
@@ -271,6 +282,24 @@ class ActionManager(private val activity: Activity) : CountDownTimer.Callback {
             actionPos[i] = actionToPos[actions[i]]!!
         }
         return actionPos
+    }
+
+    private fun setProgressBarVisible() {
+        TransitionManager.beginDelayedTransition(
+            activity.findViewById(R.id.main_fragment_root),
+            MaterialFade().also { it.duration = 200 }
+        )
+        activity.findViewById<ProgressBar>(SET_TIMER_PROGRESS_ID)
+            .visibility = View.VISIBLE
+    }
+
+    private fun setProgressBarInvisible() {
+        TransitionManager.beginDelayedTransition(
+            activity.findViewById(R.id.main_fragment_root),
+            MaterialFade().also { it.duration = 300 }
+        )
+        activity.findViewById<ProgressBar>(SET_TIMER_PROGRESS_ID)
+            .visibility = View.INVISIBLE
     }
 
     override fun timerFinished() {

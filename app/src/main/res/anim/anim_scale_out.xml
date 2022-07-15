@@ -2,7 +2,7 @@
 <set
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:fillAfter="false"
-    android:duration="140">
+    android:duration="@integer/short_anim_150">
 
     <scale
         android:pivotX="50%"

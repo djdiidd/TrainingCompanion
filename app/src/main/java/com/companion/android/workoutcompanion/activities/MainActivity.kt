@@ -2,6 +2,7 @@ package com.companion.android.workoutcompanion.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -12,17 +13,15 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewDebug.CapturedViewProperty
-import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.view.animation.Transformation
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.isGone
@@ -45,6 +44,7 @@ import com.companion.android.workoutcompanion.objects.Place
 import com.companion.android.workoutcompanion.objects.WorkoutParams
 import com.companion.android.workoutcompanion.objects.WorkoutProcess
 import com.companion.android.workoutcompanion.timeutils.ActionManager
+import com.companion.android.workoutcompanion.timeutils.StopwatchService.Companion.ACTION_SHOW_MAIN_FRAGMENT
 import com.companion.android.workoutcompanion.viewmodels.WorkoutViewModel
 
 
@@ -73,9 +73,6 @@ class MainActivity : AppCompatActivity(),
     @CapturedViewProperty
     private var openedSubmenuId: Int? = null
 
-//    @IdRes // Последний запущенный фрагмент
-//    private var lastRunFragmentId: Int = R.id.navigate_to_mainFragment
-
     // Глобальная ViewModel, инкапсулирующая данные тренировки
     private val viewModel: WorkoutViewModel by viewModels()
 
@@ -88,6 +85,7 @@ class MainActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        navigateToMainFragmentIfNeeded(intent)
 
         binding = DataBindingUtil // определяем привязку данных
             .setContentView(this, R.layout.activity_main)
@@ -114,6 +112,11 @@ class MainActivity : AppCompatActivity(),
         setupBottomNavigation()
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        navigateToMainFragmentIfNeeded(intent)
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onStart() {
         super.onStart()
@@ -125,7 +128,8 @@ class MainActivity : AppCompatActivity(),
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
             override fun onDrawerStateChanged(newState: Int) {}
             override fun onDrawerClosed(drawerView: View) {
-                closeOpenedSideSubmenu(null, true)
+                closeOpenedSideContainer()
+                binding.sideMenuStopWorkoutAcceptButton.visibility = View.GONE
             }
 
             /** Определение динамических действий бокового меню, при его открытии */
@@ -133,7 +137,6 @@ class MainActivity : AppCompatActivity(),
 
                 /* ИНИЦИАЛИЗИРУЕМ СЛУШАТЕЛИ ДЛЯ КАЖДОГО ПОДПУНКТА "МЕСТО ТРЕНИРОВКИ" */
 
-                Log.d("MyTag", "Drawer opened")
                 // Установка места тренировки на "Дом"
                 binding.subMenuDynamicPlaceHome.setOnClickListener(
                     getSideMenuItemOnClickListener(
@@ -141,9 +144,6 @@ class MainActivity : AppCompatActivity(),
                         R.string.side_menu_reselected_place_item_home
                     ) {
                         viewModel.trainingPlace = Place.TRAINING_AT_HOME
-                        binding.subMenuDynamicPlaceHome.isVisible = false
-                        binding.subMenuDynamicPlaceOutdoors.isVisible = true
-                        binding.subMenuDynamicPlaceGym.isVisible = true
                     })
 
 
@@ -154,9 +154,6 @@ class MainActivity : AppCompatActivity(),
                         R.string.side_menu_reselected_place_item_gym
                     ) {
                         viewModel.trainingPlace = Place.TRAINING_IN_GYM
-                        binding.subMenuDynamicPlaceGym.isVisible = false
-                        binding.subMenuDynamicPlaceOutdoors.isVisible = true
-                        binding.subMenuDynamicPlaceHome.isVisible = true
                     })
 
 
@@ -167,9 +164,6 @@ class MainActivity : AppCompatActivity(),
                         R.string.side_menu_reselected_place_item_outdoors
                     ) {
                         viewModel.trainingPlace = Place.TRAINING_OUTDOORS
-                        binding.subMenuDynamicPlaceOutdoors.isVisible = false
-                        binding.subMenuDynamicPlaceHome.isVisible = true
-                        binding.subMenuDynamicPlaceGym.isVisible = true
                     })
 
                 /* ОПРЕДЕЛИМ СЛУШАТЕЛИ ДЛЯ КАЖДОГО ПОДПУНКТА "РЕЖИМ УВЕДОМЛЕНИЯ" */
@@ -183,9 +177,6 @@ class MainActivity : AppCompatActivity(),
                         viewModel.breakNotifyingMode = BreakNotifyingMode.SOUND.also { type ->
                             actionManager?.notifyingType = type
                         }
-                        binding.subMenuDynamicSound.isVisible = false
-                        binding.subMenuDynamicVibration.isVisible = true
-                        binding.subMenuDynamicAnim.isVisible = true
                     })
 
 
@@ -197,9 +188,6 @@ class MainActivity : AppCompatActivity(),
                     viewModel.breakNotifyingMode = BreakNotifyingMode.VIBRATION.also { type ->
                         actionManager?.notifyingType = type
                     }
-                    binding.subMenuDynamicVibration.isVisible = false
-                    binding.subMenuDynamicSound.isVisible = true
-                    binding.subMenuDynamicAnim.isVisible = true
                 })
 
 
@@ -211,9 +199,6 @@ class MainActivity : AppCompatActivity(),
                     viewModel.breakNotifyingMode = BreakNotifyingMode.ANIMATION.also { type ->
                         actionManager?.notifyingType = type
                     }
-                    binding.subMenuDynamicVibration.isVisible = true
-                    binding.subMenuDynamicSound.isVisible = true
-                    binding.subMenuDynamicAnim.isVisible = false
                 })
 
                 /* ОПРЕДЕЛИМ СЛУШАТЕЛИ ДЛЯ КАЖДОГО ОБЪЕКТА "ВРЕМЯ ОТДЫХА" */
@@ -222,6 +207,10 @@ class MainActivity : AppCompatActivity(),
                 binding.sideMenuInputRestTime.setOnTouchListener { v, _ ->
                     binding.sideMenuRestTimeAcceptButton.visibility = View.VISIBLE
                     v.performClick()
+                }
+
+                binding.sideMenuCurrentRestTime.setOnTouchListener { _, event ->
+                    binding.sideMenuInputRestTime.dispatchTouchEvent(event)
                 }
 
                 // Нажатие кнопки "подтвердить" на клавиатуре после ввода времени отдыха
@@ -261,7 +250,7 @@ class MainActivity : AppCompatActivity(),
                                 binding.sideMenuRestTimeAcceptButton,
                                 ColorStateList.valueOf(
                                     ContextCompat.getColor(
-                                        this@MainActivity, R.color.md_theme_onSurface
+                                        this@MainActivity, R.color.on_surface
                                     )
                                 )
                             )
@@ -336,7 +325,15 @@ class MainActivity : AppCompatActivity(),
         )
 
         // Слушатель прекращение тренировки
-        binding.subMenuStopStopWorkout.setOnClickListener {
+        binding.subMenuStopWorkout.setOnClickListener {
+            if (binding.sideMenuStopWorkoutAcceptButton.isVisible)
+                binding.sideMenuStopWorkoutAcceptButton.visibility = View.GONE
+            else
+                binding.sideMenuStopWorkoutAcceptButton.visibility = View.VISIBLE
+        }
+
+        // Слушатель подтверждения прекращение тренировки
+        binding.sideMenuStopWorkoutAcceptButton.setOnClickListener {
             stopWorkout()
         }
 
@@ -369,7 +366,11 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putAll(actionManager?.getInstanceState())
+        if (actionManager != null) {
+            val savedInstanceState = actionManager!!.getInstanceState()
+            if (savedInstanceState != null)
+                outState.putAll(savedInstanceState)
+        }
         super.onSaveInstanceState(outState)
     }
 
@@ -425,37 +426,89 @@ class MainActivity : AppCompatActivity(),
             getString(toastString, getString(toastSubstring)),
             Toast.LENGTH_LONG
         ).show()
-        closeOpenedSideSubmenu { endAction.invoke() }
+        closeOpenedSideContainer { endAction.invoke() }
     }
 
     /**
      * Скрытие или открытие подменю для определенного пункта бокового меню;
      */
-    private fun showOrCloseSideSubmenu(container: ViewGroup): Boolean {
-        return if (container.isVisible) {
-            container.collapse()
-            false
+    private fun showOrCloseSideContainer(container: View): Boolean {
+        return if (container is RecyclerView) {
+            if (container.isVisible) {
+                container.visibility = View.GONE
+                false
+            } else {
+                openedSubmenuId = container.id
+                container.visibility = View.VISIBLE
+                true
+            }
         } else {
-            openedSubmenuId = container.id
-            container.expand()
-            true
+            if (findViewById<View?>((container as Group).referencedIds[0]).isVisible
+                || findViewById<View?>(container.referencedIds[1]).isVisible
+            ) {
+                container.visibility = View.GONE
+                false
+            } else {
+                openedSubmenuId = container.id
+                when (container.id) {
+                    R.id.side_menu_dynamic_place -> {
+                        when (viewModel.trainingPlace) {
+                            Place.TRAINING_AT_HOME -> {
+                                binding.subMenuDynamicPlaceHome.isGone = true
+                                binding.subMenuDynamicPlaceGym.isVisible = true
+                                binding.subMenuDynamicPlaceOutdoors.isVisible = true
+                            }
+                            Place.TRAINING_IN_GYM -> {
+                                binding.subMenuDynamicPlaceHome.isVisible = true
+                                binding.subMenuDynamicPlaceGym.isGone = true
+                                binding.subMenuDynamicPlaceOutdoors.isVisible = true
+                            }
+                            Place.TRAINING_OUTDOORS -> {
+                                binding.subMenuDynamicPlaceHome.isVisible = true
+                                binding.subMenuDynamicPlaceGym.isVisible = true
+                                binding.subMenuDynamicPlaceOutdoors.isGone = true
+                            }
+                            else -> container.visibility = View.VISIBLE
+                        }
+                    }
+                    R.id.side_menu_dynamic_break_mode -> {
+                        when (viewModel.breakNotifyingMode) {
+                            BreakNotifyingMode.SOUND -> {
+                                binding.subMenuDynamicSound.isGone = true
+                                binding.subMenuDynamicVibration.isVisible = true
+                                binding.subMenuDynamicAnim.isVisible = true
+                            }
+                            BreakNotifyingMode.VIBRATION -> {
+                                binding.subMenuDynamicSound.isVisible = true
+                                binding.subMenuDynamicVibration.isGone = true
+                                binding.subMenuDynamicAnim.isVisible = true
+                            }
+                            BreakNotifyingMode.ANIMATION -> {
+                                binding.subMenuDynamicSound.isVisible = true
+                                binding.subMenuDynamicVibration.isVisible = true
+                                binding.subMenuDynamicAnim.isGone = true
+                            }
+                            else -> container.visibility = View.VISIBLE
+                        }
+                    }
+                    else -> container.visibility = View.VISIBLE
+                }
+                true
+            }
         }
     }
 
     /**
      * Закрытие открытого подменю в боковом меню;
      */
-    private fun closeOpenedSideSubmenu(
-        except: ViewGroup? = null,
-        woAnim: Boolean = false,
-        doOnAnimEnd: (() -> Unit)? = null
+    private fun closeOpenedSideContainer(
+        except: View? = null,
+        action: (() -> Unit)? = null
     ) {
         if (except?.id != openedSubmenuId) {
             openedSubmenuId?.also {
-                if (!woAnim) getSideMenuContainerById(it)?.collapse(null) {
-                    doOnAnimEnd?.invoke()
-                }
-                else getSideMenuContainerById(it)?.isGone = true
+                action?.invoke()
+                getSideMenuContainerById(it)?.isGone = true
             }
         }
         if (openedSubmenuId == binding.sideMenuDynamicRestTime.id) {
@@ -464,15 +517,15 @@ class MainActivity : AppCompatActivity(),
         }
         when (openedSubmenuId) {
             R.id.side_menu_dynamic_place ->
-                binding.sideMenuPlace.setRightDrawable(R.drawable.ic_arrow_down_24)
+                binding.sideMenuPlace.setRightDrawable(R.drawable.ic_arrow_down)
             R.id.side_menu_dynamic_body_parts ->
-                binding.sideMenuBodyparts.setRightDrawable(R.drawable.ic_arrow_down_24)
+                binding.sideMenuBodyparts.setRightDrawable(R.drawable.ic_arrow_down)
             R.id.side_menu_dynamic_muscles ->
-                binding.sideMenuMuscles.setRightDrawable(R.drawable.ic_arrow_down_24)
+                binding.sideMenuMuscles.setRightDrawable(R.drawable.ic_arrow_down)
             R.id.side_menu_dynamic_rest_time ->
-                binding.sideMenuTime.setRightDrawable(R.drawable.ic_arrow_down_24)
+                binding.sideMenuTime.setRightDrawable(R.drawable.ic_arrow_down)
             R.id.side_menu_dynamic_break_mode ->
-                binding.sideMenuNotificationMode.setRightDrawable(R.drawable.ic_arrow_down_24)
+                binding.sideMenuNotificationMode.setRightDrawable(R.drawable.ic_arrow_down)
         }
         //TODO: стоит ли обнулить openedSubmenuId?
     }
@@ -492,18 +545,18 @@ class MainActivity : AppCompatActivity(),
      * Получение слушателя для каждого из пунктов бокового меню;
      */
     private fun getSideMenuListener(
-        container: ViewGroup,
+        container: View,
         action: () -> Unit = {}
     ): View.OnClickListener {
         val bounceAnim = AnimationUtils
             .loadAnimation(this@MainActivity, R.anim.anim_bounce)
         return View.OnClickListener {
             it.startAnimation(bounceAnim)
-            closeOpenedSideSubmenu(container)
+            closeOpenedSideContainer(container)
             action.invoke()
-            showOrCloseSideSubmenu(container).also { opened ->
-                if (opened) (it as TextView).setRightDrawable(R.drawable.ic_arrow_up_24)
-                else (it as TextView).setRightDrawable(R.drawable.ic_arrow_down_24)
+            showOrCloseSideContainer(container).also { opened ->
+                if (opened) (it as TextView).setRightDrawable(R.drawable.ic_arrow_up)
+                else (it as TextView).setRightDrawable(R.drawable.ic_arrow_down)
             }
         }
     }
@@ -519,10 +572,12 @@ class MainActivity : AppCompatActivity(),
         for (i in 0 until sizeOfMuscles) {
             arrayList.add(i, SimpleListItem(availableMuscles[i], whichAreSelected[i]))
         }
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = SimpleListAdapter(this, TAG_MUSCLES).also {
-            it.submitList(arrayList)
-        }
+        if (recyclerView.layoutManager == null)
+            recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter =
+            SimpleListAdapter(this, TAG_MUSCLES).also {
+                it.submitList(arrayList)
+            }
     }
 
     /**
@@ -535,11 +590,12 @@ class MainActivity : AppCompatActivity(),
         for (i in 0 until WorkoutParams.numberOfBodyParts) {
             arrayList.add(SimpleListItem(stringArray[i], boolArray[i]))
         }
+        if (recyclerView.layoutManager == null)
+            recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter =
             SimpleListAdapter(this, TAG_BODY_PARTS).also {
                 it.submitList(arrayList)
             }
-        recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     /**
@@ -565,81 +621,14 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-
-    /**
-     * Раскрытие контейнера по вертикали;
-     */
-    private fun View.expand() {
-        val matchParentMeasureSpec =
-            View.MeasureSpec.makeMeasureSpec((parent as View).width, View.MeasureSpec.EXACTLY)
-        val wrapContentMeasureSpec =
-            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        measure(matchParentMeasureSpec, wrapContentMeasureSpec)
-        val targetHeight = measuredHeight
-
-        layoutParams.height = 1
-        visibility = View.VISIBLE
-        val anim: Animation = object : Animation() {
-            override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
-                layoutParams.height =
-                    if (interpolatedTime == 1f)
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                    else (targetHeight * interpolatedTime).toInt()
-                requestLayout()
-            }
-
-            override fun willChangeBounds(): Boolean {
-                return true
-            }
-        }
-        // Скорость - 1dp/ms
-        anim.duration = (targetHeight / context.resources.displayMetrics.density).toLong()
-        startAnimation(anim)
-
-    }
-
-    /**
-     * Закрытие контейнера по вертикали;
-     */
-    private fun View.collapse(
-        duration: Long? = null,
-        doOnAnimEnd: (() -> Unit)? = null
-    ) {
-        val initialHeight = measuredHeight
-        val anim: Animation = object : Animation() {
-            override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
-                if (interpolatedTime == 1f) {
-                    visibility = View.GONE
-                } else {
-                    layoutParams.height =
-                        initialHeight - (initialHeight * interpolatedTime).toInt()
-                    requestLayout()
-                }
-            }
-
-            override fun willChangeBounds(): Boolean = true
-        }
-        if (doOnAnimEnd != null)
-            anim.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(p0: Animation?) {}
-                override fun onAnimationRepeat(p0: Animation?) {}
-                override fun onAnimationEnd(p0: Animation?) {
-                    doOnAnimEnd.invoke()
-                }
-            })
-        if (duration == null)
-            anim.duration = (initialHeight / context.resources.displayMetrics.density).toLong()
-        else anim.duration = duration
-        startAnimation(anim)
-    }
-
 //                                                                     [ Для восстановления данных ]
 
     /**
      * Получение данных из переданного bundle;
      */
     private fun restoreData(bundle: Bundle) {
-        actionManager?.restoreInstanceState(bundle)
+        if (actionManager != null)
+            actionManager!!.restoreInstanceState(bundle)
     }
 
 //                                                                    [ Для скрытия/отображения UI ]
@@ -653,7 +642,7 @@ class MainActivity : AppCompatActivity(),
 
         viewModel.activeProcess.value = WorkoutProcess.NOT_STARTED
         actionManager?.clear()
-        //And others add
+
         subMenuDynamicPlaceHome.setOnClickListener(null)
         subMenuDynamicPlaceGym.setOnClickListener(null)
         subMenuDynamicPlaceOutdoors.setOnClickListener(null)
@@ -664,17 +653,9 @@ class MainActivity : AppCompatActivity(),
         sub5s.setOnClickListener(null)
         sideMenuInputRestTime.removeTextChangedListener(restTimeTextWatcher)
         sideMenuRestTimeAcceptButton.setOnClickListener(null)
-        when (viewModel.trainingPlace) {
-            Place.TRAINING_AT_HOME -> subMenuDynamicPlaceHome.isVisible = true
-            Place.TRAINING_IN_GYM -> subMenuDynamicPlaceGym.isVisible = true
-            Place.TRAINING_OUTDOORS -> subMenuDynamicPlaceOutdoors.isVisible = true
-        }
-        when (viewModel.breakNotifyingMode) {
-            BreakNotifyingMode.SOUND -> subMenuDynamicSound.isVisible = true
-            BreakNotifyingMode.VIBRATION -> subMenuDynamicSound.isVisible = true
-            BreakNotifyingMode.ANIMATION -> subMenuDynamicSound.isVisible = true
-        }
         viewModel.clearAllData()
+
+        binding.sideMenuStopWorkoutAcceptButton.visibility = View.GONE
 
         //TODO: запустить диалоговое окно с результатами
         // -> передать от этого диалогового окна safe args с workoutStartedSuccessfully как false
@@ -741,6 +722,13 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
+    private fun navigateToMainFragmentIfNeeded(intent: Intent?) {
+        if (intent?.action == ACTION_SHOW_MAIN_FRAGMENT) {
+            findNavController(R.id.fragment_container)
+                .navigate(R.id.action_global_to_mainFragment)
+        }
+    }
+
 //----------------------------------------------[ Переопределение функций обратного вызова ]--------
 
 
@@ -765,8 +753,6 @@ class MainActivity : AppCompatActivity(),
     override fun onTimerFinished() {
         actionManager?.perform(ActionManager.Companion.Action.EXERCISE_STOPWATCH, 0)
         viewModel.activeProcess.value = WorkoutProcess.EXERCISE_STOPWATCH
-
-        //TODO: Изменить drawable progressbar на stopwatch_circle_progress;!!
     }
 
     /**
@@ -799,17 +785,18 @@ class MainActivity : AppCompatActivity(),
      * Обработка уничтожения фрагмента;
      */
     override fun fragmentDestroyed() {
-
     }
 
     /**
      * Callback интерфейса [MainFragment.FragmentCallback];
      * Обработка создания View фрагмента (onViewCreated);
      */
-    override fun fragmentUICreated(textView: TextView, progressBar: ProgressBar) {
-        Log.d("MyTag", "current process in activity is ${viewModel.activeProcess.value}")
-        if (actionManager == null) Log.d("MyTag", "!!ActionManager is null")
-        actionManager?.updateUI(textView, progressBar)
+    override fun fragmentUICreated(
+        textView: TextView,
+        progressBar: ProgressBar,
+        pulseView: View
+    ) {
+        actionManager?.updateUI(textView, progressBar, pulseView)
     }
 
     override fun workoutStarted() {

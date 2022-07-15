@@ -119,7 +119,10 @@ class Stopwatch(private val context: Context) {
             // При уничтожении, удаляем связь
             override fun onDestroy(owner: LifecycleOwner) {
                 super.onDestroy(owner)
-                context.unregisterReceiver(newTimeReceiver)
+                if (isEnabled) {
+                    isEnabled = false
+                    context.unregisterReceiver(newTimeReceiver)
+                }
             }
         }
         // Добавляем наблюдателя

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="short_anim_150">150</integer>
+    <integer name="short_anim_200">@android:integer/config_shortAnimTime</integer>
+    <integer name="short_anim_250">250</integer>
+    <integer name="medium_anim_400">@android:integer/config_mediumAnimTime</integer>
+    <integer name="long_anim_600">600</integer>
+    <integer name="long_anim_800">800</integer>
+</resources>

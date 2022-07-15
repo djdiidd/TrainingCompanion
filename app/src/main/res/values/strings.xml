@@ -3,8 +3,8 @@
     <string name="app_name">Workout Companion</string>
 
     <!-- Кнопки Bottom Navigation View -->
-    <string name="button_bnv_start">Start page</string>
-    <string name="button_bnv_list">Show list</string>
+    <string name="button_bnv_workout">Workout</string>
+    <string name="button_bnv_statistics">Statistics</string>
 
     <!-- Кнопки действия в диалогах -->
     <string name="button_dialog_accept">Accept</string>
@@ -129,5 +129,33 @@
     <string name="stop_workout">Stop workout</string>
     <string name="content_description_start_your_workout">Start your workout</string>
     <string name="content_description_cancel_workout_preparations">Cancel workout preparations</string>
+
+    <!-- Уведомления -->
+    <string name="notification_content_text">Training time: %s</string>
+    <string name="notification_title">Workout in progress</string>
+
+    <string name="start_upper">START</string>
+
+    <!-- Действия для меню основной кнопки -->
+    <string name="action_flip_right">Flip right</string>
+    <string name="action_flip_left">Flip left</string>
+
+    <!-- Действия для основной кнопки -->
+    <string name="action_change_general_time">Change general time</string>
+    <string name="action_return_exercise_stopwatch_with_current">Return the exercise stopwatch, given current time</string>
+    <string name="action_return_exercise_stopwatch_wo_current">Return the exercise stopwatch, ignoring current time</string>
+    <string name="action_include_completed_approach">Include completed approach</string>
+    <string name="action_change_elapsed_timer_time">Change elapsed timer time</string>
+    <string name="action_change_elapsed_exercise_stopwatch_time">Change elapsed exercise stopwatch time</string>
+    <string name="action_add_temp_timer">Add temporary timer</string>
+    <string name="action_add_temp_stopwatch">Add temporary stopwatch</string>
+    <string name="action_remove_temp_timer">Remove temporary timer</string>
+    <string name="action_remove_temp_stopwatch">Remove temporary stopwatch</string>
+    <string name="action_start_stretching">Start stretching</string>
+    <string name="action_back_training">Back from stretching to training</string>
+    <string name="action_replace_exercise_stopwatch_with_timer_with_spec_time">Replace exercise stopwatch with timer</string>
+    <string name="action_move_temp_timer">Move temporary timer</string>
+    <string name="action_move_temp_stopwatch">Move temporary stopwatch</string>
+    <string name="action_start_approach_now">Start approach now</string>
 
 </resources>

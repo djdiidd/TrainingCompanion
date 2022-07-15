@@ -15,5 +15,5 @@ object WorkoutParams {
     const val numberOfBackMuscles = 4
     const val numberOfChestMuscles = 2
 
-    val notifyingSignalAt = arrayOf(15, 10, 7, 5, 3, 2, 1, -1)
+    val notifyingSignalAt = arrayOf(30, 15, 10, 7, 5, 3, 2, 1, -1)
 }
