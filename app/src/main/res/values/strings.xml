@@ -12,7 +12,10 @@
     <string name="button_dialog_continue">Continue</string>
     <string name="button_dialog_reset_all">Reset all</string>
     <string name="button_dialog_remove">Remove</string>
-    <string name="button_dialog_start">start</string>
+    <string name="button_dialog_start">Start</string>
+
+    <!-- Toolbar -->
+    <string name="total_time">Total time: %s</string>
 
     <!-- Пункты в диалоговом окне начала тренировки -->
     <string name="select_trainees">What are you going to train?</string>
@@ -157,5 +160,6 @@
     <string name="action_move_temp_timer">Move temporary timer</string>
     <string name="action_move_temp_stopwatch">Move temporary stopwatch</string>
     <string name="action_start_approach_now">Start approach now</string>
+    <string name="pause">Pause</string>
 
 </resources>

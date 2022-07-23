@@ -12,10 +12,12 @@
     <dimen name="start_dialog_inner_item_text_size">12sp</dimen>
     <dimen name="start_dialog_item_margins">16dp</dimen>
     <dimen name="timer_progress_bar_size">200dp</dimen>
-    <dimen name="timer_progress_bar_radius">84dp</dimen>
+    <dimen name="timer_progress_bar_radius">90dp</dimen>
     <dimen name="timer_progress_bar_thickness">10dp</dimen>
     <dimen name="timer_progress_bar_points_thickness">5dp</dimen>
     <dimen name="timer_progress_bar_points_insets">178dp</dimen>
+    <dimen name="exercise_stopwatch_progress_bar_width">206dp</dimen>
+    <dimen name="exercise_stopwatch_progress_bar_height">@dimen/timer_progress_bar_size</dimen>
     <dimen name="main_button_size">76dp</dimen>
     <dimen name="main_button_ring_size">88dp</dimen>
     <dimen name="main_button_glow_size">100dp</dimen>

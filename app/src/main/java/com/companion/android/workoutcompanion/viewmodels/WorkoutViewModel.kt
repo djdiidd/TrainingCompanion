@@ -5,9 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.companion.android.workoutcompanion.R
 import com.companion.android.workoutcompanion.objects.BreakNotifyingMode
-import com.companion.android.workoutcompanion.objects.WorkoutParams
 import com.companion.android.workoutcompanion.objects.Place
+import com.companion.android.workoutcompanion.objects.WorkoutParams
 import com.companion.android.workoutcompanion.objects.WorkoutProcess
+import com.companion.android.workoutcompanion.time.ActionManager.ActionState
+import com.companion.android.workoutcompanion.time.ActionManager.Companion.Action
 
 /**
  * ViewModel для сохранения необходимых данных, выбранных пользователем
@@ -17,6 +19,14 @@ class WorkoutViewModel : ViewModel() {
 //-----------------------------------/* Данные */---------------------------------------------------
 
     val activeProcess = MutableLiveData(WorkoutProcess.NOT_STARTED)
+
+    val actionStates = arrayOf(
+        ActionState(Action.BREAK_TIMER),
+        ActionState(Action.GENERAL_STOPWATCH),
+        ActionState(Action.EXERCISE_STOPWATCH),
+        ActionState(Action.TEMP_STOPWATCH),
+        ActionState(Action.TEMP_TIMER)
+    )
     val restTime = MutableLiveData<Int>() // Время перерыва
 
     var areActionsOnLeftSide = true

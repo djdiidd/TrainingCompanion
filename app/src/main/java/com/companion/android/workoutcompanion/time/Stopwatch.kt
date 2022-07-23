@@ -1,21 +1,22 @@
-package com.companion.android.workoutcompanion.timeutils
+package com.companion.android.workoutcompanion.time
 
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.widget.TextView
-import androidx.appcompat.widget.AppCompatImageButton
+import android.view.View
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.companion.android.workoutcompanion.R
-import com.companion.android.workoutcompanion.timeutils.ActionManager.Companion.getTimeInFormatHMMSS
+import com.companion.android.workoutcompanion.interfaces.TimeCounting
+import com.companion.android.workoutcompanion.time.ActionManager.Companion.getTimeInFormatHMMSS
 
 /**
- * Сервис секундомер, использующий broadCast
+ * Сервис секундомер, использующий broadcast
  */
-class Stopwatch(private val context: Context) {
+class Stopwatch(private val context: Context) : TimeCounting {
 
     // Инициализация интента для класса сервиса
     private var serviceIntent: Intent =
@@ -28,37 +29,35 @@ class Stopwatch(private val context: Context) {
     var time: Int = 0 // Общее время (в секундах)
         set(value) {
             field = value
-            clockView?.text = getTimeInFormatHMMSS(time)
+            toolbar?.title = context.resources.getString(R.string.total_time, getTimeInFormatHMMSS(time))
         }
-    var isGoing = false   // Идет ли счет времени
-        set(value) {
-            if (value) pauseResumeButton.setImageResource(R.drawable.ic_pause)
-            else pauseResumeButton.setImageResource(R.drawable.ic_play)
-            field = value
-        }
+    override var isGoing = false   // Идет ли счет времени
+    override var isPaused = false
 
-    private val clockView: TextView? = (context as Activity).findViewById(R.id.general_clock)
-    private val pauseResumeButton: AppCompatImageButton =
-        (context as Activity).findViewById(R.id.pause_resume_button)
+    private val toolbar: Toolbar? = (context as Activity).findViewById(R.id.toolbar)
 
-    private var isEnabled: Boolean = true
+    private var isServiceEnabled: Boolean = true
 
     /**
      * Полная остановка секундомера;
      */
-    fun stopAndUnregister() {
-        if (!isEnabled) return
-        stop()
-        isEnabled = false
+    override fun stop() {
+        if (!isServiceEnabled) return
+        pause()
+        isServiceEnabled = false
         context.unregisterReceiver(newTimeReceiver)
+    }
+
+    override fun cancel(animate: Boolean) {
+        TODO("Not yet implemented")
     }
 
     /**
      * Запуск секундомера если он не запущен и,
      * соответственно, остановка, если он запущен
      */
-    fun startOrStop() {
-        if (isGoing) stop()
+    fun startOrPause() {
+        if (isGoing) pause()
         else start()
     }
 
@@ -72,30 +71,37 @@ class Stopwatch(private val context: Context) {
         }
     }
 
+    override fun enable(vararg views: View) {
+        assert(toolbar != null)
+    }
+
     /**
      * Запуск секундомера посредством запуска сервиса
      * с переданным интентом в виде значения текущего времени
      */
-    private fun start() {
-        if (!isEnabled) {
-            context.registerReceiver(newTimeReceiver,
-                IntentFilter(StopwatchService.TIMER_UPDATED))
+    override fun start() {
+        if (!isServiceEnabled) {
+            context.registerReceiver(
+                newTimeReceiver,
+                IntentFilter(StopwatchService.TIMER_UPDATED)
+            )
             time = 0
-            isEnabled = true
+            isServiceEnabled = true
         }
-        pauseResumeButton.setImageResource(R.drawable.ic_pause)
+//        pauseResumeButton.setImageResource(R.drawable.ic_pause)
         serviceIntent.putExtra(StopwatchService.TIME_EXTRA, time)
         context.startService(serviceIntent)
         isGoing = true
+        isPaused = false
     }
 
     /**
      * Остановка секундомера путем вызова stopService(serviceIntent), после которого будет прекращен
      */
-    private fun stop() {
-        pauseResumeButton.setImageResource(R.drawable.ic_play)
+    override fun pause() {
         context.stopService(serviceIntent)
         isGoing = false
+        isPaused = true
     }
 
 
@@ -113,14 +119,14 @@ class Stopwatch(private val context: Context) {
                     newTimeReceiver,
                     IntentFilter(StopwatchService.TIMER_UPDATED)
                 )
-                isEnabled = true
+                isServiceEnabled = true
             }
 
             // При уничтожении, удаляем связь
             override fun onDestroy(owner: LifecycleOwner) {
                 super.onDestroy(owner)
-                if (isEnabled) {
-                    isEnabled = false
+                if (isServiceEnabled) {
+                    isServiceEnabled = false
                     context.unregisterReceiver(newTimeReceiver)
                 }
             }

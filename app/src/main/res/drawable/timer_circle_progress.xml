@@ -34,30 +34,30 @@
         </rotate>
     </item>
 
-    <!-- Закругление на верхнем статическом конце -->
-    <item android:id="@+id/progress_bar_point_static" android:bottom="@dimen/timer_progress_bar_points_insets">
-        <shape
-            android:innerRadius="0dp"
-            android:shape="ring"
-            android:thickness="@dimen/timer_progress_bar_points_thickness"
-            android:useLevel="false">
-            <solid android:color="@color/secondary_container" />
-        </shape>
-    </item>
+<!--    &lt;!&ndash; Закругление на верхнем статическом конце &ndash;&gt;-->
+<!--    <item android:id="@+id/progress_bar_point_static" android:bottom="@dimen/timer_progress_bar_points_insets">-->
+<!--        <shape-->
+<!--            android:innerRadius="0dp"-->
+<!--            android:shape="ring"-->
+<!--            android:thickness="@dimen/timer_progress_bar_points_thickness"-->
+<!--            android:useLevel="false">-->
+<!--            <solid android:color="@color/secondary_container" />-->
+<!--        </shape>-->
+<!--    </item>-->
 
-    <!-- Закругление на верхнем динамичном конце -->
-    <item android:id="@+id/progress_bar_point_dynamic" >
-        <rotate>
-            <inset android:insetBottom="@dimen/timer_progress_bar_points_insets">
-                <shape
-                    android:innerRadius="0dp"
-                    android:shape="ring"
-                    android:thickness="@dimen/timer_progress_bar_points_thickness"
-                    android:useLevel="false">
-                    <solid android:color="@color/secondary_container" />
-                </shape>
-            </inset>
-        </rotate>
-    </item>
+<!--    &lt;!&ndash; Закругление на верхнем динамичном конце &ndash;&gt;-->
+<!--    <item android:id="@+id/progress_bar_point_dynamic" >-->
+<!--        <rotate>-->
+<!--            <inset android:insetBottom="@dimen/timer_progress_bar_points_insets">-->
+<!--                <shape-->
+<!--                    android:innerRadius="0dp"-->
+<!--                    android:shape="ring"-->
+<!--                    android:thickness="@dimen/timer_progress_bar_points_thickness"-->
+<!--                    android:useLevel="false">-->
+<!--                    <solid android:color="@color/secondary_container" />-->
+<!--                </shape>-->
+<!--            </inset>-->
+<!--        </rotate>-->
+<!--    </item>-->
 
 </layer-list>

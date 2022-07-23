@@ -6,11 +6,11 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.MotionEvent
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewDebug.CapturedViewProperty
 import android.view.animation.AlphaAnimation
@@ -43,8 +43,9 @@ import com.companion.android.workoutcompanion.objects.BreakNotifyingMode
 import com.companion.android.workoutcompanion.objects.Place
 import com.companion.android.workoutcompanion.objects.WorkoutParams
 import com.companion.android.workoutcompanion.objects.WorkoutProcess
-import com.companion.android.workoutcompanion.timeutils.ActionManager
-import com.companion.android.workoutcompanion.timeutils.StopwatchService.Companion.ACTION_SHOW_MAIN_FRAGMENT
+import com.companion.android.workoutcompanion.time.ActionManager
+import com.companion.android.workoutcompanion.time.ActionManager.Companion.Action
+import com.companion.android.workoutcompanion.time.StopwatchService.Companion.ACTION_SHOW_MAIN_FRAGMENT
 import com.companion.android.workoutcompanion.viewmodels.WorkoutViewModel
 
 
@@ -58,7 +59,7 @@ const val TAG_MUSCLES = "tag-muscles"
 
 class MainActivity : AppCompatActivity(),
     WarningUnusedBPDialog.Callback, MainFragment.FragmentCallback,
-    SimpleListAdapter.Callback, ActionManager.ActionCallback {
+    SimpleListAdapter.Callback {
 
 
 //---------------------------------------------------------------[ Данные ]-------------------------
@@ -97,7 +98,7 @@ class MainActivity : AppCompatActivity(),
 
         // Определяем объект, предназначенный для работы со временем;
         if (actionManager == null)
-            actionManager = ActionManager(this)
+            actionManager = ActionManager(this, viewModel)
 
 
         if (savedInstanceState == null
@@ -339,30 +340,43 @@ class MainActivity : AppCompatActivity(),
 
         //-- -- -- -- -- -- -- -- -- -- -- -- -- -- -[ Обаботка toolbar ]- -- -- -- -- -- -- -- -- -
 
-        // Слушатель нажатия на кнопку паузы общего времени на Toolbar
-        binding.pauseResumeButton.setOnClickListener {
-            it.isClickable = false
-            actionManager?.performOrPause(ActionManager.Companion.Action.GENERAL_STOPWATCH)
-            Handler(mainLooper).postDelayed({
-                it.isClickable = true
-            }, 1000)
 
-        }
-        // Слушатель касания на кнопку паузы общего времени на Toolbar (для анимирования)
-        binding.pauseResumeButton.setOnTouchListener { view, motionEvent ->
-            // Анимации для нажатий
-            val fadeAnimPressed = AnimationUtils.loadAnimation(this, android.R.anim.fade_out)
-            val fadeAnimUnpressed = AnimationUtils.loadAnimation(this, android.R.anim.fade_in)
-            when (motionEvent.action) {
-                MotionEvent.ACTION_DOWN -> view.startAnimation(fadeAnimPressed)
-                MotionEvent.ACTION_UP -> view.startAnimation(fadeAnimUnpressed)
-            }
-            false
-        }
         // Слушатель нажатия для кнопки опций/настроек на Toolbar
-        binding.optionsButton.setOnClickListener {
+        binding.toolbar.setNavigationOnClickListener {
             binding.drawerLayout.openDrawer(GravityCompat.START)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.workout_toolbar_menu, menu)
+        if (viewModel.activeProcess.value == WorkoutProcess.PAUSED) {
+            Log.d("MyTag", "JJJJOOOOOPPPPPAAAA")
+            binding.toolbar.menu.getItem(0).icon =
+                ContextCompat.getDrawable(this, R.drawable.ic_resume_workout)
+        }
+        return true
+    }
+
+    // Слушатель касания на кнопку паузы общего времени на Toolbar
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        actionManager?.performOrPause(Action.GENERAL_STOPWATCH)
+        if (actionManager?.isActionPaused(Action.GENERAL_STOPWATCH) == true)
+            actionManager?.pauseAllActions()
+        else
+            actionManager?.resumeAllActions()
+
+        if (viewModel.activeProcess.value == WorkoutProcess.PAUSED) {
+            if (actionManager!!.isActionEnabled(Action.BREAK_TIMER))
+                viewModel.activeProcess.value = WorkoutProcess.TIMER
+            else
+                viewModel.activeProcess.value = WorkoutProcess.EXERCISE_STOPWATCH
+            binding.toolbar.menu.getItem(0).icon =
+                ContextCompat.getDrawable(this, R.drawable.ic_resume_workout)
+        } else {
+            binding.toolbar.menu.getItem(0).icon =
+                ContextCompat.getDrawable(this, R.drawable.ic_pause_workout)
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -549,7 +563,7 @@ class MainActivity : AppCompatActivity(),
         action: () -> Unit = {}
     ): View.OnClickListener {
         val bounceAnim = AnimationUtils
-            .loadAnimation(this@MainActivity, R.anim.anim_bounce)
+            .loadAnimation(this@MainActivity, R.anim.bounce)
         return View.OnClickListener {
             it.startAnimation(bounceAnim)
             closeOpenedSideContainer(container)
@@ -640,7 +654,6 @@ class MainActivity : AppCompatActivity(),
 
         hideToolbarAndDisableSideMenu()
 
-        viewModel.activeProcess.value = WorkoutProcess.NOT_STARTED
         actionManager?.clear()
 
         subMenuDynamicPlaceHome.setOnClickListener(null)
@@ -653,6 +666,8 @@ class MainActivity : AppCompatActivity(),
         sub5s.setOnClickListener(null)
         sideMenuInputRestTime.removeTextChangedListener(restTimeTextWatcher)
         sideMenuRestTimeAcceptButton.setOnClickListener(null)
+
+        viewModel.activeProcess.value = WorkoutProcess.NOT_STARTED
         viewModel.clearAllData()
 
         binding.sideMenuStopWorkoutAcceptButton.visibility = View.GONE
@@ -747,30 +762,21 @@ class MainActivity : AppCompatActivity(),
     }
 
     /**
-     * Callback интерфейса [ActionManager.ActionCallback];
-     * Обработка завершения таймера: переход на секундомер.
-     */
-    override fun onTimerFinished() {
-        actionManager?.perform(ActionManager.Companion.Action.EXERCISE_STOPWATCH, 0)
-        viewModel.activeProcess.value = WorkoutProcess.EXERCISE_STOPWATCH
-    }
-
-    /**
      * Callback интерфейса [MainFragment.FragmentCallback];
      * Обработка нажатия основной кнопки
      */
     override fun mainButtonClicked() {
         when (viewModel.activeProcess.value) {
             WorkoutProcess.TIMER -> {
-                actionManager?.performOrPause(ActionManager.Companion.Action.BREAK_TIMER)
+                actionManager?.performOrPause(Action.BREAK_TIMER)
             }
             WorkoutProcess.EXERCISE_STOPWATCH -> {
                 viewModel.activeProcess.value = WorkoutProcess.TIMER
                 //TODO: Запустить диалоговое окно, в котором будет выбор того, что ты потренил
                 // Если Пользователь выбрал закончить тренировку, то перебросить его на результаты и изменить viewModel.activeProcess
                 actionManager?.perform(
-                    ActionManager.Companion.Action.BREAK_TIMER,
-                    viewModel.restTime.value
+                    Action.BREAK_TIMER,
+                    viewModel.restTime.value!!
                 )
             }
             WorkoutProcess.PAUSED -> {
@@ -784,7 +790,8 @@ class MainActivity : AppCompatActivity(),
      * Callback интерфейса [MainFragment.FragmentCallback];
      * Обработка уничтожения фрагмента;
      */
-    override fun fragmentDestroyed() {
+    override fun beforeFragmentDestroyed() {
+        actionManager?.saveObjectsStates()
     }
 
     /**
@@ -794,17 +801,20 @@ class MainActivity : AppCompatActivity(),
     override fun fragmentUICreated(
         textView: TextView,
         progressBar: ProgressBar,
+        circleView: View,
         pulseView: View
     ) {
-        actionManager?.updateUI(textView, progressBar, pulseView)
+        actionManager?.updateUI(textView, progressBar, circleView, pulseView)
     }
 
     override fun workoutStarted() {
         // Обновляем View, используемые для отображения данных секундомера;
         showToolbarAndActivateSideMenu()
-        actionManager?.perform(ActionManager.Companion.Action.GENERAL_STOPWATCH)
-        actionManager?.perform(ActionManager.Companion.Action.EXERCISE_STOPWATCH)
-        actionManager?.notifyingType = viewModel.breakNotifyingMode!!
+        actionManager?.let { manager ->
+            manager.perform(Action.GENERAL_STOPWATCH, fromStart = true)
+            manager.perform(Action.EXERCISE_STOPWATCH, fromStart = true)
+            manager.notifyingType = viewModel.breakNotifyingMode!!
+        }
         // Сохраняем текущим процессом секундомер;
         viewModel.activeProcess.value = WorkoutProcess.EXERCISE_STOPWATCH
         Log.d("MyTag", "override fun workoutStarted")

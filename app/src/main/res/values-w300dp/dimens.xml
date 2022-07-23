@@ -8,10 +8,12 @@
     <dimen name="start_dialog_inner_item_text_size">13sp</dimen>
     <dimen name="toolbar_text_size">26sp</dimen>
     <dimen name="start_dialog_item_margins">20dp</dimen>
-    <dimen name="timer_progress_bar_size">240dp</dimen>
-    <dimen name="timer_progress_bar_radius">96dp</dimen>
+    <dimen name="timer_progress_bar_size">228dp</dimen>
+    <dimen name="timer_progress_bar_radius">104dp</dimen>
     <dimen name="timer_progress_bar_points_thickness">5dp</dimen>
     <dimen name="timer_progress_bar_points_insets">202dp</dimen>
+    <dimen name="exercise_stopwatch_progress_bar_width">236dp</dimen>
+    <dimen name="exercise_stopwatch_progress_bar_height">@dimen/timer_progress_bar_size</dimen>
     <dimen name="main_button_size">90dp</dimen>
     <dimen name="main_button_ring_size">102</dimen>
     <dimen name="main_button_glow_size">114dp</dimen>

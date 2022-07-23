@@ -1,4 +1,4 @@
-package com.companion.android.workoutcompanion.timeutils
+package com.companion.android.workoutcompanion.time
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -16,7 +16,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.companion.android.workoutcompanion.R
 import com.companion.android.workoutcompanion.activities.MainActivity
-import com.companion.android.workoutcompanion.timeutils.ActionManager.Companion.getTimeInFormatHMMSS
+import com.companion.android.workoutcompanion.time.ActionManager.Companion.getTimeInFormatHMMSS
 import java.util.*
 
 /**

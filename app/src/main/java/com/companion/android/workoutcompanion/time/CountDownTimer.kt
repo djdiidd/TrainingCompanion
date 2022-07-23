@@ -1,4 +1,4 @@
-package com.companion.android.workoutcompanion.timeutils
+package com.companion.android.workoutcompanion.time
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
@@ -21,16 +21,18 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.companion.android.workoutcompanion.R
+import com.companion.android.workoutcompanion.interfaces.TimeCounting
+import com.companion.android.workoutcompanion.objects.Anim
 import com.companion.android.workoutcompanion.objects.BreakNotifyingMode
 import com.companion.android.workoutcompanion.objects.WorkoutParams
-import com.companion.android.workoutcompanion.timeutils.ActionManager.Companion.getTimeInFormatMMSS
-import com.companion.android.workoutcompanion.timeutils.CountDownService.Companion.TIMER_UPDATED
+import com.companion.android.workoutcompanion.time.ActionManager.Companion.getTimeInFormatMMSS
+import com.companion.android.workoutcompanion.time.CountDownService.Companion.TIMER_UPDATED
 
 
 /**
  * Таймер, работающий в качестве сервиса, который использует широкое вещание.
  */
-class CountDownTimer(private val context: Context, private val callback: Callback) {
+class CountDownTimer(private val context: Context, private val callback: Callback) : TimeCounting {
 //==================================================================================================
 
     init {
@@ -39,7 +41,8 @@ class CountDownTimer(private val context: Context, private val callback: Callbac
 
 //---------------------------------------[ Данные ]-------------------------------------------------
 
-    //                                                                         Второстепенные данные
+                                                                             //Второстепенные данные
+
     // Элементы экрана, которые можно добавить с помощью attachUI
     private var clockTextView: TextView? = null
     private var clockProgressBar: ProgressBar? = null
@@ -48,50 +51,20 @@ class CountDownTimer(private val context: Context, private val callback: Callbac
     private var notifyingSignalCount: Int = 0
 
     // Аниматор для ProgressBar
-    private var animator: ObjectAnimator? = null
+    private var progressBarAnimator: ObjectAnimator? = null
 
     private val progressPulseEffectSet = AnimatorSet()
 
     private var attemptsToRunPulseAnimation = 0
 
-
-    private val pulseAnimRunnable = object : Runnable {
-        init {
-            Log.d("MyTag", "Pulse Animation Runnable initialized")
-        }
-
-        private var handler: Handler = Handler(Looper.myLooper()!!)
-        var animatedCircle: View? = null
-        var interval: Long = 2000
-            set(value) {
-                field = value
-                stop(); run()
-            }
-
-        private val pulseAnim = AnimationUtils
-            .loadAnimation(context, R.anim.anim_fullscreen_pulse_effect)
-
-        override fun run() {
-            Log.d("MyTag", "Pulse Animation Runnable run")
-            animatedCircle?.let { circle ->
-                circle.isVisible = true
-                circle.startAnimation(pulseAnim)
-            }
-            handler.postDelayed(this, interval)
-        }
-
-        fun stop() {
-            animatedCircle?.isGone = true
-            handler.removeCallbacks(this)
-        }
-    }
+    private val pulseAnimRunnable = PulseAnimRunnable()
 
 
-    //                                                                         Первостепенные данные
+                                                                            // Первостепенные данные
 
     private var time: Int = 60     // Оставшееся время;
 
-    var isGoing: Boolean = false   // Идет ли счет времени;
+    override var isGoing: Boolean = false   // Идет ли счет времени;
 
     var startTime: Int = 0         // Изначальное время;
         set(value) {
@@ -101,7 +74,9 @@ class CountDownTimer(private val context: Context, private val callback: Callbac
     var isFinished = false         // Закончился ли таймер;
         private set
 
-    private var isEnabled = true   // Зарегистрирован ли сервис?
+    override var isPaused = false
+
+    private var isServiceEnabled = true   // Зарегистрирован ли сервис?
 
     // Получатель данных, обновляющий значение времени
     private val timeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -134,8 +109,8 @@ class CountDownTimer(private val context: Context, private val callback: Callbac
      * Запуск секундомера если он не запущен и,
      * соответственно, остановка, если он запущен
      */
-    fun startOrStop() {
-        if (isGoing) stop() else start()
+    fun startOrPause() {
+        if (isGoing) pause() else start()
     }
 
     /**
@@ -150,16 +125,16 @@ class CountDownTimer(private val context: Context, private val callback: Callbac
 
     /**
      * Добавление элементов экрана к обработке времени
-     * @param textView Текстовое представление,
-     *  которое будет использоваться для отображения времени
-     * @param progressBar Индикатор, который будет уменьшаться по мере уменьшения времени
-     * @param pulseView Представления, которое используется для анимации пульсации
      */
-    fun attachUI(textView: TextView, progressBar: ProgressBar, pulseView: View) {
-        clockTextView = textView
-        textView.text = getTimeInFormatMMSS(time)
-        clockProgressBar = progressBar
-        pulseAnimRunnable.animatedCircle = pulseView
+    override fun enable(vararg views: View) {
+        clockTextView = views[0] as TextView
+        clockTextView!!.text = getTimeInFormatMMSS(time)
+        clockProgressBar = views[1] as ProgressBar
+        pulseAnimRunnable.animatedCircle = views[2]
+        if (attemptsToRunPulseAnimation != 0) {
+            pausePulseAnimation()
+            startPulseAnimation(attemptsToRunPulseAnimation)
+        }
         restoreProgressBar()
     }
 
@@ -167,19 +142,21 @@ class CountDownTimer(private val context: Context, private val callback: Callbac
      * Удаления представлений на экране, которые
      * использовались для отображения соответствующих данных;
      */
-    fun detachUI(waitEnd: Boolean = false) {
+    override fun cancel(animate: Boolean) {
         clockTextView = null
-        if (!waitEnd) {
-            animator?.cancel()
+        if (!animate) {
+            progressBarAnimator?.cancel()
+            progressBarAnimator = null
+            clockProgressBar?.animation = null
+            clockProgressBar?.visibility = View.GONE
+            Log.d("MyTag", "${clockProgressBar?.visibility}")
             clockProgressBar = null
-            animator = null
-            clockProgressBar?.progress = 0
         } else {
-            animator?.doOnEnd {
+            progressBarAnimator?.doOnEnd {
                 clockProgressBar?.progress = 0
                 clockProgressBar = null
-                animator?.cancel()
-                animator = null
+                progressBarAnimator?.cancel()
+                progressBarAnimator = null
             }
         }
     }
@@ -198,13 +175,13 @@ class CountDownTimer(private val context: Context, private val callback: Callbac
     /**
      * Полная остановка таймера;
      */
-    fun stopAndUnregister() {
-        if (!isEnabled) return
-        stop()
-        isEnabled = false
+    override fun stop() {
+        if (!isServiceEnabled) return
+        pause()
+        isServiceEnabled = false
         context.unregisterReceiver(timeReceiver)
         startTime = 0
-        detachUI()
+        cancel(animate = false)
     }
 
 
@@ -238,8 +215,17 @@ class CountDownTimer(private val context: Context, private val callback: Callbac
         startTime = 0
         notifyingSignalCount = 0
         stopPulseAnimation()
+        setProgressBarInvisible()
         callback.timerFinished()
         isGoing = false
+    }
+
+    private fun setProgressBarInvisible() {
+        val disappearAnim = AnimationUtils.loadAnimation(context, R.anim.progress_bar_disappear)
+        Anim.doOnEndOf(disappearAnim) {
+            clockProgressBar?.visibility = View.INVISIBLE
+        }
+        clockProgressBar?.startAnimation(disappearAnim)
     }
 
     /**
@@ -253,14 +239,12 @@ class CountDownTimer(private val context: Context, private val callback: Callbac
         val coefficient = 100
         val currentProgress = currentValue * coefficient
 
-        Log.d(
-            "MyTag",
-            "currentProgress = $currentProgress; maxProgress = ${maxValue * coefficient}"
-        )
+        Log.d("MyTag",
+            "currentProgress = $currentProgress; maxProgress = ${maxValue * coefficient}")
 
         clockProgressBar!!.max = (maxValue * coefficient)
 
-        animator = ObjectAnimator.ofInt(
+        progressBarAnimator = ObjectAnimator.ofInt(
             clockProgressBar!!, "progress", currentProgress, 0
         ).apply {
             interpolator = null
@@ -277,7 +261,7 @@ class CountDownTimer(private val context: Context, private val callback: Callbac
      * Запуск секундомера посредством запуска сервиса
      * с переданным интентом в виде значения текущего времени
      */
-    private fun start() {
+    override fun start() {
         if (time == 0) return
         else isFinished = false
 
@@ -286,29 +270,41 @@ class CountDownTimer(private val context: Context, private val callback: Callbac
                 "startTime is 0. \nPossible problem: " +
                         "Time was not selected automatically"
             )
-        if (!isEnabled) {
+        if (!isServiceEnabled) {
             context.registerReceiver(
                 timeReceiver,
                 IntentFilter(TIMER_UPDATED)
             )
-            isEnabled = true
+            isServiceEnabled = true
         }
+        if (time == startTime || !isPaused) {
+            val appearAnim = AnimationUtils
+                .loadAnimation(context, R.anim.progress_bar_appear)
+            Anim.doOnEndOf(appearAnim) {
+                clockProgressBar?.visibility = View.VISIBLE
+            }
+            clockProgressBar?.startAnimation(appearAnim)
+        } else clockProgressBar?.visibility = View.VISIBLE
         serviceIntent.putExtra(CountDownService.TIME_EXTRA, time)
         context.startService(serviceIntent)
         isGoing = true
         restoreProgressBar()
+        if (attemptsToRunPulseAnimation != 0)
+            startPulseAnimation(attemptsToRunPulseAnimation)
         notifyingSignalCount = getSignalCountOfTime()
+        isPaused = false
     }
 
     /**
-     * Остановка секундомера путем вызова stopService(serviceIntent),
+     * Остановка таймера путем вызова stopService(serviceIntent),
      * после которого будет прекращен
      */
-    private fun stop() {
-        animator?.pause()
+    override fun pause() {
+        progressBarAnimator?.pause()
         stopPulseAnimation()
         context.stopService(serviceIntent)
         isGoing = false
+        isPaused = true
     }
 
     /**
@@ -332,21 +328,20 @@ class CountDownTimer(private val context: Context, private val callback: Callbac
                     timeReceiver,
                     IntentFilter(TIMER_UPDATED)
                 )
-                isEnabled = true
+                isServiceEnabled = true
             }
 
             // При уничтожении, удаляем связь
             override fun onDestroy(owner: LifecycleOwner) {
                 super.onDestroy(owner)
-                if (isEnabled) {
-                    isEnabled = false
+                if (isServiceEnabled) {
+                    isServiceEnabled = false
                     context.unregisterReceiver(timeReceiver)
                 }
             }
         }
         // Добавляем наблюдателя
-        (context as LifecycleOwner).lifecycle
-            .addObserver(defaultLifecycleObserver)
+        (context as LifecycleOwner).lifecycle.addObserver(defaultLifecycleObserver)
     }
 
     /**
@@ -355,7 +350,7 @@ class CountDownTimer(private val context: Context, private val callback: Callbac
     private fun handleReceivedTime() {
         updateText()
         if (time == WorkoutParams.notifyingSignalAt[notifyingSignalCount]) {
-            startPulseAnimation(attemptsToRunPulseAnimation++)
+            startPulseAnimation(++attemptsToRunPulseAnimation)
             notifying!!.play()
             ++notifyingSignalCount
         } else if (time == 0) {
@@ -366,8 +361,7 @@ class CountDownTimer(private val context: Context, private val callback: Callbac
 
     private fun startPulseAnimation(attemptNo: Int) {
         if (clockProgressBar == null || progressPulseEffectSet.isRunning) {
-            if (attemptNo == 1) pulseAnimRunnable.interval = 1000
-            else pulseAnimRunnable.interval = 2000
+            if (attemptNo == 2) pulseAnimRunnable.interval = 1000
             return
         }
         progressPulseEffectSet.also {
@@ -398,11 +392,44 @@ class CountDownTimer(private val context: Context, private val callback: Callbac
     private fun stopPulseAnimation() {
         pulseAnimRunnable.stop()
         progressPulseEffectSet.cancel()
-        progressPulseEffectSet.end()
+        attemptsToRunPulseAnimation = 0
         clockTextView?.scaleX = 1.0f
         clockTextView?.scaleY = 1.0f
         clockProgressBar?.scaleX = 1.0f
         clockProgressBar?.scaleY = 1.0f
+    }
+
+    private fun pausePulseAnimation() {
+        pulseAnimRunnable.pause()
+        progressPulseEffectSet.cancel()
+    }
+
+    private inner class PulseAnimRunnable : Runnable {
+        private var handler: Handler = Handler(Looper.myLooper()!!)
+        var animatedCircle: View? = null
+        var interval: Long = 2000
+
+        private val pulseAnim = AnimationUtils
+            .loadAnimation(context, R.anim.fullscreen_pulse_effect)
+
+        override fun run() {
+            animatedCircle?.let { circle ->
+                if (!circle.isVisible)
+                    circle.isVisible = true
+                circle.startAnimation(pulseAnim)
+            }
+            handler.postDelayed(this, interval)
+        }
+
+        fun stop() {
+            animatedCircle?.isGone = true
+            handler.removeCallbacks(this)
+            interval = 2000
+        }
+
+        fun pause() {
+            handler.removeCallbacks(this)
+        }
     }
 
     private inner class Notifying(context: Context, notifyingType: Int) {
@@ -426,6 +453,7 @@ class CountDownTimer(private val context: Context, private val callback: Callbac
                                 .getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
                             vibratorManager.defaultVibrator
                         } else {
+                            @Suppress("Deprecation")
                             context.getSystemService(VIBRATOR_SERVICE) as Vibrator
                         }
                 }

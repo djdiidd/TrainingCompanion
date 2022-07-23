@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.VibrationEffect
 import android.util.Log
 import android.view.*
 import android.view.animation.AnimationUtils
@@ -14,6 +15,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -82,12 +84,15 @@ class MainFragment : Fragment() {
         // Слушатель нажатий для кнопки начала тренировки
         binding.startButton.setOnClickListener {
             // Загружаем анимацию для кнопки старта тренировки
-            val buttonAnimation = AnimationUtils
-                .loadAnimation(requireContext(), R.anim.anim_bounce_enlarge)
+            val playButtonAnimation = AnimationUtils
+                .loadAnimation(requireContext(), R.anim.bounce_enlarge)
+            val backgroundButtonAnimation = AnimationUtils
+                .loadAnimation(requireContext(), R.anim.fade_out)
             binding.startButton.apply {
-                startAnimation(buttonAnimation)
+                startAnimation(playButtonAnimation)
                 isClickable = false // Деактивируем ее на время анимации
             }
+            binding.startButtonStatic.startAnimation(backgroundButtonAnimation)
             // Диалоговое окно настроек тренировки еще не запущено
             if (parentFragmentManager.findFragmentByTag(DIALOG_START) == null) {
                 // Открываем диалоговое окно с задержкой, на время выполнения анимации
@@ -127,6 +132,7 @@ class MainFragment : Fragment() {
         callback?.fragmentUICreated(
             binding.setTimer,
             binding.setTimerProgress,
+            binding.circle,
             binding.pulseAnimView
         )
         Log.d("LF", "F onStart")
@@ -152,8 +158,7 @@ class MainFragment : Fragment() {
             flipActionsRight()
         }
 
-        // Инициализируем менеджер вибрации для соответствующего действия
-        val vibrationManager = Vibration.getManager(requireContext())
+        val vibrator = Vibration.getVibrator(requireContext())
 
         val actionHoverAnimations = getValueAnimators()
 
@@ -175,13 +180,13 @@ class MainFragment : Fragment() {
                         timeAtTouchStart += 400 // Анимация появления действий появится с задержкой
                     }
                     view.startAnimation(
-                        AnimationUtils.loadAnimation(context, R.anim.anim_button_pressing)
+                        AnimationUtils.loadAnimation(context, R.anim.button_pressing)
                     )
                 }
 
                 MotionEvent.ACTION_UP -> {
                     view.startAnimation(
-                        AnimationUtils.loadAnimation(context, R.anim.anim_button_unpressing)
+                        AnimationUtils.loadAnimation(context, R.anim.button_unpressing)
                     )
                     if (view.isClickable) {
                         if (!actionsAreActive)
@@ -267,7 +272,7 @@ class MainFragment : Fragment() {
 
         // Обработка длительного нажатия кнопки действий
         binding.mainButton.setOnLongClickListener {
-            Vibration.make(vibrationManager)
+            Vibration.make(vibrator, amplitude = VibrationEffect.EFFECT_HEAVY_CLICK)
             showActions()
             true
         }
@@ -296,8 +301,9 @@ class MainFragment : Fragment() {
             })
 
         viewModel.activeProcess.observe(this) {
-            if (it == WorkoutProcess.NOT_STARTED && binding.mainButton.isVisible)
+            if (it == WorkoutProcess.NOT_STARTED && binding.mainButton.isVisible) {
                 setStartViews()
+            }
         }
     }
 
@@ -309,10 +315,10 @@ class MainFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         Log.d("LF", "F onDestroy")
-        callback?.fragmentDestroyed()
     }
 
     override fun onDestroyView() {
+        callback!!.beforeFragmentDestroyed()
         super.onDestroyView()
         _binding = null
     }
@@ -341,6 +347,7 @@ class MainFragment : Fragment() {
     private fun setStartViews() {
         binding.startButtonGroup.visibility = View.VISIBLE
         binding.setTimerProgress.visibility = View.GONE
+        binding.circle.visibility = View.GONE
         binding.setTimer.visibility = View.GONE
         binding.mainButton.apply {
             animation = null
@@ -349,8 +356,11 @@ class MainFragment : Fragment() {
     }
 
     private fun setProcessViews() {
+        Log.d("MyTag", "setProcessViews()")
         binding.startButtonGroup.visibility = View.GONE
-        if (viewModel.activeProcess.value != WorkoutProcess.EXERCISE_STOPWATCH)
+        if (viewModel.activeProcess.value == WorkoutProcess.EXERCISE_STOPWATCH)
+            binding.circle.visibility = View.VISIBLE
+        else
             binding.setTimerProgress.visibility = View.VISIBLE
         binding.setTimer.visibility = View.VISIBLE
         binding.mainButton.visibility = View.VISIBLE
@@ -367,11 +377,11 @@ class MainFragment : Fragment() {
         val actionsAppearResource: Int
         val flipActionAppearResource: Int
         if (viewModel.areActionsOnLeftSide) {
-            actionsAppearResource = R.anim.anim_main_button_action_appear_from_left
-            flipActionAppearResource = R.anim.anim_main_button_flip_action_appear_from_right
+            actionsAppearResource = R.anim.main_button_action_appear_from_left
+            flipActionAppearResource = R.anim.main_button_flip_action_appear_from_right
         } else {
-            actionsAppearResource = R.anim.anim_main_button_action_appear_from_right
-            flipActionAppearResource = R.anim.anim_main_button_flip_action_appear_from_left
+            actionsAppearResource = R.anim.main_button_action_appear_from_right
+            flipActionAppearResource = R.anim.main_button_flip_action_appear_from_left
         }
         DrawableUtils.setStroke(
             binding.mainButton.background,
@@ -380,7 +390,7 @@ class MainFragment : Fragment() {
         )
         val actionsAppear = AnimationUtils.loadAnimation(context, actionsAppearResource)
         val flipButtonAppear = AnimationUtils.loadAnimation(context, flipActionAppearResource)
-        val circleAppear = AnimationUtils.loadAnimation(context, R.anim.anim_circle_expand)
+        val circleAppear = AnimationUtils.loadAnimation(context, R.anim.circle_expand)
 
         with(binding) {
             mainButtonBackground.isVisible = true
@@ -399,15 +409,15 @@ class MainFragment : Fragment() {
         val actionsDisappearResource: Int
         val flipActionDisappearResource: Int
         if (viewModel.areActionsOnLeftSide) {
-            actionsDisappearResource = R.anim.anim_main_button_action_disappear_to_right
-            flipActionDisappearResource = R.anim.anim_main_button_flip_action_disappear_to_left
+            actionsDisappearResource = R.anim.main_button_action_disappear_to_right
+            flipActionDisappearResource = R.anim.main_button_flip_action_disappear_to_left
         } else {
-            actionsDisappearResource = R.anim.anim_main_button_action_disappear_to_left
-            flipActionDisappearResource = R.anim.anim_main_button_flip_action_disappear_to_right
+            actionsDisappearResource = R.anim.main_button_action_disappear_to_left
+            flipActionDisappearResource = R.anim.main_button_flip_action_disappear_to_right
         }
         val actionsDisappear = AnimationUtils.loadAnimation(context, actionsDisappearResource)
         val flipButtonDisappear = AnimationUtils.loadAnimation(context, flipActionDisappearResource)
-        val circleDisappear = AnimationUtils.loadAnimation(context, R.anim.anim_circle_shrink)
+        val circleDisappear = AnimationUtils.loadAnimation(context, R.anim.circle_shrink)
 
         with(binding) {
             Anim.doOnEndOf(circleDisappear) {
@@ -431,7 +441,7 @@ class MainFragment : Fragment() {
                 doOnEnd.invoke()
             }
 
-            val fadeAnim = AnimationUtils.loadAnimation(context, R.anim.anim_fade_out_delayed_100)
+            val fadeAnim = AnimationUtils.loadAnimation(context, R.anim.fade_out_delayed_100)
 
             Anim.doOnEndOf(fadeAnim) {
                 selectedAction?.let { actionViews[it]?.visibility = View.INVISIBLE }
@@ -528,16 +538,36 @@ class MainFragment : Fragment() {
 
     private fun updateActionButtonsCorners(areActionsOnLeftSide: Boolean) {
         if (areActionsOnLeftSide) {
-            actionViews[0]?.setCorners(actionButtonCorner, actionButtonCorner, actionButtonCorner, 0f)
+            actionViews[0]?.setCorners(
+                actionButtonCorner,
+                actionButtonCorner,
+                actionButtonCorner,
+                0f
+            )
             actionViews[1]?.setCorners(actionButtonCorner, 0f, actionButtonCorner, 0f)
             actionViews[2]?.setCorners(actionButtonCorner, 0f, actionButtonCorner, 0f)
-            actionViews[3]?.setCorners(actionButtonCorner, 0f, actionButtonCorner, actionButtonCorner)
+            actionViews[3]?.setCorners(
+                actionButtonCorner,
+                0f,
+                actionButtonCorner,
+                actionButtonCorner
+            )
             actionViews[4]?.setCorners(0f, actionButtonCorner, 0f, actionButtonCorner)
         } else {
-            actionViews[0]?.setCorners(actionButtonCorner, actionButtonCorner, 0f, actionButtonCorner)
+            actionViews[0]?.setCorners(
+                actionButtonCorner,
+                actionButtonCorner,
+                0f,
+                actionButtonCorner
+            )
             actionViews[1]?.setCorners(0f, actionButtonCorner, 0f, actionButtonCorner)
             actionViews[2]?.setCorners(0f, actionButtonCorner, 0f, actionButtonCorner)
-            actionViews[3]?.setCorners(0f, actionButtonCorner, actionButtonCorner, actionButtonCorner)
+            actionViews[3]?.setCorners(
+                0f,
+                actionButtonCorner,
+                actionButtonCorner,
+                actionButtonCorner
+            )
             actionViews[4]?.setCorners(actionButtonCorner, 0f, actionButtonCorner, 0f)
         }
     }
@@ -545,11 +575,12 @@ class MainFragment : Fragment() {
 
     interface FragmentCallback {
         fun mainButtonClicked()
-        fun fragmentDestroyed()
+        fun beforeFragmentDestroyed()
         fun workoutStarted()
         fun fragmentUICreated(
             textView: TextView,
             progressBar: ProgressBar,
+            circleView: View,
             pulseView: View
         )
     }

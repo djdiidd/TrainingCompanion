@@ -421,7 +421,7 @@ class WorkoutStartFSDialog : DialogFragment() {
             }
         }
 
-        binding.cancelButton.setOnClickListener {
+        binding.parametersTitleToolbar.setNavigationOnClickListener {
             viewModel.clearAllData()
             val action = WorkoutStartFSDialogDirections
                 .navigateToMainFragment(false)

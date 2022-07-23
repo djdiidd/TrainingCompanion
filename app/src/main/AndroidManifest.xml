@@ -27,8 +27,8 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <service android:name=".timeutils.StopwatchService" />
-        <service android:name=".timeutils.CountDownService" />
+        <service android:name=".time.StopwatchService" />
+        <service android:name=".time.CountDownService" />
 
         <meta-data
             android:name="preloaded_fonts"

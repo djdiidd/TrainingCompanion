@@ -40,6 +40,10 @@
         <item name="buttonGravity">bottom</item>
     </style>
 
+    <style name="ThemeOverlay.App.MaterialAlertDialog.PositiveColored">
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.Material3.Button.OutlinedButton</item>
+    </style>
+
     <style name="SplashScreenTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@drawable/splash_background</item>

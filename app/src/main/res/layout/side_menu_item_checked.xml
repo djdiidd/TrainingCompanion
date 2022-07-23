@@ -4,7 +4,7 @@
     <LinearLayout
         android:id="@+id/dynamic_side_menu_item"
         android:layout_width="match_parent"
-        android:layout_height="34dp"
+        android:layout_height="36dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingBottom="4dp">
@@ -18,7 +18,7 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/dynamic_side_menu_item_text"
             android:layout_width="match_parent"
-            android:layout_height="34dp"
+            android:layout_height="36dp"
             android:drawablePadding="8dp"
             android:gravity="center_vertical"
             android:text="@string/array_item_chest"

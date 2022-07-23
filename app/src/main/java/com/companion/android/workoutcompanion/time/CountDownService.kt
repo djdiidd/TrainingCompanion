@@ -1,4 +1,4 @@
-package com.companion.android.workoutcompanion.timeutils
+package com.companion.android.workoutcompanion.time
 
 import android.app.Service
 import android.content.Intent

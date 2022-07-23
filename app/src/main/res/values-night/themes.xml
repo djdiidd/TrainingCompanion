@@ -37,6 +37,11 @@
 
     <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="android:windowAnimationStyle">@style/BounceAnimation</item>
+        <item name="buttonGravity">bottom</item>
+    </style>
+
+    <style name="ThemeOverlay.App.MaterialAlertDialog.PositiveColored">
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.Material3.Button.OutlinedButton</item>
     </style>
 
     <style name="SplashScreenTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">

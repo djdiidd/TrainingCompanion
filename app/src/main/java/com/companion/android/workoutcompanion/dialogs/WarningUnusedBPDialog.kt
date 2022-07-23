@@ -54,7 +54,10 @@ class WarningUnusedBPDialog(private val whichAreUnusedBP: Array<Boolean>) : Dial
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
-        val adb: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(requireContext())
+        val adb: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(
+            requireContext(),
+            R.style.ThemeOverlay_App_MaterialAlertDialog_PositiveColored
+        )
             .setTitle(R.string.warning_dialog_unused_bp_title)
             .setMessage(message)
             .setPositiveButton(R.string.button_dialog_remove, this)
