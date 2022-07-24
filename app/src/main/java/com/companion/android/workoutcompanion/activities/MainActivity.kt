@@ -130,7 +130,7 @@ class MainActivity : AppCompatActivity(),
             override fun onDrawerStateChanged(newState: Int) {}
             override fun onDrawerClosed(drawerView: View) {
                 closeOpenedSideContainer()
-                binding.sideMenuStopWorkoutAcceptButton.visibility = View.GONE
+                binding.sideMenu.stopWorkoutAcceptButton.visibility = View.GONE
             }
 
             /** Определение динамических действий бокового меню, при его открытии */
@@ -139,7 +139,7 @@ class MainActivity : AppCompatActivity(),
                 /* ИНИЦИАЛИЗИРУЕМ СЛУШАТЕЛИ ДЛЯ КАЖДОГО ПОДПУНКТА "МЕСТО ТРЕНИРОВКИ" */
 
                 // Установка места тренировки на "Дом"
-                binding.subMenuDynamicPlaceHome.setOnClickListener(
+                binding.sideMenu.placeItemHome.setOnClickListener(
                     getSideMenuItemOnClickListener(
                         R.string.side_menu_reselected_place_toast,
                         R.string.side_menu_reselected_place_item_home
@@ -149,7 +149,7 @@ class MainActivity : AppCompatActivity(),
 
 
                 // Установка места тренировки на "Тренажерный Зал"
-                binding.subMenuDynamicPlaceGym.setOnClickListener(
+                binding.sideMenu.placeItemGym.setOnClickListener(
                     getSideMenuItemOnClickListener(
                         R.string.side_menu_reselected_place_toast,
                         R.string.side_menu_reselected_place_item_gym
@@ -159,7 +159,7 @@ class MainActivity : AppCompatActivity(),
 
 
                 // Установка места тренировки на "На улице"
-                binding.subMenuDynamicPlaceOutdoors.setOnClickListener(
+                binding.sideMenu.placeItemOutdoors.setOnClickListener(
                     getSideMenuItemOnClickListener(
                         R.string.side_menu_reselected_place_toast,
                         R.string.side_menu_reselected_place_item_outdoors
@@ -170,7 +170,7 @@ class MainActivity : AppCompatActivity(),
                 /* ОПРЕДЕЛИМ СЛУШАТЕЛИ ДЛЯ КАЖДОГО ПОДПУНКТА "РЕЖИМ УВЕДОМЛЕНИЯ" */
 
                 // Установка уведомления ввиде "Проигрывание звука"
-                binding.subMenuDynamicSound.setOnClickListener(
+                binding.sideMenu.subMenuDynamicSound.setOnClickListener(
                     getSideMenuItemOnClickListener(
                         R.string.side_menu_reselected_workout_set_notifying_toast,
                         R.string.side_menu_reselected_ws_item_sound
@@ -182,7 +182,7 @@ class MainActivity : AppCompatActivity(),
 
 
                 // Установка уведомления ввиде "Вибрация"
-                binding.subMenuDynamicVibration.setOnClickListener(getSideMenuItemOnClickListener(
+                binding.sideMenu.subMenuDynamicVibration.setOnClickListener(getSideMenuItemOnClickListener(
                     R.string.side_menu_reselected_workout_set_notifying_toast,
                     R.string.side_menu_reselected_ws_item_vibration
                 ) {
@@ -193,7 +193,7 @@ class MainActivity : AppCompatActivity(),
 
 
                 // Установка уведомления ввиде "Анимация на экране / сияние экрана"
-                binding.subMenuDynamicAnim.setOnClickListener(getSideMenuItemOnClickListener(
+                binding.sideMenu.subMenuDynamicAnim.setOnClickListener(getSideMenuItemOnClickListener(
                     R.string.side_menu_reselected_workout_set_notifying_toast,
                     R.string.side_menu_reselected_ws_item_animation
                 ) {
@@ -205,37 +205,37 @@ class MainActivity : AppCompatActivity(),
                 /* ОПРЕДЕЛИМ СЛУШАТЕЛИ ДЛЯ КАЖДОГО ОБЪЕКТА "ВРЕМЯ ОТДЫХА" */
 
                 // Нажатие на поле ввода времени отдыха вручную
-                binding.sideMenuInputRestTime.setOnTouchListener { v, _ ->
-                    binding.sideMenuRestTimeAcceptButton.visibility = View.VISIBLE
+                binding.sideMenu.inputRestTime.setOnTouchListener { v, _ ->
+                    binding.sideMenu.restTimeAcceptButton.visibility = View.VISIBLE
                     v.performClick()
                 }
 
-                binding.sideMenuCurrentRestTime.setOnTouchListener { _, event ->
-                    binding.sideMenuInputRestTime.dispatchTouchEvent(event)
+                binding.sideMenu.currentRestTime.setOnTouchListener { _, event ->
+                    binding.sideMenu.inputRestTime.dispatchTouchEvent(event)
                 }
 
                 // Нажатие кнопки "подтвердить" на клавиатуре после ввода времени отдыха
-                binding.sideMenuInputRestTime.onDone {
-                    if (binding.sideMenuRestTimeAcceptButton.isEnabled) {
-                        viewModel.restTime.value = binding.sideMenuInputRestTime.text
+                binding.sideMenu.inputRestTime.onDone {
+                    if (binding.sideMenu.restTimeAcceptButton.isEnabled) {
+                        viewModel.restTime.value = binding.sideMenu.inputRestTime.text
                             .toString().toInt().also {
-                                binding.sideMenuCurrentRestTime.text =
+                                binding.sideMenu.currentRestTime.text =
                                     getString(R.string.selected_seconds, it)
                             }
-                        binding.sideMenuInputRestTime.text = null
-                        binding.sideMenuRestTimeAcceptButton.visibility = View.GONE
-                        binding.sideMenuInputRestTime.clearFocus()
+                        binding.sideMenu.inputRestTime.text = null
+                        binding.sideMenu.restTimeAcceptButton.visibility = View.GONE
+                        binding.sideMenu.inputRestTime.clearFocus()
                         true
                     } else false
                 }
 
                 // Нажатие кнопки увеличения времени отдыха вручную на 5
-                binding.add5s.setOnClickListener(getSideMenuChangeOnNumButtonListener(5) {
+                binding.sideMenu.add5sButton.setOnClickListener(getSideMenuChangeOnNumButtonListener(5) {
                     viewModel.restTime.value!! >= WorkoutParams.restTimeAdvRange.last
                 })
 
                 // Нажатие кнопки уменьшения времени отдыха вручную на 5
-                binding.sub5s.setOnClickListener(getSideMenuChangeOnNumButtonListener(-5) {
+                binding.sideMenu.sub5sButton.setOnClickListener(getSideMenuChangeOnNumButtonListener(-5) {
                     viewModel.restTime.value!! <= WorkoutParams.restTimeDefaultRange.first
                 })
 
@@ -248,32 +248,32 @@ class MainActivity : AppCompatActivity(),
                             && chars.toString().toInt() in WorkoutParams.restTimeAdvRange
                         ) {
                             ImageViewCompat.setImageTintList(
-                                binding.sideMenuRestTimeAcceptButton,
+                                binding.sideMenu.restTimeAcceptButton,
                                 ColorStateList.valueOf(
                                     ContextCompat.getColor(
                                         this@MainActivity, R.color.on_surface
                                     )
                                 )
                             )
-                            binding.sideMenuRestTimeAcceptButton.isEnabled = true
+                            binding.sideMenu.restTimeAcceptButton.isEnabled = true
                         } else {
                             ImageViewCompat.setImageTintList(
-                                binding.sideMenuRestTimeAcceptButton,
+                                binding.sideMenu.restTimeAcceptButton,
                                 ColorStateList.valueOf(Color.DKGRAY)
                             )
-                            binding.sideMenuRestTimeAcceptButton.isEnabled = false
+                            binding.sideMenu.restTimeAcceptButton.isEnabled = false
                         }
                     }
                 }
-                binding.sideMenuInputRestTime.addTextChangedListener(restTimeTextWatcher)
+                binding.sideMenu.inputRestTime.addTextChangedListener(restTimeTextWatcher)
 
                 // Нажатие на кнопку подтверждения выбранного времени отдыха
-                binding.sideMenuRestTimeAcceptButton.setOnClickListener {
-                    val value = binding.sideMenuInputRestTime.text.toString().toInt()
+                binding.sideMenu.restTimeAcceptButton.setOnClickListener {
+                    val value = binding.sideMenu.inputRestTime.text.toString().toInt()
                     viewModel.restTime.value = value
-                    binding.sideMenuCurrentRestTime.text =
+                    binding.sideMenu.currentRestTime.text =
                         getString(R.string.selected_seconds, value)
-                    binding.sideMenuInputRestTime.text = null
+                    binding.sideMenu.inputRestTime.text = null
                     it.visibility = View.GONE
                     it.hideKeyboard()
                 }
@@ -291,50 +291,50 @@ class MainActivity : AppCompatActivity(),
             }
 
         // Слушатель запуска подпунктов места тренировки
-        binding.sideMenuPlace.setOnClickListener(
-            getSideMenuListener(binding.sideMenuDynamicPlace)
+        binding.sideMenu.place.setOnClickListener(
+            getSideMenuListener(binding.sideMenu.placeItems)
         )
         // Слушатель запуска подпунктов частей тела
-        binding.sideMenuBodyparts.setOnClickListener(
-            getSideMenuListener(binding.sideMenuDynamicBodyParts) {
-                fillListOfBPInSideMenu(binding.sideMenuDynamicBodyParts)
+        binding.sideMenu.bodyParts.setOnClickListener(
+            getSideMenuListener(binding.sideMenu.bodyPartsItems) {
+                fillListOfBPInSideMenu(binding.sideMenu.bodyPartsItems)
             }
         )
         // Слушатель запуска подпунктов с мышцами
-        binding.sideMenuMuscles.setOnClickListener(
-            getSideMenuListener(binding.sideMenuDynamicMuscles) {
-                fillListOfMusclesInSideMenu(binding.sideMenuDynamicMuscles)
+        binding.sideMenu.muscles.setOnClickListener(
+            getSideMenuListener(binding.sideMenu.musclesItems) {
+                fillListOfMusclesInSideMenu(binding.sideMenu.musclesItems)
             }
         )
         // Слушатель запуска подпунктов с временем отдыха
-        binding.sideMenuTime.setOnClickListener(
-            getSideMenuListener(binding.sideMenuDynamicRestTime) {
+        binding.sideMenu.restTime.setOnClickListener(
+            getSideMenuListener(binding.sideMenu.restTimeItems) {
                 // Выставим исходное значение времени
-                binding.sideMenuCurrentRestTime.text =
+                binding.sideMenu.currentRestTime.text =
                     getString(R.string.selected_seconds, viewModel.restTime.value!!)
                 // Определим исходное изображение и заблокируем кнопку
                 ImageViewCompat.setImageTintList(
-                    binding.sideMenuRestTimeAcceptButton,
+                    binding.sideMenu.restTimeAcceptButton,
                     ColorStateList.valueOf(Color.DKGRAY)
                 )
-                binding.sideMenuRestTimeAcceptButton.isEnabled = false
+                binding.sideMenu.restTimeAcceptButton.isEnabled = false
             }
         )
         // Слушатель запуска подпунктов с режимом уведомления о начале подхода
-        binding.sideMenuNotificationMode.setOnClickListener(
-            getSideMenuListener(binding.sideMenuDynamicBreakMode)
+        binding.sideMenu.breakMode.setOnClickListener(
+            getSideMenuListener(binding.sideMenu.breakModeItems)
         )
 
         // Слушатель прекращение тренировки
-        binding.subMenuStopWorkout.setOnClickListener {
-            if (binding.sideMenuStopWorkoutAcceptButton.isVisible)
-                binding.sideMenuStopWorkoutAcceptButton.visibility = View.GONE
+        binding.sideMenu.subMenuStopWorkout.setOnClickListener {
+            if (binding.sideMenu.stopWorkoutAcceptButton.isVisible)
+                binding.sideMenu.stopWorkoutAcceptButton.visibility = View.GONE
             else
-                binding.sideMenuStopWorkoutAcceptButton.visibility = View.VISIBLE
+                binding.sideMenu.stopWorkoutAcceptButton.visibility = View.VISIBLE
         }
 
         // Слушатель подтверждения прекращение тренировки
-        binding.sideMenuStopWorkoutAcceptButton.setOnClickListener {
+        binding.sideMenu.stopWorkoutAcceptButton.setOnClickListener {
             stopWorkout()
         }
 
@@ -418,10 +418,10 @@ class MainActivity : AppCompatActivity(),
                 return@OnClickListener
             }
             viewModel.restTime.value = viewModel.restTime.value?.plus(num).also {
-                binding.sideMenuCurrentRestTime.text = getString(R.string.selected_seconds, it)
+                binding.sideMenu.currentRestTime.text = getString(R.string.selected_seconds, it)
             }
-            binding.sideMenuRestTimeAcceptButton.visibility = View.GONE
-            binding.sideMenuInputRestTime.text = null
+            binding.sideMenu.restTimeAcceptButton.visibility = View.GONE
+            binding.sideMenu.inputRestTime.text = null
             binding.root.hideKeyboard()
         }
     }
@@ -465,42 +465,42 @@ class MainActivity : AppCompatActivity(),
             } else {
                 openedSubmenuId = container.id
                 when (container.id) {
-                    R.id.side_menu_dynamic_place -> {
+                    R.id.place_items -> {
                         when (viewModel.trainingPlace) {
                             Place.TRAINING_AT_HOME -> {
-                                binding.subMenuDynamicPlaceHome.isGone = true
-                                binding.subMenuDynamicPlaceGym.isVisible = true
-                                binding.subMenuDynamicPlaceOutdoors.isVisible = true
+                                binding.sideMenu.placeItemHome.isGone = true
+                                binding.sideMenu.placeItemGym.isVisible = true
+                                binding.sideMenu.placeItemOutdoors.isVisible = true
                             }
                             Place.TRAINING_IN_GYM -> {
-                                binding.subMenuDynamicPlaceHome.isVisible = true
-                                binding.subMenuDynamicPlaceGym.isGone = true
-                                binding.subMenuDynamicPlaceOutdoors.isVisible = true
+                                binding.sideMenu.placeItemHome.isVisible = true
+                                binding.sideMenu.placeItemGym.isGone = true
+                                binding.sideMenu.placeItemOutdoors.isVisible = true
                             }
                             Place.TRAINING_OUTDOORS -> {
-                                binding.subMenuDynamicPlaceHome.isVisible = true
-                                binding.subMenuDynamicPlaceGym.isVisible = true
-                                binding.subMenuDynamicPlaceOutdoors.isGone = true
+                                binding.sideMenu.placeItemHome.isVisible = true
+                                binding.sideMenu.placeItemGym.isVisible = true
+                                binding.sideMenu.placeItemOutdoors.isGone = true
                             }
                             else -> container.visibility = View.VISIBLE
                         }
                     }
-                    R.id.side_menu_dynamic_break_mode -> {
+                    R.id.break_mode_items -> {
                         when (viewModel.breakNotifyingMode) {
                             BreakNotifyingMode.SOUND -> {
-                                binding.subMenuDynamicSound.isGone = true
-                                binding.subMenuDynamicVibration.isVisible = true
-                                binding.subMenuDynamicAnim.isVisible = true
+                                binding.sideMenu.subMenuDynamicSound.isGone = true
+                                binding.sideMenu.subMenuDynamicVibration.isVisible = true
+                                binding.sideMenu.subMenuDynamicAnim.isVisible = true
                             }
                             BreakNotifyingMode.VIBRATION -> {
-                                binding.subMenuDynamicSound.isVisible = true
-                                binding.subMenuDynamicVibration.isGone = true
-                                binding.subMenuDynamicAnim.isVisible = true
+                                binding.sideMenu.subMenuDynamicSound.isVisible = true
+                                binding.sideMenu.subMenuDynamicVibration.isGone = true
+                                binding.sideMenu.subMenuDynamicAnim.isVisible = true
                             }
                             BreakNotifyingMode.ANIMATION -> {
-                                binding.subMenuDynamicSound.isVisible = true
-                                binding.subMenuDynamicVibration.isVisible = true
-                                binding.subMenuDynamicAnim.isGone = true
+                                binding.sideMenu.subMenuDynamicSound.isVisible = true
+                                binding.sideMenu.subMenuDynamicVibration.isVisible = true
+                                binding.sideMenu.subMenuDynamicAnim.isGone = true
                             }
                             else -> container.visibility = View.VISIBLE
                         }
@@ -525,32 +525,32 @@ class MainActivity : AppCompatActivity(),
                 getSideMenuContainerById(it)?.isGone = true
             }
         }
-        if (openedSubmenuId == binding.sideMenuDynamicRestTime.id) {
-            binding.sideMenuDynamicRestTime.hideKeyboard()
-            binding.sideMenuRestTimeAcceptButton.isGone = true
+        if (openedSubmenuId == binding.sideMenu.restTimeItems.id) {
+            binding.sideMenu.restTimeItems.hideKeyboard()
+            binding.sideMenu.restTimeAcceptButton.isGone = true
         }
         when (openedSubmenuId) {
-            R.id.side_menu_dynamic_place ->
-                binding.sideMenuPlace.setRightDrawable(R.drawable.ic_arrow_down)
-            R.id.side_menu_dynamic_body_parts ->
-                binding.sideMenuBodyparts.setRightDrawable(R.drawable.ic_arrow_down)
-            R.id.side_menu_dynamic_muscles ->
-                binding.sideMenuMuscles.setRightDrawable(R.drawable.ic_arrow_down)
-            R.id.side_menu_dynamic_rest_time ->
-                binding.sideMenuTime.setRightDrawable(R.drawable.ic_arrow_down)
-            R.id.side_menu_dynamic_break_mode ->
-                binding.sideMenuNotificationMode.setRightDrawable(R.drawable.ic_arrow_down)
+            R.id.place_items ->
+                binding.sideMenu.place.setRightDrawable(R.drawable.ic_arrow_down)
+            R.id.body_parts_items ->
+                binding.sideMenu.bodyParts.setRightDrawable(R.drawable.ic_arrow_down)
+            R.id.muscles_items ->
+                binding.sideMenu.muscles.setRightDrawable(R.drawable.ic_arrow_down)
+            R.id.rest_time_items ->
+                binding.sideMenu.restTime.setRightDrawable(R.drawable.ic_arrow_down)
+            R.id.break_mode_items ->
+                binding.sideMenu.breakMode.setRightDrawable(R.drawable.ic_arrow_down)
         }
         //TODO: стоит ли обнулить openedSubmenuId?
     }
 
     private fun getSideMenuContainerById(id: Int): View? {
         return when (id) {
-            R.id.side_menu_dynamic_place -> binding.sideMenuDynamicPlace
-            R.id.side_menu_dynamic_body_parts -> binding.sideMenuDynamicBodyParts
-            R.id.side_menu_dynamic_muscles -> binding.sideMenuDynamicMuscles
-            R.id.side_menu_dynamic_rest_time -> binding.sideMenuDynamicRestTime
-            R.id.side_menu_dynamic_break_mode -> binding.sideMenuDynamicBreakMode
+            R.id.place_items -> binding.sideMenu.placeItems
+            R.id.body_parts_items -> binding.sideMenu.bodyPartsItems
+            R.id.muscles_items -> binding.sideMenu.musclesItems
+            R.id.rest_time_items -> binding.sideMenu.restTimeItems
+            R.id.break_mode_items -> binding.sideMenu.breakModeItems
             else -> null
         }
     }
@@ -619,7 +619,7 @@ class MainActivity : AppCompatActivity(),
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE)
                 as InputMethodManager
         imm.hideSoftInputFromWindow(this.windowToken, 0)
-        binding.sideMenuInputRestTime.clearFocus()
+        binding.sideMenu.inputRestTime.clearFocus()
     }
 
     /**
@@ -656,21 +656,21 @@ class MainActivity : AppCompatActivity(),
 
         actionManager?.clear()
 
-        subMenuDynamicPlaceHome.setOnClickListener(null)
-        subMenuDynamicPlaceGym.setOnClickListener(null)
-        subMenuDynamicPlaceOutdoors.setOnClickListener(null)
-        subMenuDynamicSound.setOnClickListener(null)
-        subMenuDynamicVibration.setOnClickListener(null)
-        subMenuDynamicAnim.setOnClickListener(null)
-        add5s.setOnClickListener(null)
-        sub5s.setOnClickListener(null)
-        sideMenuInputRestTime.removeTextChangedListener(restTimeTextWatcher)
-        sideMenuRestTimeAcceptButton.setOnClickListener(null)
+        sideMenu.placeItemHome.setOnClickListener(null)
+        sideMenu.placeItemGym.setOnClickListener(null)
+        sideMenu.placeItemOutdoors.setOnClickListener(null)
+        sideMenu.subMenuDynamicSound.setOnClickListener(null)
+        sideMenu.subMenuDynamicVibration.setOnClickListener(null)
+        sideMenu.subMenuDynamicAnim.setOnClickListener(null)
+        sideMenu.add5sButton.setOnClickListener(null)
+        sideMenu.sub5sButton.setOnClickListener(null)
+        sideMenu.inputRestTime.removeTextChangedListener(restTimeTextWatcher)
+        sideMenu.restTimeAcceptButton.setOnClickListener(null)
 
         viewModel.activeProcess.value = WorkoutProcess.NOT_STARTED
         viewModel.clearAllData()
 
-        binding.sideMenuStopWorkoutAcceptButton.visibility = View.GONE
+        binding.sideMenu.stopWorkoutAcceptButton.visibility = View.GONE
 
         //TODO: запустить диалоговое окно с результатами
         // -> передать от этого диалогового окна safe args с workoutStartedSuccessfully как false
@@ -710,14 +710,14 @@ class MainActivity : AppCompatActivity(),
      */
     private fun hideSelectedSideMenuItems() {
         when (viewModel.trainingPlace) {
-            Place.TRAINING_AT_HOME -> binding.subMenuDynamicPlaceHome.isGone = true
-            Place.TRAINING_OUTDOORS -> binding.subMenuDynamicPlaceOutdoors.isGone = true
-            Place.TRAINING_IN_GYM -> binding.subMenuDynamicPlaceGym.isGone = true
+            Place.TRAINING_AT_HOME -> binding.sideMenu.placeItemHome.isGone = true
+            Place.TRAINING_OUTDOORS -> binding.sideMenu.placeItemOutdoors.isGone = true
+            Place.TRAINING_IN_GYM -> binding.sideMenu.placeItemGym.isGone = true
         }
         when (viewModel.breakNotifyingMode) {
-            BreakNotifyingMode.SOUND -> binding.subMenuDynamicSound.isGone = true
-            BreakNotifyingMode.VIBRATION -> binding.subMenuDynamicVibration.isGone = true
-            BreakNotifyingMode.ANIMATION -> binding.subMenuDynamicAnim.isGone = true
+            BreakNotifyingMode.SOUND -> binding.sideMenu.subMenuDynamicSound.isGone = true
+            BreakNotifyingMode.VIBRATION -> binding.sideMenu.subMenuDynamicVibration.isGone = true
+            BreakNotifyingMode.ANIMATION -> binding.sideMenu.subMenuDynamicAnim.isGone = true
         }
     }
 
