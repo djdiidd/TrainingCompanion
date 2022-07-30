@@ -1,8 +1,6 @@
 package com.companion.android.workoutcompanion.time
 
 import android.animation.ObjectAnimator
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -13,14 +11,14 @@ import com.companion.android.workoutcompanion.interfaces.TimeCounting
 import com.companion.android.workoutcompanion.objects.Anim
 import com.companion.android.workoutcompanion.time.ActionManager.Companion.getTimeInFormatMMSS
 
+
 class ExerciseStopwatch(
     private var textView: TextView? = null,
-    private var circleBg: View? = null
-) : TimeCounting {
+    private var progressView: View? = null
+) : TimeCounting, Stopwatch.TimeCallback {
+
 
     private val exerciseTime: ArrayList<Int> = arrayListOf()
-
-    private val timeRunnable = TimeUpdating()
 
     private var circleAnimator: ObjectAnimator? = null
 
@@ -28,48 +26,35 @@ class ExerciseStopwatch(
 
     override var isGoing = false
     override var isPaused = false
+    var isEnabled = false
 
     var time: Int = 0
+
+    var lifecycleOwnerIsAlive = true
 
     override fun start() {
         startFrom(0)
     }
 
     fun startFrom(start: Int) {
-        val restoreProgress = {
-            circleBg?.visibility = View.VISIBLE
-            if (circleAnimator?.isPaused == true) {
-                circleAnimator?.resume()
-            } else circleAnimator?.start()
-        }
         time = start
-
         if (!isGoing) {
-            if (!timeRunnable.isRunning) {
-                if (time != 0) updateTextByTime(time - 1)
-                Handler(Looper.getMainLooper())
-                    .postDelayed({ timeRunnable.run() }, millisToNextSecond)
-                timeRunnable.isRunning = true
-            }
             isGoing = true
-
             if (time == 0) {
-                val appearAnim = AnimationUtils
-                    .loadAnimation(textView?.context, R.anim.progress_bar_appear)
-                Anim.doOnEndOf(appearAnim) { restoreProgress() }
-                circleBg?.startAnimation(appearAnim)
-            } else restoreProgress()
-        } else {
-            val appearAnim = AnimationUtils
-                .loadAnimation(textView?.context, R.anim.progress_bar_appear)
-            Anim.doOnEndOf(appearAnim) { restoreProgress() }
-            circleBg?.startAnimation(appearAnim)
+                showProgressBar(
+                    wAppearAnim = lifecycleOwnerIsAlive,
+                    actionAfter = { startProgressAnimation() }
+                )
+            } else showProgressBar(
+                wAppearAnim = false,
+                actionAfter = { startProgressAnimation() }
+            )
         }
         isPaused = false
+        isEnabled = true
     }
 
     override fun pause() {
-        timeRunnable.stop()
         circleAnimator?.pause()
         isGoing = false
         isPaused = true
@@ -78,8 +63,99 @@ class ExerciseStopwatch(
 
     override fun stop() {
         pause()
-        cancel(false)
+        isPaused = false
+        reset()
         millisToNextSecond = 0
+        isEnabled = false
+    }
+
+    fun restoreProgressAnimation() {
+        if (circleAnimator == null) {
+            initCircleRotationAnimator()
+        } else {
+            circleAnimator!!.target = progressView
+            circleAnimator!!.currentPlayTime = time * 1000L + millisToNextSecond
+        }
+    }
+
+    override fun enable(vararg views: View) {
+        textView = views[0] as TextView
+        progressView = views[1]
+    }
+
+    fun updateTextByTime(upTime: Int = time) {
+        textView?.text = getTimeInFormatMMSS(upTime)
+    }
+
+    fun startProgressAnimation() {
+        if (circleAnimator == null) {
+            // Аниматор может быть равен нулю,
+            // так как при переключении на секундомер
+            // приложение или MainFragment могут быть вне видимости
+            initCircleRotationAnimator()
+            circleAnimator!!.start()
+        } else {
+            if (circleAnimator!!.isPaused)
+                circleAnimator!!.resume()
+            else
+                circleAnimator!!.start()
+        }
+    }
+
+    fun showProgressBar(wAppearAnim: Boolean, actionAfter: () -> Unit) {
+        if (wAppearAnim) {
+            val appearAnim = AnimationUtils
+                .loadAnimation(textView!!.context, R.anim.progress_bar_appear)
+            Anim.doOnEndOf(appearAnim) {
+                progressView!!.visibility = View.VISIBLE
+                actionAfter.invoke()
+            }
+            progressView!!.startAnimation(appearAnim)
+        } else {
+            // Если запускается без анимации,
+            // значит есть вероятность вызова при null Views
+            progressView?.visibility = View.VISIBLE
+            actionAfter.invoke()
+        }
+    }
+
+    fun hideProgressBar(wDisappearAnim: Boolean, actionAfter: () -> Unit) {
+        if (wDisappearAnim) {
+            val disappearAnim = AnimationUtils
+                .loadAnimation(textView!!.context, R.anim.progress_bar_disappear)
+            Anim.doOnEndOf(disappearAnim) {
+                progressView!!.visibility = View.INVISIBLE
+                actionAfter.invoke()
+            }
+            progressView!!.startAnimation(disappearAnim)
+        } else {
+            progressView!!.visibility = View.INVISIBLE
+            actionAfter.invoke()
+        }
+    }
+
+    override fun reset() {
+        circleAnimator?.cancel()
+        circleAnimator = null
+        progressView?.animation = null
+        progressView?.visibility = View.INVISIBLE
+        progressView?.rotation = 0f
+        progressView = null
+        textView = null
+    }
+
+    private fun initCircleRotationAnimator() {
+        circleAnimator = ObjectAnimator.ofFloat(
+            progressView,
+            "rotation",
+            0F, 360F
+        ).also {
+            it.duration = 10000
+            it.interpolator = AccelerateDecelerateInterpolator()
+            it.repeatMode = ObjectAnimator.RESTART
+            it.repeatCount = ObjectAnimator.INFINITE
+            it.startDelay = 200
+        }
     }
 
     fun getExerciseTimeOf(index: Int): Int {
@@ -113,54 +189,6 @@ class ExerciseStopwatch(
         }
     }
 
-    override fun enable(vararg views: View) {
-        textView = views[0] as TextView
-        circleBg = views[1]
-        if (circleAnimator == null) {
-            initCircleRotationAnimator()
-        } else {
-            circleAnimator!!.target = circleBg
-            circleAnimator!!.currentPlayTime = time * 1000L + millisToNextSecond
-        }
-        if (isGoing) {
-            if (!timeRunnable.isRunning) {
-                timeRunnable.run()
-                timeRunnable.isRunning = true
-            }
-            circleAnimator!!.currentPlayTime = time * 1000L
-            circleAnimator!!.start()
-        }
-    }
-
-    fun updateTextByTime(upTime: Int = time) {
-        textView?.text = getTimeInFormatMMSS(upTime)
-    }
-
-    override fun cancel(animate: Boolean) {
-        if (!animate) {
-            circleAnimator?.cancel()
-            circleAnimator = null
-            circleBg?.animation = null
-            circleBg?.visibility = View.INVISIBLE
-            circleBg?.rotation = 0f
-            circleBg = null
-            textView = null
-        } else {
-            val disappearAnim = AnimationUtils
-                .loadAnimation(textView?.context, R.anim.progress_bar_disappear)
-            Anim.doOnEndOf(disappearAnim) {
-                circleBg!!.visibility = View.INVISIBLE
-                circleBg?.rotation = 0f
-                circleBg = null
-                textView = null
-            }
-            circleAnimator?.cancel()
-            circleAnimator = null
-            circleBg?.startAnimation(disappearAnim)
-        }
-        isPaused = false
-    }
-
     fun setExerciseTimeOfLast(value: Int) {
         if (exerciseTime.isEmpty())
             throw NullPointerException(
@@ -174,37 +202,10 @@ class ExerciseStopwatch(
         exerciseTime.add(value)
     }
 
-    private fun initCircleRotationAnimator() {
-        circleAnimator = ObjectAnimator.ofFloat(
-            circleBg!!,
-            "rotation",
-            0F, 360F
-        )
-            .also {
-                it.duration = 10000
-                it.interpolator = AccelerateDecelerateInterpolator()
-                it.repeatMode = ObjectAnimator.RESTART
-                it.repeatCount = ObjectAnimator.INFINITE
-                it.startDelay = 200
-            }
-    }
 
-    private inner class TimeUpdating : Runnable {
-        private var handler: Handler = Handler(Looper.getMainLooper())
-        private val interval = 1000L
-        var isRunning = false
-
-        override fun run() {
-            Log.d("Tic", "esw - $time")
-            textView?.text = getTimeInFormatMMSS(time++)
-            handler.postDelayed(this, interval)
-        }
-
-        fun stop() {
-            isRunning = false
-            handler.removeCallbacks(this)
-        }
-
+    override fun tick() {
+        Log.d("Tic", "esw - $time")
+        updateTextByTime(time++)
     }
 
 }

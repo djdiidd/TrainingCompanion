@@ -53,7 +53,7 @@
             android:layout_gravity="start"
             android:background="@color/surface"
             app:drawerLayoutCornerSize="30dp"
-            app:headerLayout="@layout/side_header">
+            app:headerLayout="@layout/side_menu_header">
 
             <!-- Тело бокового меню -->
             <include layout="@layout/side_menu" android:id="@+id/side_menu"/>

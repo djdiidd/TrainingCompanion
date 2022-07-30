@@ -58,7 +58,8 @@ const val TAG_MUSCLES = "tag-muscles"
 //todo: bottom...dialog
 
 class MainActivity : AppCompatActivity(),
-    WarningUnusedBPDialog.Callback, MainFragment.FragmentCallback,
+    WarningUnusedBPDialog.Callback,
+    MainFragment.FragmentCallback,
     SimpleListAdapter.Callback {
 
 
@@ -121,7 +122,7 @@ class MainActivity : AppCompatActivity(),
     @SuppressLint("ClickableViewAccessibility")
     override fun onStart() {
         super.onStart()
-
+        Log.d("LF", "A onStart")
         //-- -- -- -- -- -- -- -- -- -- -- -- -- -- -[ Обаботка бокового меню ]- -- -- -- -- -- -- -
 
         // Определяем поведение при открытии и закрытии бокового меню
@@ -175,9 +176,7 @@ class MainActivity : AppCompatActivity(),
                         R.string.side_menu_reselected_workout_set_notifying_toast,
                         R.string.side_menu_reselected_ws_item_sound
                     ) {
-                        viewModel.breakNotifyingMode = BreakNotifyingMode.SOUND.also { type ->
-                            actionManager?.notifyingType = type
-                        }
+                        viewModel.breakNotifyingMode = BreakNotifyingMode.SOUND
                     })
 
 
@@ -186,9 +185,7 @@ class MainActivity : AppCompatActivity(),
                     R.string.side_menu_reselected_workout_set_notifying_toast,
                     R.string.side_menu_reselected_ws_item_vibration
                 ) {
-                    viewModel.breakNotifyingMode = BreakNotifyingMode.VIBRATION.also { type ->
-                        actionManager?.notifyingType = type
-                    }
+                    viewModel.breakNotifyingMode = BreakNotifyingMode.VIBRATION
                 })
 
 
@@ -197,9 +194,7 @@ class MainActivity : AppCompatActivity(),
                     R.string.side_menu_reselected_workout_set_notifying_toast,
                     R.string.side_menu_reselected_ws_item_animation
                 ) {
-                    viewModel.breakNotifyingMode = BreakNotifyingMode.ANIMATION.also { type ->
-                        actionManager?.notifyingType = type
-                    }
+                    viewModel.breakNotifyingMode = BreakNotifyingMode.ANIMATION
                 })
 
                 /* ОПРЕДЕЛИМ СЛУШАТЕЛИ ДЛЯ КАЖДОГО ОБЪЕКТА "ВРЕМЯ ОТДЫХА" */
@@ -350,7 +345,6 @@ class MainActivity : AppCompatActivity(),
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.workout_toolbar_menu, menu)
         if (viewModel.activeProcess.value == WorkoutProcess.PAUSED) {
-            Log.d("MyTag", "JJJJOOOOOPPPPPAAAA")
             binding.toolbar.menu.getItem(0).icon =
                 ContextCompat.getDrawable(this, R.drawable.ic_resume_workout)
         }
@@ -359,7 +353,7 @@ class MainActivity : AppCompatActivity(),
 
     // Слушатель касания на кнопку паузы общего времени на Toolbar
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        actionManager?.performOrPause(Action.GENERAL_STOPWATCH)
+        actionManager?.launchOrPause(Action.GENERAL_STOPWATCH)
         if (actionManager?.isActionPaused(Action.GENERAL_STOPWATCH) == true)
             actionManager?.pauseAllActions()
         else
@@ -390,6 +384,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onStop() {
         super.onStop()
+        Log.d("LF", "A onStop")
         binding.drawerLayout.closeDrawer(GravityCompat.START, false)
     }
 
@@ -765,16 +760,15 @@ class MainActivity : AppCompatActivity(),
      * Callback интерфейса [MainFragment.FragmentCallback];
      * Обработка нажатия основной кнопки
      */
-    override fun mainButtonClicked() {
+    override fun onMainButtonClicked() {
         when (viewModel.activeProcess.value) {
             WorkoutProcess.TIMER -> {
-                actionManager?.performOrPause(Action.BREAK_TIMER)
+                actionManager?.launchOrPause(Action.BREAK_TIMER)
             }
             WorkoutProcess.EXERCISE_STOPWATCH -> {
-                viewModel.activeProcess.value = WorkoutProcess.TIMER
                 //TODO: Запустить диалоговое окно, в котором будет выбор того, что ты потренил
                 // Если Пользователь выбрал закончить тренировку, то перебросить его на результаты и изменить viewModel.activeProcess
-                actionManager?.perform(
+                actionManager?.launch(
                     Action.BREAK_TIMER,
                     viewModel.restTime.value!!
                 )
@@ -790,30 +784,30 @@ class MainActivity : AppCompatActivity(),
      * Callback интерфейса [MainFragment.FragmentCallback];
      * Обработка уничтожения фрагмента;
      */
-    override fun beforeFragmentDestroyed() {
-        actionManager?.saveObjectsStates()
+    override fun onFragmentStopped() {
+        actionManager?.notifyLifecycleOwnerStopped()
     }
 
     /**
      * Callback интерфейса [MainFragment.FragmentCallback];
      * Обработка создания View фрагмента (onViewCreated);
      */
-    override fun fragmentUICreated(
+    override fun onFragmentUICreated(
         textView: TextView,
         progressBar: ProgressBar,
         circleView: View,
         pulseView: View
     ) {
         actionManager?.updateUI(textView, progressBar, circleView, pulseView)
+        actionManager?.notifyLifecycleOwnerCreated()
     }
 
-    override fun workoutStarted() {
+    override fun onWorkoutStarted() {
         // Обновляем View, используемые для отображения данных секундомера;
         showToolbarAndActivateSideMenu()
         actionManager?.let { manager ->
-            manager.perform(Action.GENERAL_STOPWATCH, fromStart = true)
-            manager.perform(Action.EXERCISE_STOPWATCH, fromStart = true)
-            manager.notifyingType = viewModel.breakNotifyingMode!!
+            manager.launch(Action.GENERAL_STOPWATCH, fromStart = true)
+            manager.launch(Action.EXERCISE_STOPWATCH, fromStart = true)
         }
         // Сохраняем текущим процессом секундомер;
         viewModel.activeProcess.value = WorkoutProcess.EXERCISE_STOPWATCH

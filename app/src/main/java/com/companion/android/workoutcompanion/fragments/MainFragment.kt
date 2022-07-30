@@ -15,7 +15,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -129,7 +128,7 @@ class MainFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        callback?.fragmentUICreated(
+        callback?.onFragmentUICreated(
             binding.setTimer,
             binding.setTimerProgress,
             binding.circle,
@@ -140,7 +139,7 @@ class MainFragment : Fragment() {
         // Если тренировка уже началась, то убираем лишнее с экрана;
         if (viewModel.activeProcess.value == WorkoutProcess.NOT_STARTED) {
             if (args.workoutStartedSuccessfully) {
-                callback?.workoutStarted()
+                callback?.onWorkoutStarted()
                 setProcessViews()
             } else {
                 setStartViews()
@@ -281,14 +280,13 @@ class MainFragment : Fragment() {
         binding.mainButton.setOnClickListener {
             it.isClickable = false
             Log.d("MyTag", "is clicked set to false")
-            callback?.mainButtonClicked()
+            callback?.onMainButtonClicked()
             Handler(requireContext().mainLooper)
                 .postDelayed({
                     it.isClickable = true
                     Log.d("MyTag", "is clicked set to true")
                 }, 1000)
         }
-
 
 
         requireActivity()
@@ -309,6 +307,7 @@ class MainFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
+        callback!!.onFragmentStopped()
         Log.d("LF", "F onStop")
     }
 
@@ -318,7 +317,6 @@ class MainFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        callback!!.beforeFragmentDestroyed()
         super.onDestroyView()
         _binding = null
     }
@@ -574,10 +572,10 @@ class MainFragment : Fragment() {
 
 
     interface FragmentCallback {
-        fun mainButtonClicked()
-        fun beforeFragmentDestroyed()
-        fun workoutStarted()
-        fun fragmentUICreated(
+        fun onMainButtonClicked()
+        fun onFragmentStopped()
+        fun onWorkoutStarted()
+        fun onFragmentUICreated(
             textView: TextView,
             progressBar: ProgressBar,
             circleView: View,

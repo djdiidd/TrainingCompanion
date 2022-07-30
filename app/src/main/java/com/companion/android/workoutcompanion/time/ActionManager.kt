@@ -6,9 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.os.bundleOf
 import com.companion.android.workoutcompanion.R
-import com.companion.android.workoutcompanion.objects.BreakNotifyingMode
 import com.companion.android.workoutcompanion.objects.WorkoutProcess
 import com.companion.android.workoutcompanion.viewmodels.WorkoutViewModel
 
@@ -24,11 +22,15 @@ private const val GENERAL_STOPWATCH_TIME = "g-stopwatch-time"
 private const val BREAK_TIMER_TIME = "b-timer-time"
 private const val BREAK_TIMER_IS_GOING = "b-timer-is-going"
 private const val BREAK_TIMER_START_TIME = "b-timer-start-time"
+private const val BREAK_TIMER_IS_PULSING = "b-timer-is-pulsing"
+private const val BREAK_TIMER_IS_ENABLED = "b-timer-is-enabled"
 
 private const val EXERCISE_STOPWATCH_TIME = "e-stopwatch-time"
 private const val EXERCISE_STOPWATCH_IS_GOING = "e-stopwatch-is-going"
+private const val EXERCISE_STOPWATCH_IS_ENABLED = "e-stopwatch-is-enabled"
 
-private const val NOTIFYING_TYPE = "notifying-type"
+
+private const val TAG = "bug1"
 
 
 /**
@@ -45,11 +47,7 @@ class ActionManager(
     private val generalStopwatch = Stopwatch(activity)
     private val exerciseStopwatch = ExerciseStopwatch()
 
-    var notifyingType: Int = BreakNotifyingMode.ANIMATION
-        set(value) {
-            breakTimer.setNotifyingType(value)
-            field = value
-        }
+    private var lifecycleOwnerIsAlive = true
 
     private val actionToPos = mapOf(
         Action.BREAK_TIMER to 0,
@@ -62,76 +60,65 @@ class ActionManager(
     fun isActionEnabled(action: Action) = viewModel.actionStates[actionToPos[action]!!].isEnabled
     fun isActionPaused(action: Action) = viewModel.actionStates[actionToPos[action]!!].isPaused
 
-    fun perform(
-        action: Action,
-        initTime: Int,
-        notifyingType: Int = this.notifyingType
-    ) {
+    fun launch(action: Action, initTime: Int) {
         when (action) {
-            Action.GENERAL_STOPWATCH -> performGeneralStopwatch(initTime)
+            Action.GENERAL_STOPWATCH -> launchGeneralStopwatch(initTime)
 
-            Action.BREAK_TIMER -> performBreakTimer(initTime)
+            Action.BREAK_TIMER -> launchBreakTimer(initTime)
 
-            Action.EXERCISE_STOPWATCH -> performExerciseStopwatch(initTime)
+            Action.EXERCISE_STOPWATCH -> launchExerciseStopwatch(initTime)
 
             Action.TEMP_STOPWATCH -> {}
 
             Action.TEMP_TIMER -> {}
         }
-        this.notifyingType = notifyingType
     }
 
     /**
      * @param action Что будет выполняться;
      * @param fromStart true - Начать сначала, false - продолжить;
-     * @param notifyingType Тип уведомления;
      */
-    fun perform(
-        action: Action,
-        fromStart: Boolean,
-        notifyingType: Int = this.notifyingType
-    ) {
+    fun launch(action: Action, fromStart: Boolean) {
         val startTime: Int
         when (action) {
             Action.GENERAL_STOPWATCH -> {
                 startTime = if (fromStart) 0 else generalStopwatch.time
-                performGeneralStopwatch(startTime)
+                launchGeneralStopwatch(startTime)
             }
 
             Action.BREAK_TIMER -> {
                 startTime = if (fromStart) 0 else breakTimer.getTime()
-                performBreakTimer(startTime)
+                launchBreakTimer(startTime)
             }
 
             Action.EXERCISE_STOPWATCH -> {
                 startTime = if (fromStart) 0 else exerciseStopwatch.time
-                performExerciseStopwatch(startTime)
+                launchExerciseStopwatch(startTime)
             }
 
             Action.TEMP_STOPWATCH -> {}
 
             Action.TEMP_TIMER -> {}
         }
-        this.notifyingType = notifyingType
     }
 
-    fun performOrPause(action: Action, initTime: Int? = null) {
+    fun launchOrPause(action: Action, initTime: Int? = null) {
         when (action) {
             Action.GENERAL_STOPWATCH -> {
                 if (!generalStopwatch.isGoing)
-                    performGeneralStopwatch(initTime ?: generalStopwatch.time)
+                    launchGeneralStopwatch(initTime ?: generalStopwatch.time)
                 else pause(Action.GENERAL_STOPWATCH)
             }
 
             Action.BREAK_TIMER -> {
                 if (!breakTimer.isGoing)
-                    performBreakTimer(initTime ?: breakTimer.getTime())
+                    launchBreakTimer(initTime ?: breakTimer.getTime())
                 else pause(Action.BREAK_TIMER)
             }
 
             Action.EXERCISE_STOPWATCH -> {
                 if (!exerciseStopwatch.isGoing)
-                    performExerciseStopwatch(initTime ?: exerciseStopwatch.time)
+                    launchExerciseStopwatch(initTime ?: exerciseStopwatch.time)
                 else pause(Action.EXERCISE_STOPWATCH)
             }
 
@@ -141,28 +128,52 @@ class ActionManager(
         }
     }
 
-    private fun performBreakTimer(time: Int, notifyingType: Int = this.notifyingType) {
-        if (breakTimer.isFinished) breakTimer.setStartState(time)
-        else breakTimer.setTime(time)
+    private fun launchBreakTimer(time: Int) {
+        Log.d(TAG, "launchBreakTimer: Passed time = $time")
+        // Устанавливаем необходимое время;
+        breakTimer.setTime(time)
+        // Устанавливаем тип уведомления перед началом выполнения;
+        breakTimer.setNotifyingType(viewModel.breakNotifyingMode!!)
 
-        breakTimer.setNotifyingType(notifyingType)
-
+        // Обновляем UI-элементы;
         breakTimer.enable(
             activity.findViewById(SET_TIMER_ID),
             activity.findViewById(SET_TIMER_PROGRESS_ID),
             activity.findViewById(SET_TIMER_PULSE_VIEW_ID)
         )
-        if (breakTimer.isGoing) return
-        else exerciseStopwatch.pause()
+        // Инициализируем ProgressBar;
+        breakTimer.initProgressAnimation()
+        // Обновляем время на экране (необходимо для
+        // мгновенного отображения соответствующего время);
+        breakTimer.updateText()
 
-        breakTimer.start()
+        // Если таймер идет, то возобновляем его;
+        if (breakTimer.isGoing) {
+            Log.d(TAG, "launchBreakTimer: breakTimer is already going")
+            breakTimer.start()
+            return
+        }
+        // В случае если секундомер активен, останавливаем его;
+        if (exerciseStopwatch.isEnabled) {
+            generalStopwatch.sendTicksTo = null
+            exerciseStopwatch.hideProgressBar(
+                wDisappearAnim = true,
+                actionAfter = {
+                    exerciseStopwatch.stop()
+                    breakTimer.start()
+                }
+            )
+            Log.d(TAG, "launchBreakTimer: exerciseStopwatch is enabled")
+        } else {
+            breakTimer.start()
+        }
 
         val breakTimerAction = viewModel.actionStates[actionToPos[Action.BREAK_TIMER]!!]
-        if (breakTimerAction.isEnabled && !breakTimerAction.isPaused) return
         viewModel.activeProcess.value = WorkoutProcess.TIMER
-        val exerciseStopwatchAction = viewModel.actionStates[actionToPos[Action.EXERCISE_STOPWATCH]!!]
+        if (breakTimerAction.isEnabled && !breakTimerAction.isPaused) return
+        val exerciseStopwatchAction =
+            viewModel.actionStates[actionToPos[Action.EXERCISE_STOPWATCH]!!]
         if (exerciseStopwatchAction.isEnabled) {
-            exerciseStopwatch.cancel(true)
             exerciseStopwatchAction.isEnabled = false
             exerciseStopwatchAction.isPaused = false
         }
@@ -170,26 +181,29 @@ class ActionManager(
         breakTimerAction.isPaused = false
     }
 
-    private fun performExerciseStopwatch(fromTime: Int = exerciseStopwatch.time) {
-        Log.d("MyTag", "fromTime = $fromTime")
-        exerciseStopwatch.enable(
-            activity.findViewById(SET_TIMER_ID),
-            activity.findViewById(CIRCLE_ID)
-        )
-
-        if (exerciseStopwatch.isGoing) {
-            exerciseStopwatch.updateTextByTime()
-            return
+    private fun launchExerciseStopwatch(fromTime: Int = exerciseStopwatch.time) {
+        // Передаем элементы на экране секундомеру;
+        if (lifecycleOwnerIsAlive) {
+            exerciseStopwatch.enable(
+                activity.findViewById(SET_TIMER_ID),
+                activity.findViewById(CIRCLE_ID),
+            )
         }
-
-        exerciseStopwatch.updateTextByTime(0)
+        // Если секундомер уже запущен, не выполняем более действий;
+        if (exerciseStopwatch.isGoing) return
+        // Добавляем возможность обновления времени
+        //  с помощью callbacks от глобального секундомера
+        generalStopwatch.sendTicksTo = exerciseStopwatch
+        // Устанавливаем секундомеру состояние готовности к обновлению времени;
         exerciseStopwatch.startFrom(fromTime)
-        val thisAction = viewModel.actionStates[actionToPos[Action.EXERCISE_STOPWATCH]!!]
-        if (thisAction.isEnabled && !thisAction.isPaused) return
+        // Устанавливаем активным процесс работы секундомера;
         viewModel.activeProcess.value = WorkoutProcess.EXERCISE_STOPWATCH
+
+        val thisAction = viewModel.actionStates[actionToPos[Action.EXERCISE_STOPWATCH]!!]
+        viewModel.activeProcess.value = WorkoutProcess.EXERCISE_STOPWATCH
+        if (thisAction.isEnabled && !thisAction.isPaused) return // STOPSHIP: bullshit
         val prevAction = viewModel.actionStates[actionToPos[Action.BREAK_TIMER]!!]
         if (prevAction.isEnabled) {
-            breakTimer.cancel(true)
             prevAction.isEnabled = false
             prevAction.isPaused = false
         }
@@ -197,7 +211,7 @@ class ActionManager(
         thisAction.isPaused = false
     }
 
-    private fun performGeneralStopwatch(fromTime: Int) {
+    private fun launchGeneralStopwatch(fromTime: Int) {
         if (generalStopwatch.isGoing) return
         generalStopwatch.start()
         val stopwatchAction = viewModel.actionStates[actionToPos[Action.GENERAL_STOPWATCH]!!]
@@ -218,7 +232,7 @@ class ActionManager(
     fun resumeAllActions() {
         viewModel.actionStates.forEach { state ->
             if (state.isEnabled && state.isPaused) {
-                perform(state.action, fromStart = false)
+                launch(state.action, fromStart = false)
             }
         }
     }
@@ -271,10 +285,6 @@ class ActionManager(
         }
     }
 
-    fun saveObjectsStates() {
-//        exerciseStopwatch.saveAnimationState()
-    }
-
     fun updateUI(
         timerTextView: TextView,
         progressBar: ProgressBar,
@@ -285,14 +295,23 @@ class ActionManager(
             WorkoutProcess.EXERCISE_STOPWATCH -> {
                 exerciseStopwatch.enable(timerTextView, circleView)
                 exerciseStopwatch.updateTextByTime()
+                exerciseStopwatch.restoreProgressAnimation()
+                if (exerciseStopwatch.isGoing)
+                    exerciseStopwatch.startProgressAnimation()
             }
-            WorkoutProcess.TIMER -> breakTimer.enable(
-                timerTextView, progressBar, pulseView
-            )
+            WorkoutProcess.TIMER -> {
+                breakTimer.enable(timerTextView, progressBar, pulseView)
+                breakTimer.updateText()
+                breakTimer.initProgressAnimation()
+                if (breakTimer.isGoing)
+                    breakTimer.startProgressAnimation()
+                breakTimer.initPulseAnimationSet()
+                if (breakTimer.pulseAnimationIsRunning)
+                    breakTimer.startPulseAnimation()
+            }
             // TODO: add new actions
         }
     }
-
 
     fun clear() {
         breakTimer.stop()
@@ -302,18 +321,29 @@ class ActionManager(
 
     fun getInstanceState(): Bundle? {
         if (viewModel.activeProcess.value == WorkoutProcess.NOT_STARTED) return null
-        return bundleOf(
-            Pair(GENERAL_STOPWATCH_IS_GOING, generalStopwatch.isGoing),
-            Pair(GENERAL_STOPWATCH_TIME, generalStopwatch.time),
-            Pair(NOTIFYING_TYPE, notifyingType),
-            Pair(BREAK_TIMER_IS_GOING, breakTimer.isGoing),
-            Pair(BREAK_TIMER_TIME, breakTimer.getTime()),
-            Pair(BREAK_TIMER_START_TIME, breakTimer.startTime),
-            Pair(EXERCISE_STOPWATCH_IS_GOING, exerciseStopwatch.isGoing),
-            Pair(EXERCISE_STOPWATCH_TIME, exerciseStopwatch.time),
+        val capacity = 7
+        val resultBundle = Bundle(capacity).also {
+            it.putBoolean(GENERAL_STOPWATCH_IS_GOING, generalStopwatch.isGoing)
+            it.putInt(GENERAL_STOPWATCH_TIME, generalStopwatch.time)
+        }
+        resultBundle.apply {
+            if (viewModel.activeProcess.value!! == WorkoutProcess.TIMER) {
+                putBoolean(BREAK_TIMER_IS_ENABLED, breakTimer.isEnabled)
+                putBoolean(BREAK_TIMER_IS_GOING, breakTimer.isGoing)
+                putBoolean(BREAK_TIMER_IS_PULSING, breakTimer.pulseAnimationIsRunning)
+                putInt(BREAK_TIMER_START_TIME, breakTimer.startTime)
+                putInt(BREAK_TIMER_TIME, breakTimer.getTime())
+            } else if (viewModel.activeProcess.value!! == WorkoutProcess.EXERCISE_STOPWATCH) {
+                putBoolean(EXERCISE_STOPWATCH_IS_ENABLED, exerciseStopwatch.isEnabled)
+                putBoolean(EXERCISE_STOPWATCH_IS_GOING, exerciseStopwatch.isGoing)
+                putInt(EXERCISE_STOPWATCH_TIME, exerciseStopwatch.time)
+            }
+            return this
+        }
 
-            //TODO: ADD ACTIONS (TEMP SW AND TIMER)
-        )
+
+        //TODO: ADD ACTIONS (TEMP SW AND TIMER)
+
     }
 
     fun restoreInstanceState(savedState: Bundle?) {
@@ -321,36 +351,60 @@ class ActionManager(
         savedState.apply {
             generalStopwatch.isGoing = getBoolean(GENERAL_STOPWATCH_IS_GOING)
             generalStopwatch.time = getInt(GENERAL_STOPWATCH_TIME)
-            notifyingType = getInt(NOTIFYING_TYPE)
-            breakTimer.isGoing = getBoolean(BREAK_TIMER_IS_GOING)
-            breakTimer.setTime(getInt(BREAK_TIMER_TIME))
-            breakTimer.startTime = getInt(BREAK_TIMER_START_TIME)
-            exerciseStopwatch.time = getInt(EXERCISE_STOPWATCH_TIME)
-            if (getBoolean(EXERCISE_STOPWATCH_IS_GOING))
-                exerciseStopwatch.startFrom(exerciseStopwatch.time)
-
+            when (viewModel.activeProcess.value!!) {
+                WorkoutProcess.TIMER -> {
+                    breakTimer.isEnabled = getBoolean(BREAK_TIMER_IS_ENABLED)
+                    breakTimer.setTime(getInt(BREAK_TIMER_TIME))
+                    breakTimer.isGoing = getBoolean(BREAK_TIMER_IS_GOING)
+                    breakTimer.startTime = getInt(BREAK_TIMER_START_TIME)
+                    breakTimer.pulseAnimationIsRunning = getBoolean(BREAK_TIMER_IS_PULSING).also {
+                        if (it) breakTimer.startPulseAnimation()
+                    }
+                    breakTimer.setNotifyingType(viewModel.breakNotifyingMode!!)
+                }
+                WorkoutProcess.EXERCISE_STOPWATCH -> {
+                    exerciseStopwatch.time = getInt(EXERCISE_STOPWATCH_TIME)
+                    exerciseStopwatch.isGoing = getBoolean(EXERCISE_STOPWATCH_IS_GOING)
+                    exerciseStopwatch.isEnabled = getBoolean(EXERCISE_STOPWATCH_IS_ENABLED)
+                    if (exerciseStopwatch.isGoing) {
+                        generalStopwatch.sendTicksTo = exerciseStopwatch
+                    }
+                }
+            }
 
             //TODO: ADD ACTIONS (TEMP SW AND TIMER)
         }
     }
 
-    private fun getActionsFromPositions(actionPos: Array<Int>): MutableList<Action> {
-        val posToAction = mapOf(
-            0 to Action.BREAK_TIMER,
-            1 to Action.GENERAL_STOPWATCH,
-            2 to Action.EXERCISE_STOPWATCH,
-            3 to Action.TEMP_STOPWATCH,
-            4 to Action.TEMP_TIMER,
-        )
-        val actions = mutableListOf<Action>()
-        actionPos.forEach { pos ->
-            actions.add(posToAction[pos]!!)
-        }
-        return actions
+    fun notifyLifecycleOwnerStopped() {
+        lifecycleOwnerIsAlive = false
+        breakTimer.lifecycleOwnerIsAlive = false
+        exerciseStopwatch.lifecycleOwnerIsAlive = false
     }
 
+    fun notifyLifecycleOwnerCreated() {
+        lifecycleOwnerIsAlive = true
+        breakTimer.lifecycleOwnerIsAlive = true
+        exerciseStopwatch.lifecycleOwnerIsAlive = true
+    }
+
+//    private fun getActionsFromPositions(actionPos: Array<Int>): MutableList<Action> {
+//        val posToAction = mapOf(
+//            0 to Action.BREAK_TIMER,
+//            1 to Action.GENERAL_STOPWATCH,
+//            2 to Action.EXERCISE_STOPWATCH,
+//            3 to Action.TEMP_STOPWATCH,
+//            4 to Action.TEMP_TIMER,
+//        )
+//        val actions = mutableListOf<Action>()
+//        actionPos.forEach { pos ->
+//            actions.add(posToAction[pos]!!)
+//        }
+//        return actions
+//    }
+
     override fun timerFinished() {
-        perform(Action.EXERCISE_STOPWATCH, 0)
+        launch(Action.EXERCISE_STOPWATCH, 0)
     }
 
     companion object {

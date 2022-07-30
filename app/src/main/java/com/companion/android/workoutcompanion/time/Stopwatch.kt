@@ -22,6 +22,8 @@ class Stopwatch(private val context: Context) : TimeCounting {
     private var serviceIntent: Intent =
         Intent(context.applicationContext, StopwatchService::class.java)
 
+    var sendTicksTo: TimeCallback? = null
+
     init {
         addLifeCycleObserver()
     }
@@ -48,7 +50,7 @@ class Stopwatch(private val context: Context) : TimeCounting {
         context.unregisterReceiver(newTimeReceiver)
     }
 
-    override fun cancel(animate: Boolean) {
+    override fun reset() {
         TODO("Not yet implemented")
     }
 
@@ -68,6 +70,7 @@ class Stopwatch(private val context: Context) : TimeCounting {
     private val newTimeReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             time = intent.getIntExtra(StopwatchService.TIME_EXTRA, 0)
+            sendTicksTo?.tick()
         }
     }
 
@@ -88,7 +91,6 @@ class Stopwatch(private val context: Context) : TimeCounting {
             time = 0
             isServiceEnabled = true
         }
-//        pauseResumeButton.setImageResource(R.drawable.ic_pause)
         serviceIntent.putExtra(StopwatchService.TIME_EXTRA, time)
         context.startService(serviceIntent)
         isGoing = true
@@ -133,5 +135,9 @@ class Stopwatch(private val context: Context) : TimeCounting {
         }
         // Добавляем наблюдателя
         (context as LifecycleOwner).lifecycle.addObserver(defaultLifecycleObserver)
+    }
+
+    interface TimeCallback {
+        fun tick()
     }
 }

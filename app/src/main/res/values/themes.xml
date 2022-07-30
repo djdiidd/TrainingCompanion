@@ -38,6 +38,7 @@
     <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="android:windowAnimationStyle">@style/BounceAnimation</item>
         <item name="buttonGravity">bottom</item>
+        <item name="titleTextAppearance">?attr/textAppearanceHeadlineSmall</item>
     </style>
 
     <style name="ThemeOverlay.App.MaterialAlertDialog.PositiveColored">
